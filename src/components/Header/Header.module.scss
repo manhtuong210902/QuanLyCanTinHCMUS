@@ -1,9 +1,39 @@
-.wrapper {
+.header {
     height: 60px;
     background-color: var(--primary-clr);
     text-align: center;
-}
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-shadow: 2px 2px 4px rgba(255, 255, 255, 0.9);
 
-.title {
-    color: #fff;
+    .header-logo {
+        .header-home-btn {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+        }
+    }
+
+    .header-sidebar {
+        display: flex;
+
+        .header-sidebar-item {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 16px;
+            color: #fff;
+            text-transform: uppercase;
+
+            .header-sidebar-icon {
+                margin: 6px 8px 0 0;
+                font-size: 18px;
+            }
+        }
+    }
 }

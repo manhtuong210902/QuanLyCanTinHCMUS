@@ -1,0 +1,18 @@
+.footer {
+    height: 60px;
+    background-color: var(--primary-clr);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    .footer-logo {
+        .home-btn {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+        }
+    }
+}
