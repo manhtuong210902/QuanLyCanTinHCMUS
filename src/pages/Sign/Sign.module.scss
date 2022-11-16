@@ -1,4 +1,51 @@
 .wrapper {
+    margin-top: -10px;
     display: flex;
-    height: 100vh;
+    gap: 20px;
+    .slide {
+
+        .img {
+            display: block;
+            width: 700px;
+            max-height: 700px;
+            object-fit: cover;
+            transition: all ease 0.5s;
+        }
+    }
+
+    .sign {
+        flex: 1;
+    }
 }
+
+.hide {
+    display: none!important;
+}
+
+.transition-right {
+    animation: fadeinRight 0.5s ease-in-out;
+  }
+  
+  .transition-left {
+    animation: fadeinLeft 0.5s ease-in-out;
+  }
+  
+  @keyframes fadeinRight {
+    0% {
+      transform: translateX(300px);
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fadeinLeft {
+    0% {
+      transform: translateX(-300px);
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
