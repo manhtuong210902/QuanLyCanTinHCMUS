@@ -5,8 +5,10 @@ const cx = classNames.bind(styles);
 
 function Sidebar() {
     return (
-        <div className={cx('wrapper')}>
-            <h2 className={cx('title')}>Sidebar</h2>
+        <div className={cx('header')}>
+            <div className={cx('header-logo')}>
+                <span></span>
+            </div>
         </div>
     );
 }
