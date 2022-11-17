@@ -1,0 +1,100 @@
+.login {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .wrapper {
+        animation: opacityChange 0.3s linear;
+        width: 600px;
+        max-height: 550px;
+        padding: 10px;
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 10px 10px 10px 2px #888888;
+
+        .title {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            h2 {
+                font-size: 23px;
+                font-weight: 500;
+            }
+        }
+
+        .content {
+            position: relative;
+            padding: 40px 60px;
+            label {
+                font-size: 15px;
+                font-weight: 400;
+                color: rgb(112, 110, 110);
+            }
+
+            form {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .input-error {
+                position: relative;
+                margin-bottom: 40px;
+                input {
+                    width: 100%;
+                    font-size: 18px;
+                    padding: 16px;
+                    border: 2px solid #ccc;
+                    outline: none;
+                    border-radius: 8px;
+
+                    &::placeholder {
+                        font-size: 16px;
+                    }
+                    &:focus {
+                        box-shadow: none;
+                    }
+                }
+            }
+
+            p {
+                color: red;
+                font-size: 14px;
+                position: absolute;
+            }
+            .submit {
+                background-color: var(--primary-clr);
+                font-size: 18px;
+                width: 100%;
+                padding: 16px;
+                border: none;
+                border-radius: 8px;
+                color: white;
+                cursor: pointer;
+                &:hover {
+                    opacity: 0.7;
+                }
+            }
+
+            .signup {
+                user-select: none;
+                margin-top: 30px;
+                padding: 16px 0;
+                font-size: 15px;
+                border: none;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+
+                &:hover {
+                    opacity: 0.7;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+}
