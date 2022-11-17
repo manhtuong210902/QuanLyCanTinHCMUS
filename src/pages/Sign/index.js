@@ -17,8 +17,7 @@ function Sign() {
 
     return (
         <div className={cx('wrapper')}>
-            <div className={cx('slide')}>
-            </div>
+            <div className={cx('slide')}></div>
             {isSignIn ? <SignIn handleChangeSign={handleChangeSign} /> : <SignUp handleChangeSign={handleChangeSign} />}
         </div>
     );
