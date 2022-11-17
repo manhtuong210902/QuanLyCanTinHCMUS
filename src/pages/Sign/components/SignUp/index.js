@@ -5,6 +5,10 @@ import { useRef } from 'react';
 
 import { useForm } from 'react-hook-form';
 
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { collection, addDoc } from 'firebase/firestore';
+import { auth, db } from '../../../../firebase/config';
+
 const cx = classNames.bind(styles);
 
 function SignUp({ handleChangeSign }) {
@@ -21,6 +25,25 @@ function SignUp({ handleChangeSign }) {
     const onSubmit = (data) => {
         const { passwordRe, ...user } = data;
         console.log(user);
+        createUserWithEmailAndPassword(auth, user.email, user.password)
+            .then(async (userCredential) => {
+                const user = userCredential.user;
+                try {
+                    const docRef = await addDoc(collection(db, 'users'), {
+                        email: user.email,
+                        uid: user.uid,
+                        admin: false,
+                    });
+                    console.log('Document written with ID: ', docRef.id);
+                } catch (e) {
+                    console.error('Error adding document: ', e);
+                }
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorCode, errorMessage);
+            });
     };
 
     return (
@@ -34,11 +57,11 @@ function SignUp({ handleChangeSign }) {
                         {/* <label>Họ tên</label> */}
                         <div className={cx('input-error')}>
                             <input placeholder="Họ và tên" {...register('name', { required: true })} />
-                            <p>{errors.name?.type === 'required' ? 'Không được bỏ trống' : ''}</p>
+                            <p>{errors?.name?.type === 'required' ? 'Không được bỏ trống' : ''}</p>
                         </div>
 
                         {/* <label>Tài khoản</label> */}
-                        <div className={cx('input-error')}>
+                        {/* <div className={cx('input-error')}>
                             <input
                                 placeholder="Tài khoản"
                                 {...register('username', { required: true, minLength: 6 })}
@@ -50,7 +73,7 @@ function SignUp({ handleChangeSign }) {
                                     ? 'Tài khoản phải có từ 6 kí tự'
                                     : ''}
                             </p>
-                        </div>
+                        </div> */}
                         {/* <label>Email</label> */}
                         <div className={cx('input-error')}>
                             <input
@@ -65,11 +88,11 @@ function SignUp({ handleChangeSign }) {
                                 })}
                             />
                             <p>
-                                {errors.email?.type === 'required'
+                                {errors?.email?.type === 'required'
                                     ? 'Không được bỏ trống'
-                                    : errors.email?.type === 'minLength'
+                                    : errors?.email?.type === 'minLength'
                                     ? 'Email phải có từ 6 kí tự'
-                                    : errors.email?.type === 'pattern'
+                                    : errors?.email?.type === 'pattern'
                                     ? 'Nhập sai định dạng email!'
                                     : ''}
                             </p>

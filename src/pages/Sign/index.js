@@ -10,6 +10,11 @@ import canteen1 from './img/canteen1.jpg';
 import canteen2 from './img/canteen2.jpg';
 import canteen3 from './img/canteen3.jpg';
 
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../../firebase/config';
+import { useNavigate } from 'react-router-dom';
+
+//fire-base
 const cx = classNames.bind(styles);
 
 const second = 3;
@@ -21,6 +26,17 @@ function Sign() {
     const [slideImg, setSlideImg] = useState(0);
 
     const imgRef = useRef();
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                navigate('/');
+            } else {
+            }
+        });
+    }, [navigate])
 
     useEffect(() => {
         let timer1;
