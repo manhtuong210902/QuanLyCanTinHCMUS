@@ -92,6 +92,17 @@
                         }
                     }
                 }
+
+                .order-price-del {
+                    font-style: 18px;
+                    transition: all 0.5s ease;
+
+                    &:hover {
+                        cursor: pointer;
+                        transform: scale(1.1);
+                        color: var(--primary-clr);
+                    }
+                }
             }
         }
 
@@ -127,6 +138,11 @@
             color: white;
             width: 200px;
             margin: 10px auto 0;
+
+            &:hover {
+                cursor: pointer;
+                background: rgba(200, 74, 121, 0.6);
+            }
         }
     }
 }
