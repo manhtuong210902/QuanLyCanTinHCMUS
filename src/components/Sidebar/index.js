@@ -10,7 +10,7 @@ function Sidebar() {
     const optionList = [
         {
             name: 'Thực đơn',
-            path: '/menu',
+            path: '/',
         },
         {
             name: 'Thống kê',
@@ -45,15 +45,15 @@ function Sidebar() {
     return (
         <div className={cx('sidebar')}>
             <div className={cx('sidebar-option')}>
-                {optionList.map((item) => (
-                    <NavLink className={cx('sidebar-option-item')} to={item.path}>
+                {optionList.map((item, index) => (
+                    <NavLink key={index} className={cx('sidebar-option-item')} to={item.path}>
                         <span>{item.name}</span>
                     </NavLink>
                 ))}
             </div>
             <div className={cx('sidebar-setting')}>
-                {settingList.map((item) => (
-                    <NavLink to={item.path} className={cx('sidebar-setting-item')}>
+                {settingList.map((item, index) => (
+                    <NavLink key={index} to={item.path} className={cx('sidebar-setting-item')}>
                         <div className={cx('sidebar-setting-icon')}>{<item.icon />}</div>
                         <span>{item.name}</span>
                     </NavLink>

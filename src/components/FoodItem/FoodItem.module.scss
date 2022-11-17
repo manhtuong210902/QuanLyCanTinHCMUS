@@ -8,9 +8,11 @@
     margin: 0 10px 20px;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
     position: relative;
+    transition: all 0.3s linear;
     &:hover {
         cursor: pointer;
         background: #ebeaea;
+        transform: scale(1.05);
     }
 
     img {

@@ -12,7 +12,7 @@ const index = (props) => {
                 <label className={cx('food-label')}>{food.name}</label>
                 <div className={cx('food-price')}>
                     Gía:
-                    <span>{food.price}</span>
+                    <span>{food.price}đ</span>
                 </div>
                 <div className={cx('btn-add')}>
                     <button className={cx('food-add')}>+</button>
