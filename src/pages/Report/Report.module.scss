@@ -1,0 +1,21 @@
+.select-group {
+    display: flex;
+    gap: 10px;
+}
+
+.select-item {
+    font-size: 16px;
+    padding: 10px 20px;
+    color: #fff;
+    border: none;
+    background-color: var(--primary-clr);
+    option {
+        background-color: #fff;
+        color: var(--text-clr);
+        border-radius: var(--primayr-clr);
+    }
+}
+
+.content {
+    margin: 20px 0;
+}
