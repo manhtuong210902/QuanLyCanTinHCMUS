@@ -1,12 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import Slider from '../Slider';
 import FoodItem from '../FoodItem';
 import classNames from 'classnames/bind';
 import styles from './Content.module.scss';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, query } from 'firebase/firestore';
 import { auth, db } from '../../firebase/config';
+import { doc, getDocFromCache } from "firebase/firestore";
+import {  getDocs } from "firebase/firestore";
+import { onSnapshot } from 'firebase/firestore';
 const cx = classNames.bind(styles);
 const Content = (props) => {
+
+
+    // Get a document, forcing the SDK to fetch from the offline cache.
+
+    // const [foods, getMenu] = useState([]);
+    
+    // useEffect(() => {
+    //     console.log("content-render")
+        
+    //     let q=query(collection(db,"foods"))
+    //     onSnapshot(q,(snapshot) => {
+    //         let items= snapshot.docs.map((doc) => {
+    //             return {...doc.data()}
+    //         });
+    //         getMenu(items)
+    //     });
+    // }, []);
 
     const foods = [
         {
@@ -71,22 +91,12 @@ const Content = (props) => {
         },
 
     ];
-    const a=()=>{
-    let docRef
-    foods.forEach((food)=>{
-        docRef= addDoc(collection(db,"foods"),
-                                
-            {
-                name:food.name,
-                price:food.price,
-                image:food.image,
-            }
-    )})}
+
     return (
         <div className={cx('Content')}>
             <Slider />
             <div className={cx('content-menu')}>
-                <h2 onClick={a()}>Menu</h2>
+                <h2 >Menu</h2>
                 <div className={cx('content-menu-list-item')}>
                     {foods.map((food, index) => (
                         // <div className={cx('content-menu-item')}>

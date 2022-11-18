@@ -43,10 +43,12 @@ const Home = () => {
     }
     useEffect(()=>{
         console.log("home-render")
+        
     },[listSelect,bridge])
+
     return (
         <div className={cx('Home')}>
-            <Content handleClick={handleClick} key= {bridge}/>
+            <Content handleClick={handleClick} key= {bridge} />
             
             <Order listSelect={listSelect} bridge={bridge}  deleteClick={deleteClick}/>
         </div>
