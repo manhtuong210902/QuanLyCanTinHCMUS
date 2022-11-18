@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Slider from '../Slider';
 import FoodItem from '../FoodItem';
 import classNames from 'classnames/bind';
 import styles from './Content.module.scss';
 const cx = classNames.bind(styles);
-const Content = () => {
+const Content = (props) => {
     const foods = [
         {
             name: 'Phở bò',
@@ -65,7 +65,7 @@ const Content = () => {
                 <div className={cx('content-menu-list-item')}>
                     {foods.map((food, index) => (
                         // <div className={cx('content-menu-item')}>
-                        <FoodItem food={food} key={index} />
+                        <FoodItem food={food} key={index} handleClick={props.handleClick}/>
                         // </div>
                     ))}
                 </div>

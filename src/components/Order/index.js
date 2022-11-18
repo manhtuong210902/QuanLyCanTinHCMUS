@@ -3,45 +3,32 @@ import { RiDeleteBinLine } from 'react-icons/ri';
 import classNames from 'classnames/bind';
 import styles from './Order.module.scss';
 const cx = classNames.bind(styles);
-const Order = () => {
+const Order = (props) => {
+    
     const [orders, setOrder] = useState([]);
     const [numberTable, setNumberTable] = useState(0);
     const [currentPrice, setCurrentPrice] = useState(0);
+
+    const [counter,setCounter]=useState([{"id":0,"value":1}])
+    const handleDescease=(val,id)=>{
+        counter[id]===undefined?counter.push({"id":id,"value":val-1>=0?val-1:0})
+        :counter[id].value=val-1>=0?val-1:0    
+        setCounter(counter)
+    }
+    const handleIncease=(val,id)=>{
+        counter[id]===undefined?counter.push({"id":id,"value":val+1})
+        :counter[id].value=val+1    
+        setCounter(counter)
+    }
+    const  [flag,changeFlag]=useState(0)
     //test
     useEffect(() => {
-        setOrder([
-            {
-                name: 'Phở bò',
-                price: 30000,
-                image: '/images/food1.png',
-                amount: 1,
-            },
-            {
-                name: 'Coca cola',
-                price: 10000,
-                image: '/images/food6.jpg',
-                amount: 1,
-            },
-            // {
-            //     name: 'Coca cola',
-            //     price: 10000,
-            //     image: '/images/food6.jpg',
-            //     amount: 1,
-            // },
-            // {
-            //     name: 'Coca cola',
-            //     price: 10000,
-            //     image: '/images/food6.jpg',
-            //     amount: 1,
-            // },
-            // {
-            //     name: 'Coca cola',
-            //     price: 10000,
-            //     image: '/images/food6.jpg',
-            //     amount: 1,
-            // },
-        ]);
-    }, []);
+        console.log("order-render")
+        setCounter([{"id":0,"value":1}])
+        console.log(props.bridge)
+        setOrder(props.listSelect);
+        console.log("a",orders)
+    },[orders,props.bridge]);
     //end test
     const totalPrice = () => {
         return orders.reduce((sum, order) => sum + order.price * order.amount, 0);
@@ -54,28 +41,44 @@ const Order = () => {
     const changeConst = (value) => {
         setCurrentPrice(parseFloat(value));
     };
+    
+    
+    
     return (
-        <div className={cx('Order')}>
+        <div className={cx('Order')} key={props.bridge}>
             <h2>My order</h2>
             <div className={cx('order-bill')}>
-                <div className={cx('order-list')}>
+                <div className={cx('order-list')} >
+                    
                     {orders.map((item, index) => (
                         <div className={cx('order-item')} key={index}>
                             <img src={item.image} alt="" />
                             <div className={cx('order-info')}>
                                 <span>{item.name}</span>
                                 <div className={cx('order-amount')}>
-                                    <div className={cx('order-amount-change')}>-</div>
-                                    <div className={cx('order-amount-num')}>{item.amount}</div>
-                                    <div className={cx('order-amount-change')}>+</div>
+                                    <div className={cx('order-amount-change')} onClick={()=>{
+                                        handleDescease(item.amount,item.index)
+                                        item.amount=counter[item.index].value
+                                        changeFlag(flag+1)
+                                    }}>-</div>
+                                    <div className={cx('order-amount-num')}>{item.amount }</div>
+                                    <div className={cx('order-amount-change')} onClick={()=>{
+                                        handleIncease(item.amount,item.index)
+                                        item.amount=counter[item.index].value
+                                        changeFlag(flag+1)
+                                    }}
+                                    >+</div>
                                 </div>
                             </div>
                             <div className={cx('order-price')}>
                                 <div className={cx('order-price-total')}>{item.price * item.amount}đ</div>
                                 <div className={cx('order-price-del')}>
-                                    <RiDeleteBinLine />
+                                    <RiDeleteBinLine onClick={()=>props.deleteClick(item.name)}/>
                                 </div>
                             </div>
+                            <script >
+                                
+                            </script>
                         </div>
                     ))}
                 </div>

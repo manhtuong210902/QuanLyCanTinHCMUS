@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import classNames from 'classnames/bind';
 import styles from './FoodItem.module.scss';
 const cx = classNames.bind(styles);
-const index = (props) => {
+const index = (props,{handleClick}) => {
     const food = props.food;
     return (
         <div className={cx('foodItem')}>
@@ -15,7 +15,13 @@ const index = (props) => {
                     <span>{food.price}đ</span>
                 </div>
                 <div className={cx('btn-add')}>
-                    <button className={cx('food-add')}>+</button>
+                    <button className={cx('food-add')} onClick={()=>props.handleClick(
+                                                                {name:food.name,
+                                                                price:food.price,
+                                                                image:food.image,
+                                                                amount:1
+                                                                })}
+                    >+</button>
                 </div>
             </div>
         </div>
