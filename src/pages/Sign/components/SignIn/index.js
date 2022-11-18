@@ -4,7 +4,7 @@ import classNames from 'classnames/bind';
 import { useForm } from 'react-hook-form';
 
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import { auth, db } from '../../../../firebase/config';
 
 import {FcGoogle} from 'react-icons/fc';
@@ -28,29 +28,35 @@ function SignIn({ handleChangeSign }) {
         signInWithPopup(auth, provider)
             .then(async(result) => {
                 // This gives you a Google Access Token. You can use it to access the Google API.
-                const credential = GoogleAuthProvider.credentialFromResult(result);
+                const credential = await GoogleAuthProvider.credentialFromResult(result);
                 const token = credential.accessToken;
                 // The signed-in user info.
-                const user = result.user;
+                const user = await result.user;
                 // console.log(user);
-                try {
-                    const docRef = await addDoc(collection(db, 'users'), {
-                        email: user.email,
-                        uid: user.uid,
-                        admin: false,
-                    });
-                    console.log('Document written with ID: ', docRef.id);
-                } catch (e) {
-                    console.error('Error adding document: ', e);
+                // const q = query(collection(db, "users"), where("email", "==", user.email));
+                const q = await query(collection(db,("users")),where("email", "==", user.email));
+                const querySnapshot = await getDocs(q);
+                // console.log(querySnapshot.empty);
+                if(querySnapshot.empty) {
+                    try {
+                        const docRef = await addDoc(collection(db, 'users'), {
+                            name: user.displayName,
+                            email: user.email,
+                            uid: user.uid,
+                            admin: false,
+                        });
+                        console.log('Document written with ID: ', docRef.id);
+                    } catch (e) {
+                        console.error('Error adding document: ', e);
+                    }
                 }
-                // ...
             })
             .catch((error) => {
                 // Handle Errors here.
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 // The email of the user's account used.
-                const email = error.customData.email;
+                // const email = error.customData.email;
                 // The AuthCredential type that was used.
                 const credential = GoogleAuthProvider.credentialFromError(error);
                 // ...

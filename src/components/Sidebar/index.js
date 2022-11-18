@@ -7,7 +7,7 @@ import { BiLogOutCircle } from 'react-icons/bi';
 import { auth } from '../../firebase/config';
 import {onAuthStateChanged} from 'firebase/auth';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -48,20 +48,24 @@ function Sidebar() {
         },
     ];
 
+    const [isClickLogout, setIsClickLogout] = useState(false);
+
     const navigate = useNavigate();
 
     const handleClickLogout = (e) => {
         e.preventDefault();
+        setIsClickLogout(true);
         auth.signOut();
     }
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
-            if (!user) {
+            // console.log(user, isClickLogout);
+            if (isClickLogout) {
                 navigate('/sign');
             }
           });
-    }, [])
+    }, [isClickLogout, navigate])
 
     return (
         <div className={cx('sidebar')}>
@@ -72,13 +76,16 @@ function Sidebar() {
                     </NavLink>
                 ))}
             </div>
+
             <div className={cx('sidebar-setting')}>
                 {settingList.map((item, index) =>
                     item.name === 'Logout' ? (
-                        <NavLink key={index} onClick={handleClickLogout} className={cx('sidebar-setting-item')}>
+                        auth.currentUser ? (
+                            <NavLink key={index} onClick={handleClickLogout} className={cx('sidebar-setting-item')}>
                             <div className={cx('sidebar-setting-icon')}>{<item.icon />}</div>
                             <span>{item.name}</span>
                         </NavLink>
+                        ) : ''
                     ) : (
                         <NavLink key={index} to={item.path} className={cx('sidebar-setting-item')}>
                             <div className={cx('sidebar-setting-icon')}>{<item.icon />}</div>
