@@ -7,7 +7,6 @@ import Chart from './components/Chart';
 
 const cx = classNames.bind(styles);
 
-
 function Statistical() {
     let currentDay = new Date().toISOString().split('T')[0];
     const [typeStatistical, setTypeStatistical] = useState('sales');
@@ -53,7 +52,8 @@ function Statistical() {
                         }}
                     >
                         <option value="bar">Biểu đồ cột</option>
-                        <option value="pie">Biểu đồ Doughnut and Pie</option>
+                        <option value="pie">Biểu đồ tròn</option>
+                        <option value="doughnut">Biểu đồ Doughnut</option>
                         <option value="line">Biểu đồ đường</option>
                     </select>
                 </div>
@@ -78,8 +78,8 @@ function Statistical() {
                 </div>
             </div>
             <div className={cx('content')}>
-                <div className={cx('chart')}>
-                    <Chart typeStatistical={typeStatistical} typeChart={typeChart} date={{valueFrom, valueTo}}/>
+                <div className={cx('chart', { bar: typeChart === 'bar' || typeChart === 'line' })}>
+                    <Chart typeStatistical={typeStatistical} typeChart={typeChart} date={{ valueFrom, valueTo }} />
                 </div>
             </div>
         </div>
