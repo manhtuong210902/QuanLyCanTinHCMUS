@@ -5,22 +5,25 @@ import { useEffect, useState } from 'react';
 
 function SaleReport({ typeDate, value }) {
     const [orderDetails, setOderDetails] = useState([]);
+    const [total, setTotal] = useState(0);
 
     function getOrderDetails(value, typeDate) {
         let q;
         if (typeDate === 'day') {
-            console.log(value);
             q = query(collection(db, 'oderDetails'), where('date', '==', value));
         } else {
             q = query(collection(db, 'oderDetails'), where('date', '>=', value), where('date', '<=', value + '\uf8ff'));
         }
 
         onSnapshot(q, (snapshot) => {
+            let total = 0;
             let items = snapshot.docs.map((doc) => {
+                total += doc.data().totalMoney;
                 return {
                     ...doc.data(),
                 };
             });
+            setTotal(total);
             setOderDetails(items);
         });
     }
@@ -31,10 +34,13 @@ function SaleReport({ typeDate, value }) {
 
     return (
         <div>
+            <h4>
+                Doanh thu bán hàng theo {typeDate === 'day' ? 'ngày' : 'tháng'} {value}
+            </h4>
             <Table striped bordered hover size="sm">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th>Đơn hàng</th>
                         <th>Tên món ăn</th>
                         <th>Số lượng bán</th>
                         <th>Ngày bán</th>
@@ -45,7 +51,7 @@ function SaleReport({ typeDate, value }) {
                     {orderDetails.map((orderDetail, index) => {
                         return (
                             <tr key={index}>
-                                <td>1</td>
+                                <td>{index + 1}</td>
                                 <td>{orderDetail.nameFood}</td>
                                 <td>{orderDetail.quantity}</td>
                                 <td>{orderDetail.date}</td>
@@ -55,6 +61,7 @@ function SaleReport({ typeDate, value }) {
                     })}
                 </tbody>
             </Table>
+            <h4>Tổng doanh thu bán hàng {total}</h4>
         </div>
     );
 }

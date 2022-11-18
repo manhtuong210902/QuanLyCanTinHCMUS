@@ -1,5 +1,6 @@
 import classNames from 'classnames/bind';
 import { useState } from 'react';
+import InventoryReport from '../../components/InventoryReport';
 import SaleReport from '../../components/SaleReport';
 import styles from './Report.module.scss';
 
@@ -28,45 +29,51 @@ function Report() {
                     <option value="inventory">Hàng tồn kho</option>
                 </select>
 
-                <select
-                    name="typeDate"
-                    className={cx('select-item')}
-                    value={typeDate}
-                    onChange={(e) => {
-                        setTypeDate(e.target.value);
-                        if (e.target.value === 'day') {
-                            setValue(currentDay);
-                        } else {
-                            setValue(currentMonth);
-                        }
-                    }}
-                >
-                    <option value="day">Theo ngày</option>
-                    <option value="month">Theo Tháng</option>
-                </select>
+                {typeReport === 'sales' ? (
+                    <>
+                        <select
+                            name="typeDate"
+                            className={cx('select-item')}
+                            value={typeDate}
+                            onChange={(e) => {
+                                setTypeDate(e.target.value);
+                                if (e.target.value === 'day') {
+                                    setValue(currentDay);
+                                } else {
+                                    setValue(currentMonth);
+                                }
+                            }}
+                        >
+                            <option value="day">Theo ngày</option>
+                            <option value="month">Theo Tháng</option>
+                        </select>
 
-                {typeDate === 'day' ? (
-                    <input
-                        type="date"
-                        min="2022-11-18"
-                        value={value}
-                        onChange={(e) => {
-                            setValue(e.target.value);
-                        }}
-                    />
+                        {typeDate === 'day' ? (
+                            <input
+                                type="date"
+                                min="2022-11-18"
+                                value={value}
+                                onChange={(e) => {
+                                    setValue(e.target.value);
+                                }}
+                            />
+                        ) : (
+                            <input
+                                type="month"
+                                min="2022-11"
+                                value={value}
+                                onChange={(e) => {
+                                    setValue(e.target.value);
+                                }}
+                            />
+                        )}
+                    </>
                 ) : (
-                    <input
-                        type="month"
-                        min="2022-11"
-                        value={value}
-                        onChange={(e) => {
-                            setValue(e.target.value);
-                        }}
-                    />
+                    <></>
                 )}
             </div>
             <div className={cx('content')}>
-                {typeReport === 'sales' ? <SaleReport typeDate={typeDate} value={value} /> : <h1>Không có</h1>}
+                {typeReport === 'sales' ? <SaleReport typeDate={typeDate} value={value} /> : <InventoryReport />}
             </div>
         </div>
     );
