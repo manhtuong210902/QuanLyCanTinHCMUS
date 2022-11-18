@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { RiDeleteBinLine } from 'react-icons/ri';
 import classNames from 'classnames/bind';
 import styles from './Order.module.scss';
+import { collection, addDoc } from 'firebase/firestore';
+import { auth, db } from '../../firebase/config';
+import { getAuth } from 'firebase/auth';
 const cx = classNames.bind(styles);
 const Order = (props) => {
     
@@ -42,7 +45,15 @@ const Order = (props) => {
         setCurrentPrice(parseFloat(value));
     };
     
-    
+    const getCurrentDate=(separator='-')=>{
+
+        let newDate = new Date()
+        let date = newDate.getDate();
+        let month = newDate.getMonth() + 1;
+        let year = newDate.getFullYear();
+        
+        return `${year}${separator}${month<10?`0${month}`:`${month}`}${separator}${date}`
+    }
     
     return (
         <div className={cx('Order')} key={props.bridge}>
@@ -96,7 +107,36 @@ const Order = (props) => {
                         <input type="text" value={currentPrice} onChange={(e) => changeConst(e.target.value)} />
                     </div>
                 </div>
-                <button className={cx('order-btn')}>Đặt món</button>
+                <button className={cx('order-btn')} onClick={async(e)=>{
+                    e.preventDefault()
+                    try{
+                        const auth=getAuth()
+                        const user=auth.currentUser
+                        let docRef=await addDoc(collection(db,"bills"),{
+                            userID:user?user.uid:"",
+                            orderDate:getCurrentDate(),
+                            total:totalPrice(),
+                            typePament:true
+                        })
+                        const billID=docRef.id
+                        orders.forEach((order)=>{
+
+                            docRef= addDoc(collection(db,"oderDetails"),
+                                
+                                {
+                                    billID:billID,
+                                    date:getCurrentDate(),
+                                    nameFood:order.name,
+                                    quantity:order.amount,
+                                    totalMoney:order.price*order.amount
+                                }
+                            )
+                        })
+                    }
+                    catch(e) {
+                        console.log(e)
+                    }
+                }}>Đặt món</button>
             </div>
         </div>
     );
