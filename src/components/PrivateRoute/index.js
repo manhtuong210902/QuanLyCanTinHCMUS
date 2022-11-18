@@ -16,7 +16,6 @@ function PrivateRoute() {
     }
 
     const isAdmin = checkIsAdmin(auth.currentUser?.email);
-
     return auth.currentUser && isAdmin ? <Outlet /> : <Navigate to="/" />;
 }
 

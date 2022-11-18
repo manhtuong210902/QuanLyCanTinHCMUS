@@ -124,17 +124,13 @@ const Order = (props) => {
                             });
                             const billID = docRef.id;
                             orders.forEach((order) => {
-                                docRef = addDoc(
-                                    collection(db, 'orderDetails'),
-
-                                    {
-                                        billID: billID,
-                                        date: getCurrentDate(),
-                                        nameFood: order.name,
-                                        quantity: order.amount,
-                                        totalMoney: order.price * order.amount,
-                                    },
-                                );
+                                docRef = addDoc(collection(db, 'orderDetails'), {
+                                    billID: billID,
+                                    date: getCurrentDate(),
+                                    nameFood: order.name,
+                                    quantity: order.amount,
+                                    totalMoney: order.price * order.amount,
+                                });
                             });
                         } catch (e) {
                             console.log(e);
