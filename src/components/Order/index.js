@@ -121,7 +121,7 @@ const Order = (props) => {
                         const billID=docRef.id
                         orders.forEach((order)=>{
 
-                            docRef= addDoc(collection(db,"oderDetails"),
+                            docRef= addDoc(collection(db,"orderDetails"),
                                 
                                 {
                                     billID:billID,
