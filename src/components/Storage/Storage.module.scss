@@ -127,6 +127,7 @@
 
 .storage-new-image {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     border-bottom: 2px solid #ccc;
