@@ -5,6 +5,7 @@ import Sign from '../pages/Sign';
 import Report from '../pages/Report';
 import Storage from '../components/Storage';
 import Statistical from '../pages/Statistical';
+import Profile from '../pages/Profile';
 
 const publicRoutes = [
     { path: '/', component: Home },
@@ -16,6 +17,7 @@ const privateRoutes = [
     { path: '/storage', component: Storage },
     { path: '/Report', component: Report },
     { path: '/statistical', component: Statistical },
+    { path: '/profile', component: Profile },
 ];
 
 export { publicRoutes, privateRoutes };

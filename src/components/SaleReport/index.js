@@ -4,15 +4,19 @@ import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 
 function SaleReport({ typeDate, value }) {
-    const [orderDetails, setOderDetails] = useState([]);
+    const [orderDetails, setOrderDetails] = useState([]);
     const [total, setTotal] = useState(0);
 
     function getOrderDetails(value, typeDate) {
         let q;
         if (typeDate === 'day') {
-            q = query(collection(db, 'oderDetails'), where('date', '==', value));
+            q = query(collection(db, 'orderDetails'), where('date', '==', value));
         } else {
-            q = query(collection(db, 'oderDetails'), where('date', '>=', value), where('date', '<=', value + '\uf8ff'));
+            q = query(
+                collection(db, 'orderDetails'),
+                where('date', '>=', value),
+                where('date', '<=', value + '\uf8ff'),
+            );
         }
 
         onSnapshot(q, (snapshot) => {
@@ -24,7 +28,7 @@ function SaleReport({ typeDate, value }) {
                 };
             });
             setTotal(total);
-            setOderDetails(items);
+            setOrderDetails(items);
         });
     }
 
