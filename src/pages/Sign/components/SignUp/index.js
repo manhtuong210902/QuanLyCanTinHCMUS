@@ -24,12 +24,14 @@ function SignUp({ handleChangeSign }) {
 
     const onSubmit = (data) => {
         const { passwordRe, ...user } = data;
-        console.log(user);
+        const uName = user.name;
+        // console.log(user);
         createUserWithEmailAndPassword(auth, user.email, user.password)
             .then(async (userCredential) => {
                 const user = userCredential.user;
                 try {
                     const docRef = await addDoc(collection(db, 'users'), {
+                        name: uName,
                         email: user.email,
                         uid: user.uid,
                         admin: false,

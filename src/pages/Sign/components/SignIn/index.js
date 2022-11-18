@@ -7,7 +7,7 @@ import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 
 import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import { auth, db } from '../../../../firebase/config';
 
-import {FcGoogle} from 'react-icons/fc';
+import { FcGoogle } from 'react-icons/fc';
 
 const provider = new GoogleAuthProvider();
 
@@ -26,7 +26,7 @@ function SignIn({ handleChangeSign }) {
 
     const handleSignInWithGoogle = () => {
         signInWithPopup(auth, provider)
-            .then(async(result) => {
+            .then(async (result) => {
                 // This gives you a Google Access Token. You can use it to access the Google API.
                 const credential = await GoogleAuthProvider.credentialFromResult(result);
                 const token = credential.accessToken;
@@ -34,10 +34,10 @@ function SignIn({ handleChangeSign }) {
                 const user = await result.user;
                 // console.log(user);
                 // const q = query(collection(db, "users"), where("email", "==", user.email));
-                const q = await query(collection(db,("users")),where("email", "==", user.email));
+                const q = await query(collection(db, 'users'), where('email', '==', user.email));
                 const querySnapshot = await getDocs(q);
                 // console.log(querySnapshot.empty);
-                if(querySnapshot.empty) {
+                if (querySnapshot.empty) {
                     try {
                         const docRef = await addDoc(collection(db, 'users'), {
                             name: user.displayName,
@@ -50,6 +50,16 @@ function SignIn({ handleChangeSign }) {
                         console.error('Error adding document: ', e);
                     }
                 }
+                // setPersistence(auth, inMemoryPersistence)
+                //     .then(() => {
+                //         return signInWithRedirect(auth, provider);
+                //     })
+                //     .catch((error) => {
+                //         // Handle Errors here.
+                //         const errorCode = error.code;
+                //         const errorMessage = error.message;
+                //         console.log(errorCode, errorMessage);
+                //     });
             })
             .catch((error) => {
                 // Handle Errors here.
@@ -62,7 +72,7 @@ function SignIn({ handleChangeSign }) {
                 // ...
                 console.log(errorCode, errorMessage);
             });
-    }
+    };
 
     return (
         <div className={cx('login')}>
@@ -102,7 +112,7 @@ function SignIn({ handleChangeSign }) {
                             ĐĂNG NHẬP
                         </button>
                         <span onClick={handleSignInWithGoogle} className={cx('google')}>
-                            <FcGoogle/> <span>ĐĂNG NHẬP VỚI GOOGLE</span>
+                            <FcGoogle /> <span>ĐĂNG NHẬP VỚI GOOGLE</span>
                         </span>
                         <button onClick={handleChangeSign} className={cx('signup')}>
                             Bạn chưa có tài khoản?
