@@ -1,0 +1,40 @@
+.wrapper {
+    width: 100%;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile {
+    width: 400px;
+    padding: 20px 16px;
+    border-radius: var(--border-radius);
+    background-color: var(--bg-clr);
+    text-align: center;
+}
+
+.avatar {
+    width: 100px;
+    height: 100px;
+    object-position: center;
+    object-fit: cover;
+    margin-bottom: 26px;
+    border-radius: 50%;
+}
+
+.item {
+    background-color: var(--bg-gray-clr);
+    border-radius: var(--border-radius);
+    padding: 8px 16px;
+    margin-bottom: 16px;
+    p {
+        margin: 0;
+    }
+}
+
+.btnRecharge {
+    background-color: var(--primary-clr);
+    color: #fff;
+    cursor: pointer;
+}

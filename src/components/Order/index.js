@@ -3,7 +3,7 @@ import { RiDeleteBinLine } from 'react-icons/ri';
 import classNames from 'classnames/bind';
 import styles from './Order.module.scss';
 import { collection, addDoc } from 'firebase/firestore';
-import { auth, db } from '../../firebase/config';
+import { db } from '../../firebase/config';
 import { getAuth } from 'firebase/auth';
 const cx = classNames.bind(styles);
 const Order = (props) => {
@@ -25,11 +25,9 @@ const Order = (props) => {
     const [flag, changeFlag] = useState(0);
     //test
     useEffect(() => {
-        console.log('order-render');
         setCounter([{ id: 0, value: 1 }]);
-        console.log(props.bridge);
         setOrder(props.listSelect);
-        console.log('a', orders);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [orders, props.bridge]);
     //end test
     const totalPrice = () => {
@@ -98,6 +96,10 @@ const Order = (props) => {
                     ))}
                 </div>
                 <div className={cx('order-cal')}>
+                    <div className={cx('order-or')}>
+                        <span>Số bàn: </span>
+                        <input type="text" value={numberTable} onChange={(e) => changeTableNumber(e.target.value)} />
+                    </div>
                     <div className={cx('order-price-total')}>
                         <span>Tổng tiền: </span>
                         <span>{totalPrice()} đ</span>
@@ -122,17 +124,13 @@ const Order = (props) => {
                             });
                             const billID = docRef.id;
                             orders.forEach((order) => {
-                                docRef = addDoc(
-                                    collection(db, 'oderDetails'),
-
-                                    {
-                                        billID: billID,
-                                        date: getCurrentDate(),
-                                        nameFood: order.name,
-                                        quantity: order.amount,
-                                        totalMoney: order.price * order.amount,
-                                    },
-                                );
+                                docRef = addDoc(collection(db, 'orderDetails'), {
+                                    billID: billID,
+                                    date: getCurrentDate(),
+                                    nameFood: order.name,
+                                    quantity: order.amount,
+                                    totalMoney: order.price * order.amount,
+                                });
                             });
                         } catch (e) {
                             console.log(e);

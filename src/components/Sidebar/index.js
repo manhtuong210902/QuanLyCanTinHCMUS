@@ -1,8 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './Sidebar.module.scss';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { AiOutlineSetting } from 'react-icons/ai';
-import { BiLogOutCircle } from 'react-icons/bi';
+import { BiLogOutCircle, BiUserCircle } from 'react-icons/bi';
 
 import { auth, db } from '../../firebase/config';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -43,9 +42,9 @@ function Sidebar() {
 
     const settingList = [
         {
-            name: 'Cài đặt',
-            path: '/setting',
-            icon: AiOutlineSetting,
+            name: 'Cá nhân',
+            path: '/profile',
+            icon: BiUserCircle,
             admin: false,
         },
         {
@@ -114,26 +113,22 @@ function Sidebar() {
                     ),
                 )}
             </div>
-            {/* <NavLink key={index} onClick={handleClickLogout} className={cx('sidebar-setting-item')}>
-                                <div className={cx('sidebar-setting-icon')}>{<item.icon />}</div>
-                                <span>{item.name}</span>
-                            </NavLink> */}
             <div className={cx('sidebar-setting')}>
                 {settingList.map((item, index) =>
-                    item.name === 'Logout' ? (
-                        auth.currentUser ? (
+                    auth.currentUser ? (
+                        item.name === 'Logout' ? (
                             <NavLink key={index} onClick={handleClickLogout} className={cx('sidebar-setting-item')}>
                                 <div className={cx('sidebar-setting-icon')}>{<item.icon />}</div>
                                 <span>{item.name}</span>
                             </NavLink>
                         ) : (
-                            ''
+                            <NavLink key={index} to={item.path} className={cx('sidebar-setting-item')}>
+                                <div className={cx('sidebar-setting-icon')}>{<item.icon />}</div>
+                                <span>{item.name}</span>
+                            </NavLink>
                         )
                     ) : (
-                        <NavLink key={index} to={item.path} className={cx('sidebar-setting-item')}>
-                            <div className={cx('sidebar-setting-icon')}>{<item.icon />}</div>
-                            <span>{item.name}</span>
-                        </NavLink>
+                        ''
                     ),
                 )}
             </div>
