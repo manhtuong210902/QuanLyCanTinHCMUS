@@ -38,7 +38,7 @@ function Header() {
             <div className={cx('header-sidebar')}>
                 {optionList.map((item) =>
                     user && item.name === 'Login' ? (
-                        <div className={cx('profile-user')}>
+                        <div key={item.path} className={cx('profile-user')}>
                             <img
                                 src={
                                     user.photoURL

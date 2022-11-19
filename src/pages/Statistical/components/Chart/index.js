@@ -22,7 +22,7 @@ import { useEffect } from 'react';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, PointElement, LineElement, Title, Tooltip, Legend);
 
-function Chart({ typeStatistical, typeChart, date }) {
+function Chart({ typeStatistical, typeChart, date, listDate }) {
     const options = {
         plugins: {
             legend: {
@@ -66,22 +66,52 @@ function Chart({ typeStatistical, typeChart, date }) {
             });
             return data;
         };
+        const getBills = async () => {
+            const q = query(
+                collection(db, 'bills'),
+                where('orderDate', '>=', date.valueFrom),
+                where('orderDate', '<=', date.valueTo),
+                where('typePament', '==', true)
+            );
+            const querySnapshot = await getDocs(q);
+            const data = [];
+            querySnapshot.forEach((doc) => {
+                data.push(doc.data());
+            });
+            return data;
+        }
 
-        getFoods().then((dataLabels) => {
-            setLabels(dataLabels);
-            getOrderDetails().then((data) => {
-                const dataForEachLabel = new Array(dataLabels.length).fill(0);
-                dataLabels.forEach((label, index) => {
-                    data.forEach((bill) => {
-                        if (label === bill.nameFood) {
-                            dataForEachLabel[index] += bill.totalMoney;
+        if(typeStatistical === 'foods') {
+            getFoods().then((dataLabels) => {
+                setLabels(dataLabels);
+                getOrderDetails().then((data) => {
+                    const dataForEachLabel = new Array(dataLabels.length).fill(0);
+                    dataLabels.forEach((label, index) => {
+                        data.forEach((bill) => {
+                            if (label === bill.nameFood) {
+                                dataForEachLabel[index] += bill.totalMoney;
+                            }
+                        });
+                    });
+                    setDataChart(dataForEachLabel);
+                });
+            });
+        } else {
+            setLabels(listDate);
+            getBills().then(bills => {
+                const dataForEachLabel = new Array(listDate.length).fill(0);
+                listDate.forEach((date, index) => {
+                    bills.forEach((bill) => {
+                        if (date === bill.orderDate) {
+                            dataForEachLabel[index] += bill.total;
                         }
                     });
                 });
                 setDataChart(dataForEachLabel);
-            });
-        });
-    }, [date]);
+            })
+        }
+        
+    }, [date, typeStatistical]);
 
     const data = {
         labels,

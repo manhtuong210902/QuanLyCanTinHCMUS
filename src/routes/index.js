@@ -6,11 +6,11 @@ import Report from '../pages/Report';
 import Storage from '../components/Storage';
 import Statistical from '../pages/Statistical';
 import Profile from '../pages/Profile';
-import Table from '../pages/Table/Table';
+import Employee from '../pages/Employee';
+
 const publicRoutes = [
     { path: '/', component: Home },
     { path: '/sign', component: Sign, layout: HeaderOnly },
-    { path: '/table', component: Table},
 ];
 
 const privateRoutes = [
@@ -19,6 +19,7 @@ const privateRoutes = [
     { path: '/Report', component: Report },
     { path: '/statistical', component: Statistical },
     { path: '/profile', component: Profile },
+    { path: '/Employee', component: Employee },
 ];
 
 export { publicRoutes, privateRoutes };
