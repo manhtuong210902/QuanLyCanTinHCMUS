@@ -34,6 +34,8 @@ const Order = (props) => {
         console.log('order-render')
         props.changeDesk('...')
         props.changeTime('...')
+        props.changeData('')
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [orders, props.bridge,props.listSelect,props.check,props.send]);
     //end test

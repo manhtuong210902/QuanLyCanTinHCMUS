@@ -83,7 +83,6 @@ const Bill = (props) => {
                             }
                             
                             )
-                        props.changeData('')
 
                         }}>OK</button>
                     </div>
