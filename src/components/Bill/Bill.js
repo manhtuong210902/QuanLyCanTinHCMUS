@@ -1,10 +1,14 @@
 import classNames from 'classnames/bind';
 import { prodErrorMap } from 'firebase/auth';
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from '../../firebase/config';
+import { getAuth } from 'firebase/auth';
 import styles from './bill.module.scss';
 const cx = classNames.bind(styles);
 
 const Bill = (props) => {
     console.log(props.bill);
+    console.log(props.data.bills)
     return (
         <div className={cx('modal-page')}>
             <div className={cx('bill')}>
@@ -65,10 +69,18 @@ const Bill = (props) => {
                             props.change(false)
                             props.changeModal(false)
                         }}>back</button>
-                        <button className={cx('btn')} onClick={()=>{
+                        <button className={cx('btn')} onClick={async()=>{
                             props.change(false)
                             props.changeModal(false)
                             props.changeList([])
+                            let docRef = await addDoc(collection(db, 'bills'),props.data.bill);
+                            const billID = docRef.id;
+                            props.bill.data.details.map((order)=>{
+                                docRef = addDoc(collection(db, 'orderDetails'), {
+                                    billID: billID,
+                                    ...order
+                                });
+                            })
                         }}>OK</button>
                     </div>
                 </div>

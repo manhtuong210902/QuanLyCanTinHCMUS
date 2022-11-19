@@ -15,6 +15,8 @@ const Home = () => {
     const [time,selectTime]=useState(0);
     const [modal,setModal]=useState();
     const [bill,setBill]=useState();
+    const [send,setSend]=useState();
+    const [data,setData]=useState();
     const handleClick = (obj) => {
         let p = true;
         for (let i = 0; i < listSelect.length; i++) {
@@ -31,6 +33,12 @@ const Home = () => {
     const change=(b)=>{
         console.log('h',b)
         click(b)
+    }
+    const changeData=(a)=>{
+        setData(a)
+    }
+    const changeSend=(a)=>{
+        setSend(a)
     }
     const deleteClick = (n) => {
         // listSelect=listSelect.filter((item)=>item.name!==n)
@@ -68,7 +76,7 @@ const Home = () => {
     useEffect(() => {
         console.log('home-render');
     }, [listSelect, bridge,check,desk,time]);
-
+    
     return (
         <div className={cx('wrap')}>
 
@@ -89,11 +97,16 @@ const Home = () => {
                     changeTime={changeTime}
                     changeModal={changeModal}
                     changeBill={changeBill}
+                    send={send}
+                    changeData={changeData}
+                    changeSend={changeSend}
                     />
             </div>
             {modal
                 &&<Bill 
+                data={data}
                 bill={bill} 
+                changeSend={changeSend}
                 changeModal={changeModal} 
                 change={change} 
                 changeList={changeList}

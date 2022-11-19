@@ -31,10 +31,12 @@ const Order = (props) => {
         setCounter([{ id: 0, value: 1 }]);
         setOrder(props.listSelect);
         tick(props.check)
+        console.log('order-render')
         props.changeDesk('...')
         props.changeTime('...')
+        props.changeData('')
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [orders, props.bridge,props.listSelect,props.check]);
+    }, [orders, props.bridge,props.listSelect,props.check,props.send]);
     //end test
     const totalPrice = () => {
         return orders.reduce((sum, order) => sum + order.price * order.amount, 0);
@@ -44,7 +46,33 @@ const Order = (props) => {
     const changeConst = (value) => {
         setCurrentPrice(parseFloat(value));
     };
-
+    const sendData= async (e) => {
+            e.preventDefault();
+            try {
+                const auth = getAuth();
+                const user = auth.currentUser;
+                let docRef = await addDoc(collection(db, 'bills'), {
+                    userID: user ? user.uid : '',
+                    orderDate: getCurrentDate(),
+                    total: totalPrice(),
+                    typePament: true,
+                    time:props.time,
+                    table:props.desk
+                });
+                const billID = docRef.id;
+                orders.forEach((order) => {
+                    docRef = addDoc(collection(db, 'orderDetails'), {
+                        billID: billID,
+                        date: getCurrentDate(),
+                        nameFood: order.name,
+                        quantity: order.amount,
+                        totalMoney: order.price * order.amount,
+                    });
+                });
+            } catch (e) {
+                console.log(e);
+            }
+        }
     const getCurrentDate = (separator = '-') => {
         let newDate = new Date();
         let date = newDate.getDate();
@@ -160,6 +188,7 @@ const Order = (props) => {
                     onClick={()=>{
                         const auth = getAuth();
                         const user = auth.currentUser;
+
                         props.changeModal(true)
                         props.changeBill({
                             userName: user ? user.displayName : '',
@@ -169,6 +198,25 @@ const Order = (props) => {
                             timeEnd:addTimes(props.time,"00:30"),
                             table:props.desk,
                             orders:orders
+                        })
+                        props.changeData({
+                            bills:{
+                                userID: user ? user.uid : '',
+                                orderDate: getCurrentDate(),
+                                total: totalPrice(),
+                                typePament: true,
+                                time:props.time,
+                                table:props.desk
+                            },
+                            details:orders.map((order)=>{
+                                return {
+                                date: getCurrentDate(),
+                                nameFood: order.name,
+                                quantity: order.amount,
+                                totalMoney: order.price * order.amount
+                                }
+                            })
+   
                         })
                     }}
                     // onClick={async (e) => {
