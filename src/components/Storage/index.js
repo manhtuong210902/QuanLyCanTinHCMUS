@@ -7,6 +7,7 @@ import styles from './Storage.module.scss';
 const cx = classNames.bind(styles);
 const Storage = () => {
     const [storages, setStorage] = useState([]);
+    const [listFood, setListFood] = useState([]);
     const [img, setImg] = useState('');
     const [imgUrl, setImgUrl] = useState();
     const [foodName, setFoodName] = useState('');
@@ -16,14 +17,42 @@ const Storage = () => {
 
     //read data
     useEffect(() => {
-        const unSubscribe = onSnapshot(
+        const getFastFoods = onSnapshot(
+            collection(db, 'foods'),
+            (snapShot) => {
+                let list = [];
+                snapShot.docs.forEach((doc) => {
+                    list.push({ id: doc.id, ...doc.data() });
+                });
+                list = list.filter((item) => item.type === 'fast food');
+                setListFood(list);
+                console.log('');
+            },
+            (error) => {
+                console.log(error);
+            },
+        );
+
+        const getStorageFoods = onSnapshot(
             collection(db, 'storage'),
             (snapShot) => {
                 let list = [];
                 snapShot.docs.forEach((doc) => {
                     list.push({ id: doc.id, ...doc.data() });
                 });
+                list = list.map((item) => {
+                    let i = 0;
+                    for (; i < listFood.length; i++) if (listFood[i].id === item.foodId) break;
+                    return {
+                        ...item,
+                        image: listFood[i].image,
+                        name: listFood[i].name,
+                        price: listFood[i].price,
+                        priceImport: listFood[i].priceImport,
+                    };
+                });
                 setStorage(list);
+                console.log('');
             },
             (error) => {
                 console.log(error);
@@ -31,11 +60,12 @@ const Storage = () => {
         );
 
         return () => {
-            unSubscribe();
+            getFastFoods();
+            getStorageFoods();
         };
-    }, []);
+    }, [listFood, storages]);
 
-    //write data
+    //get url image
     useEffect(() => {
         const uploadFile = () => {
             const storageRef = ref(storage, img.name);
@@ -130,10 +160,10 @@ const Storage = () => {
                     <div className={cx('storage-list')}>
                         {storages.map((item, index) => (
                             <div className={cx('storage-item')} key={index}>
-                                <img src={item.img} alt="" />
+                                <img src={item.image} alt="" />
                                 <div className={cx('storage-info')}>
                                     <span>{item.name}</span>
-                                    <span>Số lượng: {item.amount}</span>
+                                    <span>Số lượng: {item.amont}</span>
                                 </div>
                                 <div className={cx('storage-price')}>
                                     <div className={cx('storage-price-total')}> Giá bán: {item.price}đ</div>

@@ -7,7 +7,7 @@ const index = (props, { handleClick }) => {
     const food = props.food;
     return (
         <div className={cx('foodItem')}>
-            <img src={food.img} alt="" />
+            <img src={food.image} alt="" />
             <div className={cx('food-info')}>
                 <label className={cx('food-label')}>{food.name}</label>
                 <div className={cx('food-price')}>
@@ -17,7 +17,7 @@ const index = (props, { handleClick }) => {
                     <button
                         className={cx('food-add')}
                         onClick={() =>
-                            props.handleClick({ name: food.name, price: food.price, image: food.img, amount: 1 })
+                            props.handleClick({ name: food.name, price: food.price, image: food.image, amount: 1 })
                         }
                     >
                         +
