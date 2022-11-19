@@ -1,0 +1,21 @@
+.btn-print {
+    padding: 5px 16px;
+    background-color: var(--primary-clr);
+    cursor: pointer;
+    color: #fff;
+    border-radius: var(--border-radius);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0;
+    h4 {
+        font-size: 20px;
+    }
+}
+
+.result {
+    font-size: 16px;
+}
