@@ -4,6 +4,7 @@ import Order from '../../components/Order';
 
 import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
+import Bill from '../../components/Bill/Bill';
 const cx = classNames.bind(styles);
 
 const Home = () => {
@@ -12,6 +13,8 @@ const Home = () => {
     const [bridge, setBridge] = useState(0);
     const [check,click]=useState(0);
     const [time,selectTime]=useState(0);
+    const [modal,setModal]=useState();
+    const [bill,setBill]=useState();
     const handleClick = (obj) => {
         let p = true;
         for (let i = 0; i < listSelect.length; i++) {
@@ -49,19 +52,53 @@ const Home = () => {
     const changeDesk=(number)=>{
         setDesk(number)
     }
+    const changeList=(a)=>{
+        updateList(a)
+    }
     const changeTime=(a)=>{
         selectTime(a)
         console.log(time)
+    }
+    const changeBill=(a)=>{
+        setBill(a)
+    }
+    const changeModal=(a)=>{
+        setModal(a)
     }
     useEffect(() => {
         console.log('home-render');
     }, [listSelect, bridge,check,desk,time]);
 
     return (
-        <div className={cx('Home')}>
-            <Content handleClick={handleClick} key={bridge} check={check} changeDesk={changeDesk} changeTime={changeTime}/>
+        <div className={cx('wrap')}>
 
-            <Order listSelect={listSelect} bridge={bridge} deleteClick={deleteClick} change={change} desk={desk} time={time}/>
+            <div className={cx('Home')}>
+                <Content handleClick={handleClick} 
+                        key={bridge} 
+                        check={check} 
+                        changeDesk={changeDesk} 
+                        changeTime={changeTime}/>
+
+                <Order listSelect={listSelect} 
+                    bridge={bridge} 
+                    deleteClick={deleteClick} 
+                    change={change} 
+                    desk={desk} 
+                    time={time}
+                    changeDesk={changeDesk} 
+                    changeTime={changeTime}
+                    changeModal={changeModal}
+                    changeBill={changeBill}
+                    />
+            </div>
+            {modal
+                &&<Bill 
+                bill={bill} 
+                changeModal={changeModal} 
+                change={change} 
+                changeList={changeList}
+                />
+            }
         </div>
     );
 };

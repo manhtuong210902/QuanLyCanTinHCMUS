@@ -10,9 +10,9 @@ const cx = classNames.bind(styles);
 const Order = (props) => {
     const [orders, setOrder] = useState([]);
     const [check,tick]=useState()
-    const [numberTable, setNumberTable] = useState(0);
     const [currentPrice, setCurrentPrice] = useState(0);
     const [counter, setCounter] = useState([{ id: 0, value: 1 }]);
+
     const handleDescease = (val, id) => {
         counter[id] === undefined
             ? counter.push({ id: id, value: val - 1 >= 0 ? val - 1 : 0 })
@@ -20,7 +20,9 @@ const Order = (props) => {
         setCounter(counter);
     };
     const handleIncease = (val, id) => {
-        counter[id] === undefined ? counter.push({ id: id, value: val + 1 }) : (counter[id].value = val + 1);
+        counter[id] === undefined 
+        ? counter.push({ id: id, value: val + 1 }) 
+        : (counter[id].value = val + 1);
         setCounter(counter);
     };
     const [flag, changeFlag] = useState(0);
@@ -28,16 +30,16 @@ const Order = (props) => {
     useEffect(() => {
         setCounter([{ id: 0, value: 1 }]);
         setOrder(props.listSelect);
+        tick(props.check)
+        props.changeDesk('...')
+        props.changeTime('...')
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [orders, props.bridge]);
+    }, [orders, props.bridge,props.listSelect,props.check]);
     //end test
     const totalPrice = () => {
         return orders.reduce((sum, order) => sum + order.price * order.amount, 0);
     };
 
-    const changeTableNumber = (value) => {
-        setNumberTable(value);
-    };
 
     const changeConst = (value) => {
         setCurrentPrice(parseFloat(value));
@@ -55,15 +57,14 @@ const Order = (props) => {
     const checkValue=(e)=>{
         tick(e.target.checked)
         props.change(e.target.checked)
-        console.log('checkbox checked:', check);
     }
 
     function addTimes (startTime, endTime) {
-        var times = [ 0, 0 ]
-        var max = times.length
+        let times = [ 0, 0 ]
+        let max = times.length
       
-        var a = (startTime || '').split(':')
-        var b = (endTime || '').split(':')
+        let a = (startTime || '').split(':')
+        let b = (endTime || '').split(':')
       
         // normalize time values
         for (var i = 0; i < max; i++) {
@@ -72,16 +73,16 @@ const Order = (props) => {
         }
       
         // store time values
-        for (var i = 0; i < max; i++) {
+        for (let i = 0; i < max; i++) {
           times[i] = a[i] + b[i]
         }
       
-        var hours = times[0]
-        var minutes = times[1]
+        let hours = times[0]
+        let minutes = times[1]
       
       
         if (minutes >= 60) {
-          var h = (minutes / 60) << 0
+          let h = (minutes / 60) << 0
           hours += h
           minutes -= 60 * h
         }
@@ -137,7 +138,7 @@ const Order = (props) => {
                 <div className={cx('order-cal')}>
                     <div className={cx('order-or')}>
                         <div style={{display:"flex",flexDirection:"row"}}>
-                            <input type="checkbox" className={cx('tacheck')} 
+                            <input type="checkbox" className={cx('tacheck')} checked={check}
                                 onChange={(e)=>checkValue(e)} 
                                 name="table"  value="table"/>
                             <label>Đặt bàn</label>
@@ -156,33 +157,47 @@ const Order = (props) => {
                 </div>
                 <button
                     className={cx('order-btn')}
-                    onClick={async (e) => {
-                        e.preventDefault();
-                        try {
-                            const auth = getAuth();
-                            const user = auth.currentUser;
-                            let docRef = await addDoc(collection(db, 'bills'), {
-                                userID: user ? user.uid : '',
-                                orderDate: getCurrentDate(),
-                                total: totalPrice(),
-                                typePament: true,
-                                time:props.time,
-                                table:props.table
-                            });
-                            const billID = docRef.id;
-                            orders.forEach((order) => {
-                                docRef = addDoc(collection(db, 'orderDetails'), {
-                                    billID: billID,
-                                    date: getCurrentDate(),
-                                    nameFood: order.name,
-                                    quantity: order.amount,
-                                    totalMoney: order.price * order.amount,
-                                });
-                            });
-                        } catch (e) {
-                            console.log(e);
-                        }
+                    onClick={()=>{
+                        const auth = getAuth();
+                        const user = auth.currentUser;
+                        props.changeModal(true)
+                        props.changeBill({
+                            userName: user ? user.displayName : '',
+                            orderDate: getCurrentDate(),
+                            total: totalPrice(),
+                            time:props.time,
+                            timeEnd:addTimes(props.time,"00:30"),
+                            table:props.desk,
+                            orders:orders
+                        })
                     }}
+                    // onClick={async (e) => {
+                    //     e.preventDefault();
+                    //     try {
+                    //         const auth = getAuth();
+                    //         const user = auth.currentUser;
+                    //         let docRef = await addDoc(collection(db, 'bills'), {
+                    //             userID: user ? user.uid : '',
+                    //             orderDate: getCurrentDate(),
+                    //             total: totalPrice(),
+                    //             typePament: true,
+                    //             time:props.time,
+                    //             table:props.desk
+                    //         });
+                    //         const billID = docRef.id;
+                    //         orders.forEach((order) => {
+                    //             docRef = addDoc(collection(db, 'orderDetails'), {
+                    //                 billID: billID,
+                    //                 date: getCurrentDate(),
+                    //                 nameFood: order.name,
+                    //                 quantity: order.amount,
+                    //                 totalMoney: order.price * order.amount,
+                    //             });
+                    //         });
+                    //     } catch (e) {
+                    //         console.log(e);
+                    //     }
+                    // }}
                 >
                     Đặt món
                 </button>
