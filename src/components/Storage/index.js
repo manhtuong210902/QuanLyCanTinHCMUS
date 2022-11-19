@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import { collection, onSnapshot, addDoc } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, setDoc, doc } from 'firebase/firestore';
 import { storage, db } from '../../firebase/config';
 import classNames from 'classnames/bind';
 import styles from './Storage.module.scss';
 const cx = classNames.bind(styles);
 const Storage = () => {
     const [storages, setStorage] = useState([]);
-    const [img, setImg] = useState(null);
+    const [img, setImg] = useState('');
     const [imgUrl, setImgUrl] = useState();
     const [foodName, setFoodName] = useState('');
     const [foodPrice, setFoodPrice] = useState('');
@@ -48,7 +48,6 @@ const Storage = () => {
                 () => {
                     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                         setImgUrl(downloadURL);
-                        console.log(downloadURL);
                     });
                 },
             );
@@ -63,15 +62,14 @@ const Storage = () => {
         };
     }, [img]);
 
-    // const uploadImg = () => {
-    //     if (img === null) return;
-    //     const imgRef = ref(storage, `images/${img.name}`);
-    //     uploadBytes(imgRef, img).then((snapshot) => {
-    //         getDownloadURL(snapshot.ref).then((url) => {
-    //             setImgUrl(url);
-    //         });
-    //     });
-    // };
+    const checkInArr = (arr, tmp) => {
+        for (let i = 0; Array.isArray(arr) && i < arr.length; i++) {
+            if (arr[i].name === tmp.name) {
+                return i;
+            }
+        }
+        return -1;
+    };
 
     const handlePreviewImage = (e) => {
         const imagePath = e.target.files[0];
@@ -92,7 +90,19 @@ const Storage = () => {
         };
 
         try {
-            addDoc(collection(db, 'storage'), data);
+            const pos = checkInArr(storages, data);
+            if (pos === -1) addDoc(collection(db, 'storage'), data);
+            else {
+                const value = storages[pos].amount;
+                const id = storages[pos].id;
+                storages[pos] = data;
+                storages[pos].amount += value;
+                storages[pos].id = id;
+                setStorage(storages);
+                console.log(storages[pos].id);
+
+                setDoc(doc(db, 'storage', storages[pos].id), storages[pos]);
+            }
         } catch (err) {
             console.log(err);
         }
@@ -136,7 +146,7 @@ const Storage = () => {
                 <div className={cx('storage-new-food')}>
                     <h4>Thêm sản phẩm</h4>
                     <div className={cx('storage-new-image')}>
-                        <img src={img === null ? '/images/img_upload.png' : img.preview} alt="" />
+                        <img src={img === '' ? '/images/img_upload.png' : img.preview} alt="" />
                         <input
                             type="file"
                             onChange={(e) => {
