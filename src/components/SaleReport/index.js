@@ -7,6 +7,40 @@ function SaleReport({ typeDate, value }) {
     const [orderDetails, setOrderDetails] = useState([]);
     const [total, setTotal] = useState(0);
 
+    function groupByDateAndName(items) {
+        var helper = {};
+        var result = items.reduce(function (r, o) {
+            var key = o.nameFood + '-' + o.date;
+
+            if (!helper[key]) {
+                helper[key] = Object.assign({}, o); // create a copy of o
+                r.push(helper[key]);
+            } else {
+                helper[key].quantity += o.quantity;
+                helper[key].totalMoney += o.totalMoney;
+            }
+
+            return r;
+        }, []);
+
+        return result;
+    }
+
+    function groupByName(items) {
+        var finalArr = items.reduce((m, o) => {
+            var found = m.find((p) => p.nameFood === o.nameFood);
+            if (found) {
+                found.quantity += o.quantity;
+                found.totalMoney += o.totalMoney;
+            } else {
+                m.push(o);
+            }
+            return m;
+        }, []);
+
+        return finalArr;
+    }
+
     function getOrderDetails(value, typeDate) {
         let q;
         if (typeDate === 'day') {
@@ -28,12 +62,17 @@ function SaleReport({ typeDate, value }) {
                 };
             });
             setTotal(total);
-            setOrderDetails(items);
+            if (typeDate === 'day') {
+                setOrderDetails(groupByName(items));
+            } else {
+                setOrderDetails(groupByDateAndName(items));
+            }
         });
     }
 
     useEffect(() => {
         getOrderDetails(value, typeDate);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [value, typeDate]);
 
     return (
