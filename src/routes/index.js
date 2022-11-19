@@ -6,10 +6,11 @@ import Report from '../pages/Report';
 import Storage from '../components/Storage';
 import Statistical from '../pages/Statistical';
 import Profile from '../pages/Profile';
-
+import Table from '../pages/Table/Table';
 const publicRoutes = [
     { path: '/', component: Home },
     { path: '/sign', component: Sign, layout: HeaderOnly },
+    { path: '/table', component: Table},
 ];
 
 const privateRoutes = [
