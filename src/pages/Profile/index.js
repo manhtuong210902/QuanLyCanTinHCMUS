@@ -46,19 +46,11 @@ function Profile() {
             {isAdmin ? (
                 <div className={cx('wrapper')}>
                     <div className={cx('profile')}>
-                        <img
-                            src={
-                                currentUser.photoURL
-                                    ? currentUser.photoURL
-                                    : 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png'
-                            }
-                            alt=""
-                            className={cx('avatar')}
-                        />
+                        <img src={currentUser.image} alt="" className={cx('avatar')} />
                         <div className={cx('item')}>
                             <p>
                                 <b>Tên nhân viên: </b>
-                                {currentUser.displayName ? currentUser.displayName : currentUser.name}
+                                {currentUser.name}
                             </p>
                         </div>
                         <div className={cx('item')}>
@@ -72,19 +64,11 @@ function Profile() {
             ) : (
                 <div className={cx('wrapper')}>
                     <div className={cx('profile')}>
-                        <img
-                            src={
-                                currentUser.photoURL
-                                    ? currentUser.photoURL
-                                    : 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png'
-                            }
-                            alt=""
-                            className={cx('avatar')}
-                        />
+                        <img src={currentUser.image} alt="" className={cx('avatar')} />
                         <div className={cx('item')}>
                             <p>
                                 <b>Tên: </b>
-                                {currentUser.displayName ? currentUser.displayName : currentUser.name}
+                                {currentUser.name}
                             </p>
                         </div>
                         <div className={cx('item')}>
@@ -95,7 +79,8 @@ function Profile() {
                         </div>
                         <div className={cx('item')}>
                             <p>
-                                <b>Ví: </b>0đ
+                                <b>Ví: </b>
+                                {currentUser.money}
                             </p>
                         </div>
                         <div className={cx('item', 'btnRecharge')}>
