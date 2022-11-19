@@ -106,6 +106,7 @@ const Home = () => {
                 &&<Bill 
                 data={data}
                 bill={bill} 
+                changeData={changeData}
                 changeSend={changeSend}
                 changeModal={changeModal} 
                 change={change} 

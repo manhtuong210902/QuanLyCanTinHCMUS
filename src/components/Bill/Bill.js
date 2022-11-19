@@ -73,14 +73,18 @@ const Bill = (props) => {
                             props.change(false)
                             props.changeModal(false)
                             props.changeList([])
-                            let docRef = await addDoc(collection(db, 'bills'),props.data.bill);
+                            let docRef = await addDoc(collection(db, 'bills'),props.data.bills);
                             const billID = docRef.id;
-                            props.bill.data.details.map((order)=>{
+                            props.data.details.map((order)=>{
                                 docRef = addDoc(collection(db, 'orderDetails'), {
                                     billID: billID,
                                     ...order
                                 });
-                            })
+                            }
+                            
+                            )
+                        props.changeData('')
+
                         }}>OK</button>
                     </div>
                 </div>
