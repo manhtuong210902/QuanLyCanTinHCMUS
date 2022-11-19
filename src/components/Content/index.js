@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import FoodItem from '../FoodItem';
 import classNames from 'classnames/bind';
 import styles from './Content.module.scss';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot, query, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/config';
 import Table from '../../pages/Table/Table';
 
@@ -182,23 +182,19 @@ const Content = (props) => {
     // ];
 
     useEffect(() => {
-        const unSubscribe = onSnapshot(
-            collection(db, 'foods'),
-            (snapShot) => {
-                let list = [];
-                snapShot.docs.forEach((doc) => {
-                    list.push({ id: doc.id, ...doc.data() });
-                });
-                setFoods(list);
-            },
-            (error) => {
-                console.log(error);
-            },
-        );
-
-        return () => {
-            unSubscribe();
+        const getFoods = async () => {
+            const q = query(collection(db, 'foods'));
+            const querySnapshot = await getDocs(q);
+            const data = [];
+            querySnapshot.forEach((doc) => {
+                data.push(doc.data());
+            });
+            return data;
         };
+
+        getFoods().then((food) => {
+            setFoods(food);
+        });
     }, []);
 
     return (

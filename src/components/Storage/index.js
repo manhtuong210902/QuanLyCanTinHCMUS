@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import { collection, onSnapshot, addDoc, setDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, setDoc, doc, query, getDocs, where } from 'firebase/firestore';
 import { storage, db } from '../../firebase/config';
 import classNames from 'classnames/bind';
 import styles from './Storage.module.scss';
 const cx = classNames.bind(styles);
 const Storage = () => {
     const [storages, setStorage] = useState([]);
-    const [listFood, setListFood] = useState([]);
     const [img, setImg] = useState('');
     const [imgUrl, setImgUrl] = useState();
     const [foodName, setFoodName] = useState('');
@@ -17,53 +16,47 @@ const Storage = () => {
 
     //read data
     useEffect(() => {
-        const getFastFoods = onSnapshot(
-            collection(db, 'foods'),
-            (snapShot) => {
-                let list = [];
-                snapShot.docs.forEach((doc) => {
-                    list.push({ id: doc.id, ...doc.data() });
-                });
-                list = list.filter((item) => item.type === 'fast food');
-                setListFood(list);
-                console.log('');
-            },
-            (error) => {
-                console.log(error);
-            },
-        );
-
-        const getStorageFoods = onSnapshot(
-            collection(db, 'storage'),
-            (snapShot) => {
-                let list = [];
-                snapShot.docs.forEach((doc) => {
-                    list.push({ id: doc.id, ...doc.data() });
-                });
-                list = list.map((item) => {
-                    let i = 0;
-                    for (; i < listFood.length; i++) if (listFood[i].id === item.foodId) break;
-                    return {
-                        ...item,
-                        image: listFood[i].image,
-                        name: listFood[i].name,
-                        price: listFood[i].price,
-                        priceImport: listFood[i].priceImport,
-                    };
-                });
-                setStorage(list);
-                console.log('');
-            },
-            (error) => {
-                console.log(error);
-            },
-        );
-
-        return () => {
-            getFastFoods();
-            getStorageFoods();
+        const getFoods = async () => {
+            const q = query(collection(db, 'foods'), where('type', '==', 'fast food'));
+            const querySnapshot = await getDocs(q);
+            const data = [];
+            querySnapshot.forEach((doc) => {
+                const tmp = { ...doc.data(), id: doc.id };
+                data.push(tmp);
+            });
+            return data;
         };
-    }, [listFood, storages]);
+
+        const getStorage = async () => {
+            const q = query(collection(db, 'storage'));
+            const querySnapshot = await getDocs(q);
+            const data = [];
+            querySnapshot.forEach((doc) => {
+                data.push(doc.data());
+            });
+            return data;
+        };
+
+        getStorage().then((storage) => {
+            getFoods().then((foods) => {
+                const arr = [];
+                storage.forEach((store) => {
+                    foods.forEach((food) => {
+                        if (food.id === store.foodId) {
+                            arr.push({
+                                ...store,
+                                name: food.name,
+                                price: food.price,
+                                priceImport: food.priceImport,
+                                image: food.image,
+                            });
+                        }
+                    });
+                });
+                setStorage(arr);
+            });
+        });
+    }, [storages]);
 
     //get url image
     useEffect(() => {
@@ -85,13 +78,6 @@ const Storage = () => {
         img && uploadFile();
     }, [img]);
 
-    //set img
-    useEffect(() => {
-        return () => {
-            img && URL.revokeObjectURL(img.preview);
-        };
-    }, [img]);
-
     const checkInArr = (arr, tmp) => {
         for (let i = 0; Array.isArray(arr) && i < arr.length; i++) {
             if (arr[i].name === tmp.name) {
@@ -110,19 +96,24 @@ const Storage = () => {
     const handleAdditem = async (e) => {
         e.preventDefault();
         const data = {
-            amount: parseInt(foodAmount),
             img: imgUrl,
             name: foodName,
             price: parseInt(foodPrice),
             priceImport: parseInt(foodPriceImport),
-            status: true,
             typeFood: 'fast food',
         };
 
         try {
             const pos = checkInArr(storages, data);
-            if (pos === -1) addDoc(collection(db, 'storage'), data);
-            else {
+            if (pos === -1) {
+                const docRef = await addDoc(collection(db, 'foods'), data);
+                const storageInfo = {
+                    amount: parseInt(foodAmount),
+                    status: true,
+                    id: docRef.id,
+                };
+                addDoc(collection(db, 'storage'), storageInfo);
+            } else {
                 const value = storages[pos].amount;
                 const id = storages[pos].id;
                 storages[pos] = data;
