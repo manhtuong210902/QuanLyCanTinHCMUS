@@ -43,6 +43,8 @@ function SignIn({ handleChangeSign }) {
                             name: user.displayName,
                             email: user.email,
                             uid: user.uid,
+                            image: user.photoURL,
+                            money: 0,
                             admin: false,
                         });
                         console.log('Document written with ID: ', docRef.id);
