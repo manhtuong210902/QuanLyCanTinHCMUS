@@ -1,9 +1,17 @@
 import { Table } from 'react-bootstrap';
 import { db } from '../../firebase/config';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import styles from './SalesReport.module.scss';
+import classNames from 'classnames/bind';
+import { BsPrinter } from 'react-icons/bs';
+import ReactToPrint from 'react-to-print';
+
+const cx = classNames.bind(styles);
 
 function SaleReport({ typeDate, value }) {
+    const componentRef = useRef();
+
     const [orderDetails, setOrderDetails] = useState([]);
     const [total, setTotal] = useState(0);
 
@@ -77,34 +85,52 @@ function SaleReport({ typeDate, value }) {
 
     return (
         <div>
-            <h4>
-                Doanh thu bán hàng theo {typeDate === 'day' ? 'ngày' : 'tháng'} {value}
-            </h4>
-            <Table striped bordered hover size="sm">
-                <thead>
-                    <tr>
-                        <th>Đơn hàng</th>
-                        <th>Tên món ăn</th>
-                        <th>Số lượng bán</th>
-                        <th>Ngày bán</th>
-                        <th>Tổng tiền</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {orderDetails.map((orderDetail, index) => {
+            <div className={cx('header')}>
+                <h4>
+                    Doanh thu bán hàng theo {typeDate === 'day' ? 'ngày' : 'tháng'} {value}
+                </h4>
+                <ReactToPrint
+                    trigger={() => {
                         return (
-                            <tr key={index}>
-                                <td>{index + 1}</td>
-                                <td>{orderDetail.nameFood}</td>
-                                <td>{orderDetail.quantity}</td>
-                                <td>{orderDetail.date}</td>
-                                <td>{orderDetail.totalMoney}</td>
-                            </tr>
+                            <div className={cx('btn-print')}>
+                                In <BsPrinter />
+                            </div>
                         );
-                    })}
-                </tbody>
-            </Table>
-            <h4>Tổng doanh thu bán hàng {total}</h4>
+                    }}
+                    content={() => componentRef.current}
+                    documentTitle={`báo cáo doanh thu ${typeDate === 'day' ? 'ngày' : 'tháng'} ${value}`}
+                    pageStyle="print"
+                />
+            </div>
+            <div ref={componentRef}>
+                <Table striped bordered hover size="sm">
+                    <thead>
+                        <tr>
+                            <th>Đơn hàng</th>
+                            <th>Tên món ăn</th>
+                            <th>Số lượng bán</th>
+                            <th>Ngày bán</th>
+                            <th>Tổng tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {orderDetails.map((orderDetail, index) => {
+                            return (
+                                <tr key={index}>
+                                    <td>{index + 1}</td>
+                                    <td>{orderDetail.nameFood}</td>
+                                    <td>{orderDetail.quantity}</td>
+                                    <td>{orderDetail.date}</td>
+                                    <td>{orderDetail.totalMoney}</td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </Table>
+                <h4 className={cx('result')}>
+                    Tổng doanh thu bán hàng {typeDate === 'day' ? 'ngày' : 'tháng'} {value} là: {total}đ
+                </h4>
+            </div>
         </div>
     );
 }

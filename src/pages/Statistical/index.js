@@ -1,7 +1,9 @@
 import styles from './Statistical.module.scss';
 import classNames from 'classnames/bind';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+import dayjs from 'dayjs';
 
 import Chart from './components/Chart';
 
@@ -13,20 +15,22 @@ function Statistical() {
     const [typeChart, setTypeChart] = useState('bar');
     const [valueFrom, setValueFrom] = useState(currentDay);
     const [valueTo, setValueTo] = useState(currentDay);
+    const [listDate, setListDate] = useState([]);
+    
+    useEffect(() => {
+        const getListDate = () => {
+            const from = dayjs(valueFrom);
+            const to = dayjs(valueTo);
 
-    // const handlePush = (e) => {
-    //     e.preventDefault();
-
-    //     foods.forEach(async (food) => {
-    //         const docRef = await addDoc(collection(db, "foods"), {
-    //             name: food.name,
-    //             price: food.price,
-    //             priceImport: food.priceImport,
-    //             image: food.image,
-    //           });
-    //           console.log("Document written with ID: ", docRef.id);
-    //     })
-    // }
+            const diff = to.diff(from, 'day');
+            const data = [];
+            for(let i = 0; i <= diff; i++) {
+                data.push(from.add(i, 'day').format().split('T')[0]);
+            }
+            setListDate(data);
+        }
+        getListDate();
+    }, [valueFrom, valueTo])
 
     return (
         <div className={cx('wrapper')}>
@@ -79,7 +83,7 @@ function Statistical() {
             </div>
             <div className={cx('content')}>
                 <div className={cx('chart', { bar: typeChart === 'bar' || typeChart === 'line' })}>
-                    <Chart typeStatistical={typeStatistical} typeChart={typeChart} date={{ valueFrom, valueTo }} />
+                    <Chart typeStatistical={typeStatistical} typeChart={typeChart} date={{ valueFrom, valueTo }} listDate={listDate} />
                 </div>
             </div>
         </div>
