@@ -109,7 +109,7 @@ const Content = (props) => {
             props.check
             ?
                 (<div className={cx('dialog')}>
-                <Table changeDesk={props.changeDesk}/>
+                <Table changeDesk={props.changeDesk} changeTime={props.changeTime}/>
                 </div>)
                 :
             

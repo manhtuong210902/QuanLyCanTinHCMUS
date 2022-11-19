@@ -57,6 +57,37 @@ const Order = (props) => {
         props.change(e.target.checked)
         console.log('checkbox checked:', check);
     }
+
+    function addTimes (startTime, endTime) {
+        var times = [ 0, 0 ]
+        var max = times.length
+      
+        var a = (startTime || '').split(':')
+        var b = (endTime || '').split(':')
+      
+        // normalize time values
+        for (var i = 0; i < max; i++) {
+          a[i] = isNaN(parseInt(a[i])) ? 0 : parseInt(a[i])
+          b[i] = isNaN(parseInt(b[i])) ? 0 : parseInt(b[i])
+        }
+      
+        // store time values
+        for (var i = 0; i < max; i++) {
+          times[i] = a[i] + b[i]
+        }
+      
+        var hours = times[0]
+        var minutes = times[1]
+      
+      
+        if (minutes >= 60) {
+          var h = (minutes / 60) << 0
+          hours += h
+          minutes -= 60 * h
+        }
+      
+        return ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2)
+      }
     return (
         
         <div className={cx('Order')} key={props.bridge}>
@@ -111,7 +142,8 @@ const Order = (props) => {
                                 name="table"  value="table"/>
                             <label>Đặt bàn</label>
                         </div>
-                        {check&&`Số bàn: ${props.desk?props.desk:''}`}
+                        {check&&`Số bàn: ${props.desk?props.desk:'...'} 
+                                Khung giờ:  ${props.time?props.time:'...'} ${props.time?'đến':''} ${props.time?addTimes(props.time,"00:30"):''}`}
                     </div>
                     <div className={cx('order-price-total')}>
                         <span>Tổng tiền: </span>
@@ -134,6 +166,8 @@ const Order = (props) => {
                                 orderDate: getCurrentDate(),
                                 total: totalPrice(),
                                 typePament: true,
+                                time:props.time,
+                                table:props.table
                             });
                             const billID = docRef.id;
                             orders.forEach((order) => {

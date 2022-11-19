@@ -14,7 +14,24 @@ const Table =(props)=>{
     const handleSelect=(e)=>{
         click(e.target.textContent)
     }
+    const [time,selectTime]=useState()
+
+    
     return <div className={cx('container')}>
+        <div>
+            <div>
+
+            </div>
+            <div>
+                <div className={(cx('label'))} for="appt" >Select a time:   
+                    <input type="time" id="appt" name="appt" onChange={(e)=>{selectTime(e.target.value)
+                    console.log(time)
+                    console.log(e.target.value)
+                    props.changeTime(e.target.value)
+                }} />
+                </div>
+            </div>
+        </div>
         <div className={cx('table-select')}>
             {listTable.map((table)=>{
                 return (
