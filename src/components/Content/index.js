@@ -8,6 +8,8 @@ import { auth, db } from '../../firebase/config';
 import { doc, getDocFromCache } from "firebase/firestore";
 import {  getDocs } from "firebase/firestore";
 import { onSnapshot } from 'firebase/firestore';
+import Table from '../../pages/Table/Table';
+
 const cx = classNames.bind(styles);
 const Content = (props) => {
 
@@ -27,7 +29,6 @@ const Content = (props) => {
     //         getMenu(items)
     //     });
     // }, []);
-
     const foods = [
         {
             name: 'Phở bò',
@@ -91,10 +92,28 @@ const Content = (props) => {
         },
 
     ];
-
+    const a=()=>{
+        let docRef
+        foods.forEach((food)=>{
+            docRef= addDoc(collection(db,"foods"),
+    
+                {
+                    name:food.name,
+                    price:food.price,
+                    image:food.image,
+                }
+        )})}
     return (
         <div className={cx('Content')}>
-            <Slider />
+            {
+            props.check
+            ?
+                (<div className={cx('dialog')}>
+                <Table changeDesk={props.changeDesk}/>
+                </div>)
+                :
+            
+            (
             <div className={cx('content-menu')}>
                 <h2 >Menu</h2>
                 <div className={cx('content-menu-list-item')}>
@@ -105,6 +124,7 @@ const Content = (props) => {
                     ))}
                 </div>
             </div>
+            )}
         </div>
     );
 };

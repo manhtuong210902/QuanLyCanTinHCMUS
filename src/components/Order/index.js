@@ -5,12 +5,13 @@ import styles from './Order.module.scss';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../../firebase/config';
 import { getAuth } from 'firebase/auth';
+import Table from '../../pages/Table/Table';
 const cx = classNames.bind(styles);
 const Order = (props) => {
     const [orders, setOrder] = useState([]);
+    const [check,tick]=useState()
     const [numberTable, setNumberTable] = useState(0);
     const [currentPrice, setCurrentPrice] = useState(0);
-
     const [counter, setCounter] = useState([{ id: 0, value: 1 }]);
     const handleDescease = (val, id) => {
         counter[id] === undefined
@@ -50,9 +51,16 @@ const Order = (props) => {
 
         return `${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${date}`;
     };
-
+    // console.log(checkValue);
+    const checkValue=(e)=>{
+        tick(e.target.checked)
+        props.change(e.target.checked)
+        console.log('checkbox checked:', check);
+    }
     return (
+        
         <div className={cx('Order')} key={props.bridge}>
+            
             <h2>My order</h2>
             <div className={cx('order-bill')}>
                 <div className={cx('order-list')}>
@@ -97,8 +105,13 @@ const Order = (props) => {
                 </div>
                 <div className={cx('order-cal')}>
                     <div className={cx('order-or')}>
-                        <span>Số bàn: </span>
-                        <input type="text" value={numberTable} onChange={(e) => changeTableNumber(e.target.value)} />
+                        <div style={{display:"flex",flexDirection:"row"}}>
+                            <input type="checkbox" className={cx('tacheck')} 
+                                onChange={(e)=>checkValue(e)} 
+                                name="table"  value="table"/>
+                            <label>Đặt bàn</label>
+                        </div>
+                        {check&&`Số bàn: ${props.desk?props.desk:''}`}
                     </div>
                     <div className={cx('order-price-total')}>
                         <span>Tổng tiền: </span>

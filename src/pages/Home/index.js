@@ -8,7 +8,9 @@ const cx = classNames.bind(styles);
 
 const Home = () => {
     const [listSelect, updateList] = useState([]);
+    const [desk,setDesk]=useState()
     const [bridge, setBridge] = useState(0);
+    const [check,click]=useState(0);
     const handleClick = (obj) => {
         let p = true;
         for (let i = 0; i < listSelect.length; i++) {
@@ -22,6 +24,10 @@ const Home = () => {
         updateList(listSelect);
         setBridge(bridge + 1);
     };
+    const change=(b)=>{
+        console.log('h',b)
+        click(b)
+    }
     const deleteClick = (n) => {
         // listSelect=listSelect.filter((item)=>item.name!==n)
         let s = false;
@@ -39,15 +45,19 @@ const Home = () => {
         setBridge(bridge + 1);
         updateList(listSelect);
     };
+    const changeDesk=(number)=>{
+        setDesk(number)
+    }
+    
     useEffect(() => {
         console.log('home-render');
-    }, [listSelect, bridge]);
+    }, [listSelect, bridge,check,desk]);
 
     return (
         <div className={cx('Home')}>
-            <Content handleClick={handleClick} key={bridge} />
+            <Content handleClick={handleClick} key={bridge} check={check} changeDesk={changeDesk}/>
 
-            <Order listSelect={listSelect} bridge={bridge} deleteClick={deleteClick} />
+            <Order listSelect={listSelect} bridge={bridge} deleteClick={deleteClick} change={change} desk={desk}/>
         </div>
     );
 };
