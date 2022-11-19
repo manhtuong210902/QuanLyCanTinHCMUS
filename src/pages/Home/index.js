@@ -11,6 +11,7 @@ const Home = () => {
     const [desk,setDesk]=useState()
     const [bridge, setBridge] = useState(0);
     const [check,click]=useState(0);
+    const [time,selectTime]=useState(0);
     const handleClick = (obj) => {
         let p = true;
         for (let i = 0; i < listSelect.length; i++) {
@@ -48,16 +49,19 @@ const Home = () => {
     const changeDesk=(number)=>{
         setDesk(number)
     }
-    
+    const changeTime=(a)=>{
+        selectTime(a)
+        console.log(time)
+    }
     useEffect(() => {
         console.log('home-render');
-    }, [listSelect, bridge,check,desk]);
+    }, [listSelect, bridge,check,desk,time]);
 
     return (
         <div className={cx('Home')}>
-            <Content handleClick={handleClick} key={bridge} check={check} changeDesk={changeDesk}/>
+            <Content handleClick={handleClick} key={bridge} check={check} changeDesk={changeDesk} changeTime={changeTime}/>
 
-            <Order listSelect={listSelect} bridge={bridge} deleteClick={deleteClick} change={change} desk={desk}/>
+            <Order listSelect={listSelect} bridge={bridge} deleteClick={deleteClick} change={change} desk={desk} time={time}/>
         </div>
     );
 };
