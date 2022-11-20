@@ -182,6 +182,7 @@ const Content = (props) => {
     // ];
 
     useEffect(() => {
+        console.log('content-render')
         const getFoods = async () => {
             const q = query(collection(db, 'foods'));
             const querySnapshot = await getDocs(q);

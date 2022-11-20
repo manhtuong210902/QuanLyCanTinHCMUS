@@ -75,7 +75,7 @@ const Home = () => {
     }
     useEffect(() => {
         console.log('home-render');
-    }, [listSelect, bridge,check,desk,time]);
+    },[]);// [listSelect, bridge,check,desk,time]);
     
     return (
         <div className={cx('wrap')}>
