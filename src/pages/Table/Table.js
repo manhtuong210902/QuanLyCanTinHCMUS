@@ -71,14 +71,12 @@ const Table =(props)=>{
             return data;
         };
         getTable().then((table)=>{
-            console.log(table)
             get(table)
         })
         setTable([])
         bills.forEach((bill)=>{
              if(bill.table!=='...' && ((bill.time <= time && time < addTimes(bill.time,"00:30")) 
             ||(time<bill.time && addTimes(time,"00:30")>bill.time))){
-                console.log("oke")
                 noTable.push(bill.table)
                 setTable(noTable)
             }
@@ -93,8 +91,6 @@ const Table =(props)=>{
             <div>
                 <div className={(cx('label'))} for="appt" >Select a time:   
                     <input type="time" id="appt" name="appt" onChange={(e)=>{selectTime(e.target.value)
-                    console.log(time)
-                    console.log(e.target.value)
                     props.changeTime(e.target.value)
                 }} />
                 </div>
@@ -103,7 +99,8 @@ const Table =(props)=>{
         <div className={cx('table-select')}>
             {listTable.map((table)=>{
                 return (
-                    noTable.includes(table)?
+                    noTable.includes(table)
+                    ?
                     <div className={cx('table-item')} onClick={(e)=>handleSelect(e)} style={{backgroundColor:"red",opacity:0.5}}  >{table}</div>
                     :
                      (select===table?
