@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import { collection, addDoc, setDoc, doc, query, getDocs, where } from 'firebase/firestore';
+import { ref, getDownloadURL, uploadBytesResumable, snapshot } from 'firebase/storage';
+import { collection, addDoc, setDoc, doc, query, getDocs, where, updateDoc } from 'firebase/firestore';
 import { storage, db } from '../../firebase/config';
 import classNames from 'classnames/bind';
 import styles from './Storage.module.scss';
@@ -61,10 +61,15 @@ const Storage = () => {
     //get url image
     useEffect(() => {
         const uploadFile = () => {
-            const storageRef = ref(storage, img.name);
+            const storageRef = ref(storage, `images/${img.name}`);
             const uploadTask = uploadBytesResumable(storageRef, img);
 
             uploadTask.on(
+                (snapshot) => {
+                    if (snapshot.state === 'running' || snapshot.state === 'paused') {
+                        return;
+                    }
+                },
                 (error) => {
                     console.log(error);
                 },
@@ -96,11 +101,11 @@ const Storage = () => {
     const handleAdditem = async (e) => {
         e.preventDefault();
         const data = {
-            img: imgUrl,
+            image: imgUrl,
             name: foodName,
             price: parseInt(foodPrice),
             priceImport: parseInt(foodPriceImport),
-            typeFood: 'fast food',
+            type: 'fast food',
         };
 
         try {
@@ -110,19 +115,22 @@ const Storage = () => {
                 const storageInfo = {
                     amount: parseInt(foodAmount),
                     status: true,
-                    id: docRef.id,
+                    foodId: docRef.id,
                 };
                 addDoc(collection(db, 'storage'), storageInfo);
             } else {
-                const value = storages[pos].amount;
-                const id = storages[pos].id;
-                storages[pos] = data;
-                storages[pos].amount += value;
-                storages[pos].id = id;
-                setStorage(storages);
-                console.log(storages[pos].id);
+                const a = parseInt(foodAmount) + parseInt(storages[pos].amount);
+                const foodId = storages[pos].foodId;
+                const q = query(collection(db, 'storage'), where('foodId', '==', foodId));
+                const querySnapshot = await getDocs(q);
+                let id = '';
+                querySnapshot.forEach((doc) => {
+                    id = doc.id;
+                });
 
-                setDoc(doc(db, 'storage', storages[pos].id), storages[pos]);
+                await updateDoc(query(collection(db, 'storage', id)), {
+                    amount: a,
+                });
             }
         } catch (err) {
             console.log(err);
@@ -154,7 +162,7 @@ const Storage = () => {
                                 <img src={item.image} alt="" />
                                 <div className={cx('storage-info')}>
                                     <span>{item.name}</span>
-                                    <span>Số lượng: {item.amont}</span>
+                                    <span>Số lượng: {item.amount}</span>
                                 </div>
                                 <div className={cx('storage-price')}>
                                     <div className={cx('storage-price-total')}> Giá bán: {item.price}đ</div>
