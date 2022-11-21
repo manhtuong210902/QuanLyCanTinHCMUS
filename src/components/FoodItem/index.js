@@ -5,6 +5,7 @@ import styles from './FoodItem.module.scss';
 const cx = classNames.bind(styles);
 const index = (props, { handleClick }) => {
     const food = props.food;
+    // console.log(food)
     return (
         <div className={cx('foodItem')}>
             <img src={food.image} alt="" />
@@ -17,7 +18,7 @@ const index = (props, { handleClick }) => {
                     <button
                         className={cx('food-add')}
                         onClick={() =>
-                            props.handleClick({ name: food.name, price: food.price, image: food.image, amount: 1 })
+                            props.handleClick({ name: food.name, price: food.price, image: food.image, amount: 1,foodId:food.foodId }) //foodId:
                         }
                     >
                         +

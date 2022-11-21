@@ -112,6 +112,11 @@ const Storage = () => {
             const pos = checkInArr(storages, data);
             if (pos === -1) {
                 const docRef = await addDoc(collection(db, 'foods'), data);
+                // await updateDoc(doc(db, 'foods', docRef.id), {  //test update
+                //     ...data,
+                //     foodId: docRef.id
+                    
+                // });
                 const storageInfo = {
                     amount: parseInt(foodAmount),
                     status: true,

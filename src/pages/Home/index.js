@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Content from '../../components/Content';
 import Order from '../../components/Order';
-
+import { collection, onSnapshot, query, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase/config';
 import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
 import Bill from '../../components/Bill/Bill';
@@ -17,6 +18,7 @@ const Home = () => {
     const [bill,setBill]=useState();
     const [send,setSend]=useState();
     const [data,setData]=useState();
+    const [foods, setFoods] = useState([]);
     const handleClick = (obj) => {
         let p = true;
         for (let i = 0; i < listSelect.length; i++) {
@@ -75,6 +77,19 @@ const Home = () => {
     }
     useEffect(() => {
         console.log('home-render');
+        const getFoods = async () => {
+            const q = query(collection(db, 'foods'));
+            const querySnapshot = await getDocs(q);
+            const data = [];
+            querySnapshot.forEach((doc) => {
+                data.push(doc.data());
+            });
+            return data;
+        };
+
+        getFoods().then((food) => {
+            setFoods(food);
+        });
     },[]);// [listSelect, bridge,check,desk,time]);
     
     return (
@@ -82,6 +97,7 @@ const Home = () => {
 
             <div className={cx('Home')}>
                 <Content handleClick={handleClick} 
+                        foods={foods}
                         key={bridge} 
                         check={check} 
                         changeDesk={changeDesk} 
@@ -103,7 +119,7 @@ const Home = () => {
                     />
             </div>
             {modal
-                &&<Bill 
+                &&<Bill
                 data={data}
                 bill={bill} 
                 changeData={changeData}

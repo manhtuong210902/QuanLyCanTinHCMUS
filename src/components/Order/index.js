@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { RiDeleteBinLine } from 'react-icons/ri';
 import classNames from 'classnames/bind';
 import styles from './Order.module.scss';
@@ -211,6 +211,7 @@ const Order = (props) => {
                             },
                             details:orders.map((order)=>{
                                 return {
+                                foodId:order?.foodId || 1, ////
                                 date: getCurrentDate(),
                                 nameFood: order.name,
                                 quantity: order.amount,
@@ -255,4 +256,4 @@ const Order = (props) => {
     );
 };
 
-export default Order;
+export default memo(Order);
