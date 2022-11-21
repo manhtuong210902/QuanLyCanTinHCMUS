@@ -215,7 +215,8 @@ const Order = (props) => {
                                 date: getCurrentDate(),
                                 nameFood: order.name,
                                 quantity: order.amount,
-                                totalMoney: order.price * order.amount
+                                totalMoney: order.price * order.amount,
+                                type:order.type
                                 }
                             })
    

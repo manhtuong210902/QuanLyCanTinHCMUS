@@ -1,13 +1,13 @@
 import classNames from 'classnames/bind';
 import { prodErrorMap } from 'firebase/auth';
 import { collection, addDoc,query, where, getDocs, updateDoc,deleteDoc} from "firebase/firestore";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 
 import { db } from '../../firebase/config';
 import { getAuth } from 'firebase/auth';
 import styles from './bill.module.scss';
 import ReactToPrint from 'react-to-print';
 import { BsPrinter } from 'react-icons/bs';
-import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { useRef } from 'react';
 const cx = classNames.bind(styles);
 
@@ -35,7 +35,8 @@ const Bill = (props) => {
     }
     const handleDes=async()=>{
         props.data.details.forEach((food)=>{
-            updateFoodInfo(food.foodId,food.quantity)
+            if (food.type ==='fast food')
+                updateFoodInfo(food.foodId,food.quantity)
         })
 
         const q = query(collection(db, "users"), where("uid", "==", props.data.bills.userID));
