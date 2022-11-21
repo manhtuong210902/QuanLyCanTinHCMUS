@@ -3,15 +3,34 @@ import { prodErrorMap } from 'firebase/auth';
 import { collection, addDoc,query, where, getDocs, updateDoc,deleteDoc} from "firebase/firestore";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 
-import { db } from '../../firebase/config';
-import { getAuth } from 'firebase/auth';
+import { auth, db } from '../../firebase/config';
+import { onAuthStateChanged } from 'firebase/auth';
+
 import styles from './bill.module.scss';
 import ReactToPrint from 'react-to-print';
 import { BsPrinter } from 'react-icons/bs';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 const cx = classNames.bind(styles);
 
 const Bill = (props) => {
+
+    const [currentUser, setCurrentUser] = useState(auth.currentUser);
+    const [isAdmin, setIsAdmin] = useState(checkIsAdmin(auth.currentUser?.email));
+
+    async function checkIsAdmin(userEmail) {
+        if (userEmail) {
+            const q = await query(collection(db, 'users'), where('email', '==', userEmail), where('admin', '==', true));
+            const querySnapshot = await getDocs(q);
+            if (!querySnapshot.empty) {
+                setIsAdmin(true);
+            } else {
+                setIsAdmin(false);
+            }
+        }
+    }
+
+    // console.log(currentUser, isAdmin);
+
     const componentRef = useRef();
 
     const updateFoodInfo = async(id,num)=>{
@@ -64,7 +83,7 @@ const Bill = (props) => {
                         <table class="table">
                             <tbody>
                                 <tr>
-                                    <th scope="row">Khách hàn:g</th>
+                                    {isAdmin ? (<th scope="row">Nhân viên thanh toán:</th>) : (<th scope="row">Khách hàng:</th>)}
                                     <td>{props.bill.userName}</td>
                                 </tr>
                                 <tr>
