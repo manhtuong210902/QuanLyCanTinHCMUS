@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import { prodErrorMap } from 'firebase/auth';
-import { collection, addDoc,query, where, getDocs, updateDoc,deleteDoc} from "firebase/firestore";
+import { collection, addDoc,query, where, getDocs,deleteDoc} from "firebase/firestore";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 
 import { auth, db } from '../../firebase/config';

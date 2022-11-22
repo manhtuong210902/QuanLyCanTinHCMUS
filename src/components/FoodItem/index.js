@@ -18,7 +18,6 @@ const FoodItem = (props) => {
         return amount
     }
     if(food.type==='fast food' ) getData().then((amount)=>{
-        console.log(amount)
         set(amount!==0)})
     return (
          <div className={cx('foodItem')} >

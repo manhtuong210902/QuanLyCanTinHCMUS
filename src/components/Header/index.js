@@ -15,7 +15,7 @@ function Header() {
             icon: FaHome,
         },
         {
-            name: 'Sales',
+            name: 'History',
             path: '/sales',
             icon: BiStore,
         },
