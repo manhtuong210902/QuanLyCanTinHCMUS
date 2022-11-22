@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState,memo } from 'react';
 import { collection, addDoc,query, where, getDocs, updateDoc,deleteDoc} from "firebase/firestore";
 
 import { db } from '../../firebase/config';
 import classNames from 'classnames/bind';
 import styles from './FoodItem.module.scss';
-import { async } from '@firebase/util';
 const cx = classNames.bind(styles);
 const FoodItem = (props) => {
     const food = props.food;
@@ -18,7 +17,7 @@ const FoodItem = (props) => {
         });
         return amount
     }
-    if(food.type==='fast food') getData().then((amount)=>{
+    if(food.type==='fast food' ) getData().then((amount)=>{
         console.log(amount)
         set(amount!==0)})
     return (
@@ -43,10 +42,10 @@ const FoodItem = (props) => {
                     >
                         +
                     </button>
-                </div>:'Chưa có hàng'}
+                </div>: <div style={{color:'red'}}>Hết hàng</div>}
             </div>
         </div>
     );
 };
 
-export default FoodItem;
+export default memo(FoodItem);

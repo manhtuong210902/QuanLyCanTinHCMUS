@@ -6,6 +6,7 @@ import { db } from '../../firebase/config';
 import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
 import Bill from '../../components/Bill/Bill';
+import Congrat from '../../components/Congrat/Congrat';
 const cx = classNames.bind(styles);
 
 const Home = () => {
@@ -19,6 +20,12 @@ const Home = () => {
     const [send,setSend]=useState();
     const [data,setData]=useState();
     const [foods, setFoods] = useState([]);
+    const [congrat,setCongrat]=useState(false)
+    const [vipType,setViptype]=useState()
+    const changeCongrat=(a)=>{
+        setCongrat(a.active)
+        setViptype(a.type)
+    }
     const handleClick = (obj) => {
         let p = true;
         for (let i = 0; i < listSelect.length; i++) {
@@ -127,7 +134,11 @@ const Home = () => {
                 changeModal={changeModal} 
                 change={change} 
                 changeList={changeList}
+                changeCongrat={changeCongrat}
                 />
+            } 
+            {
+               congrat&&<Congrat changeCongrat={changeCongrat} vipType={vipType}/>
             }
         </div>
     );

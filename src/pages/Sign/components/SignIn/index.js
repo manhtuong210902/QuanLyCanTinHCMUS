@@ -44,6 +44,8 @@ function SignIn({ handleChangeSign }) {
                             email: user.email,
                             uid: user.uid,
                             image: user.photoURL,
+                            vip:0,
+                            level:'D',
                             money: 0,
                             admin: false,
                         });

@@ -13,7 +13,9 @@ const cx = classNames.bind(styles);
 
 const Bill = (props) => {
     const componentRef = useRef();
-
+    const C=500000
+    const B=1000000
+    const A=2000000
     const updateFoodInfo = async(id,num)=>{
         const q = query(collection(db, "storage"), where("foodId", "==", id));
         const querySnapshot = await getDocs(q);
@@ -41,19 +43,43 @@ const Bill = (props) => {
 
         const q = query(collection(db, "users"), where("uid", "==", props.data.bills.userID));
         const querySnapshot = await getDocs(q);
-        console.log(querySnapshot)
         let docID = '';
         let person={money:0}
         querySnapshot.forEach((doc) => {
           docID = doc.id;
           person=doc.data()
         });
-        console.log(docID)
+        let vip=person.vip
         await deleteDoc(doc(db, "users", docID));
         person.money=person.money-props.data.bills.total
+        person.vip=person.vip+props.data.bills.total
         addDoc(collection(db,'users'),
           person
         )
+        if(person.vip>C && vip<C) {
+            await deleteDoc(doc(db, "users", docID));
+            person.level='C'
+            addDoc(collection(db,'users'),
+            person
+            )
+            props.changeCongrat({active:true,type:'C'})
+        }
+        else if(person.vip>B && vip<B) {
+            await deleteDoc(doc(db, "users", docID));
+            person.level='B'
+            addDoc(collection(db,'users'),
+            person
+            )
+            props.changeCongrat({active:true,type:'B'})
+        }
+        else if(person.vip>A && vip<A) {
+            await deleteDoc(doc(db, "users", docID));
+            person.level='A'
+            addDoc(collection(db,'users'),
+            person
+            )
+            props.changeCongrat({active:true,type:'A'})
+        }
     }
     return (
         <div className={cx('modal-page')}>
@@ -64,7 +90,7 @@ const Bill = (props) => {
                         <table class="table">
                             <tbody>
                                 <tr>
-                                    <th scope="row">Khách hàn:g</th>
+                                    <th scope="row">Khách hàng</th>
                                     <td>{props.bill.userName}</td>
                                 </tr>
                                 <tr>
@@ -78,7 +104,7 @@ const Bill = (props) => {
                                 <tr>
                                     <th scope="row">Khung giờ:</th>
                                     <td>
-                                        {props.bill.time} đến {props.bill.timeEnd}
+                                        {props.bill.time==='...'?'...':`${props.bill.time} đến ${props.bill.timeEnd}`} 
                                     </td>
                                 </tr>
                             </tbody>
@@ -151,6 +177,7 @@ const Bill = (props) => {
                                     ...order,
                                 });
                             });
+                            
                         }}
                     >
                         OK

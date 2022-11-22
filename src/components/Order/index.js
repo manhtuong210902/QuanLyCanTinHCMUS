@@ -2,16 +2,19 @@ import React, { useState, useEffect, memo } from 'react';
 import { RiDeleteBinLine } from 'react-icons/ri';
 import classNames from 'classnames/bind';
 import styles from './Order.module.scss';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc,query, where, getDocs} from "firebase/firestore";
 import { db } from '../../firebase/config';
 import { getAuth } from 'firebase/auth';
 import Table from '../../pages/Table/Table';
+import { async } from '@firebase/util';
 const cx = classNames.bind(styles);
 const Order = (props) => {
     const [orders, setOrder] = useState([]);
     const [check,tick]=useState()
     const [currentPrice, setCurrentPrice] = useState(0);
     const [counter, setCounter] = useState([{ id: 0, value: 1 }]);
+    const [vip,setVip]=useState(0)
+
 
     const handleDescease = (val, id) => {
         counter[id] === undefined
@@ -35,17 +38,46 @@ const Order = (props) => {
         props.changeDesk('...')
         props.changeTime('...')
         props.changeData('')
-
+        vipCount()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [orders, props.bridge,props.listSelect,props.check,props.send]);
     //end test
+    const total= ()=>{
+        return orders.reduce((sum,order)=>sum+order.price*order.amount,0)
+    }
     const totalPrice = () => {
-        return orders.reduce((sum, order) => sum + order.price * order.amount, 0);
+        let des=0;
+        if (vip==='3%') des=  Number(0.03)
+        else if(vip==='5%') des= Number(0.05)
+        else if(vip==='10%') des= Number(0.1)
+        console.log(des)
+        return (1-des)* orders.reduce((sum, order) => sum + order.price * order.amount, 0);
     };
-
+    const vipPrice=async()=>{
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if(user) {const q = query(collection(db, "users"), where("uid", "==",user.uid));
+        const querySnapshot = await getDocs(q);
+        let level
+        querySnapshot.forEach((doc) => {
+          level=doc.data().level
+        });
+        if(level=='C') return '3%'
+        else if(level=='B') return '5%'
+        else if(level=='A') return '10%'
+        }
+        return 0;
+    }
+    const vipCount=()=>{
+        vipPrice().then((data)=>{
+            console.log(data)
+            setVip(data)
+        })
+    }
 
     const changeConst = (value) => {
-        setCurrentPrice(parseFloat(value));
+        if (vip==='C')
+            setCurrentPrice(parseFloat(value)*0.1);
     };
     const sendData= async (e) => {
             e.preventDefault();
@@ -177,11 +209,15 @@ const Order = (props) => {
                     </div>
                     <div className={cx('order-price-total')}>
                         <span>Tổng tiền: </span>
-                        <span>{totalPrice()} đ</span>
+                        <span>{total()} đ</span>
+                    </div>
+                    <div className={cx('order-price-total')}>
+                        <span>Ưu đãi: </span>
+                        <span>{vip}</span>
                     </div>
                     <div className={cx('order-cost')}>
                         <span>Thanh toán: </span>
-                        <input type="text" value={currentPrice} onChange={(e) => changeConst(e.target.value)} />
+                        <span>{totalPrice()}</span>
                     </div>
                 </div>
                 <button
@@ -222,33 +258,7 @@ const Order = (props) => {
    
                         })
                     }}
-                    // onClick={async (e) => {
-                    //     e.preventDefault();
-                    //     try {
-                    //         const auth = getAuth();
-                    //         const user = auth.currentUser;
-                    //         let docRef = await addDoc(collection(db, 'bills'), {
-                    //             userID: user ? user.uid : '',
-                    //             orderDate: getCurrentDate(),
-                    //             total: totalPrice(),
-                    //             typePament: true,
-                    //             time:props.time,
-                    //             table:props.desk
-                    //         });
-                    //         const billID = docRef.id;
-                    //         orders.forEach((order) => {
-                    //             docRef = addDoc(collection(db, 'orderDetails'), {
-                    //                 billID: billID,
-                    //                 date: getCurrentDate(),
-                    //                 nameFood: order.name,
-                    //                 quantity: order.amount,
-                    //                 totalMoney: order.price * order.amount,
-                    //             });
-                    //         });
-                    //     } catch (e) {
-                    //         console.log(e);
-                    //     }
-                    // }}
+
                 >
                     Đặt món
                 </button>
