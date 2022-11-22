@@ -2,19 +2,48 @@ import React, { useState, useEffect, memo } from 'react';
 import { RiDeleteBinLine } from 'react-icons/ri';
 import classNames from 'classnames/bind';
 import styles from './Order.module.scss';
-import { collection, addDoc,query, where, getDocs} from "firebase/firestore";
-import { db } from '../../firebase/config';
-import { getAuth } from 'firebase/auth';
+
+import { collection, addDoc, where, getDocs, query } from 'firebase/firestore';
+import { db, auth } from '../../firebase/config';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import Table from '../../pages/Table/Table';
-import { async } from '@firebase/util';
+import { useNavigate } from 'react-router-dom';
+import CustomModal from '../CustomModal';
 const cx = classNames.bind(styles);
 const Order = (props) => {
     const [orders, setOrder] = useState([]);
-    const [check,tick]=useState()
+    const [check, tick] = useState();
     const [currentPrice, setCurrentPrice] = useState(0);
     const [counter, setCounter] = useState([{ id: 0, value: 1 }]);
     const [vip,setVip]=useState(0)
 
+
+    const [show, setShow] = useState(false);
+    const [currentUser, setCurrentUser] = useState(null);
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    const navigate = useNavigate();
+
+    async function checkIsAdmin(userEmail) {
+        if (userEmail) {
+            const q = await query(collection(db, 'users'), where('email', '==', userEmail), where('admin', '==', true));
+            const querySnapshot = await getDocs(q);
+            if (!querySnapshot.empty) {
+                setIsAdmin(true);
+            } else {
+                setIsAdmin(false);
+            }
+        }
+    }
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            setCurrentUser(auth.currentUser);
+            if (auth.currentUser) {
+                checkIsAdmin(auth.currentUser.email);
+            }
+        });
+    }, [navigate]);
 
     const handleDescease = (val, id) => {
         counter[id] === undefined
@@ -23,9 +52,7 @@ const Order = (props) => {
         setCounter(counter);
     };
     const handleIncease = (val, id) => {
-        counter[id] === undefined 
-        ? counter.push({ id: id, value: val + 1 }) 
-        : (counter[id].value = val + 1);
+        counter[id] === undefined ? counter.push({ id: id, value: val + 1 }) : (counter[id].value = val + 1);
         setCounter(counter);
     };
     const [flag, changeFlag] = useState(0);
@@ -33,14 +60,16 @@ const Order = (props) => {
     useEffect(() => {
         setCounter([{ id: 0, value: 1 }]);
         setOrder(props.listSelect);
+
         tick(props.check)
         console.log('order-render')
         props.changeDesk('...')
         props.changeTime('...')
         props.changeData('')
         vipCount()
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [orders, props.bridge,props.listSelect,props.check,props.send]);
+    }, [orders, props.bridge, props.listSelect, props.check, props.send]);
     //end test
     const total= ()=>{
         return orders.reduce((sum,order)=>sum+order.price*order.amount,0)
@@ -75,37 +104,38 @@ const Order = (props) => {
         })
     }
 
+
     const changeConst = (value) => {
         if (vip==='C')
             setCurrentPrice(parseFloat(value)*0.1);
     };
-    const sendData= async (e) => {
-            e.preventDefault();
-            try {
-                const auth = getAuth();
-                const user = auth.currentUser;
-                let docRef = await addDoc(collection(db, 'bills'), {
-                    userID: user ? user.uid : '',
-                    orderDate: getCurrentDate(),
-                    total: totalPrice(),
-                    typePament: true,
-                    time:props.time,
-                    table:props.desk
+    const sendData = async (e) => {
+        e.preventDefault();
+        try {
+            const auth = getAuth();
+            const user = auth.currentUser;
+            let docRef = await addDoc(collection(db, 'bills'), {
+                userID: user ? user.uid : '',
+                orderDate: getCurrentDate(),
+                total: totalPrice(),
+                typePament: true,
+                time: props.time,
+                table: props.desk,
+            });
+            const billID = docRef.id;
+            orders.forEach((order) => {
+                docRef = addDoc(collection(db, 'orderDetails'), {
+                    billID: billID,
+                    date: getCurrentDate(),
+                    nameFood: order.name,
+                    quantity: order.amount,
+                    totalMoney: order.price * order.amount,
                 });
-                const billID = docRef.id;
-                orders.forEach((order) => {
-                    docRef = addDoc(collection(db, 'orderDetails'), {
-                        billID: billID,
-                        date: getCurrentDate(),
-                        nameFood: order.name,
-                        quantity: order.amount,
-                        totalMoney: order.price * order.amount,
-                    });
-                });
-            } catch (e) {
-                console.log(e);
-            }
+            });
+        } catch (e) {
+            console.log(e);
         }
+    };
     const getCurrentDate = (separator = '-') => {
         let newDate = new Date();
         let date = newDate.getDate();
@@ -115,45 +145,42 @@ const Order = (props) => {
         return `${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${date}`;
     };
     // console.log(checkValue);
-    const checkValue=(e)=>{
-        tick(e.target.checked)
-        props.change(e.target.checked)
-    }
+    const checkValue = (e) => {
+        tick(e.target.checked);
+        props.change(e.target.checked);
+    };
 
-    function addTimes (startTime, endTime) {
-        let times = [ 0, 0 ]
-        let max = times.length
-      
-        let a = (startTime || '').split(':')
-        let b = (endTime || '').split(':')
-      
+    function addTimes(startTime, endTime) {
+        let times = [0, 0];
+        let max = times.length;
+
+        let a = (startTime || '').split(':');
+        let b = (endTime || '').split(':');
+
         // normalize time values
         for (var i = 0; i < max; i++) {
-          a[i] = isNaN(parseInt(a[i])) ? 0 : parseInt(a[i])
-          b[i] = isNaN(parseInt(b[i])) ? 0 : parseInt(b[i])
+            a[i] = isNaN(parseInt(a[i])) ? 0 : parseInt(a[i]);
+            b[i] = isNaN(parseInt(b[i])) ? 0 : parseInt(b[i]);
         }
-      
+
         // store time values
         for (let i = 0; i < max; i++) {
-          times[i] = a[i] + b[i]
+            times[i] = a[i] + b[i];
         }
-      
-        let hours = times[0]
-        let minutes = times[1]
-      
-      
+
+        let hours = times[0];
+        let minutes = times[1];
+
         if (minutes >= 60) {
-          let h = (minutes / 60) << 0
-          hours += h
-          minutes -= 60 * h
+            let h = (minutes / 60) << 0;
+            hours += h;
+            minutes -= 60 * h;
         }
-      
-        return ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2)
-      }
+
+        return ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2);
+    }
     return (
-        
         <div className={cx('Order')} key={props.bridge}>
-            
             <h2>My order</h2>
             <div className={cx('order-bill')}>
                 <div className={cx('order-list')}>
@@ -198,14 +225,22 @@ const Order = (props) => {
                 </div>
                 <div className={cx('order-cal')}>
                     <div className={cx('order-or')}>
-                        <div style={{display:"flex",flexDirection:"row"}}>
-                            <input type="checkbox" className={cx('tacheck')} checked={check}
-                                onChange={(e)=>checkValue(e)} 
-                                name="table"  value="table"/>
+                        <div style={{ display: 'flex', flexDirection: 'row' }}>
+                            <input
+                                type="checkbox"
+                                className={cx('tacheck')}
+                                checked={check}
+                                onChange={(e) => checkValue(e)}
+                                name="table"
+                                value="table"
+                            />
                             <label>Đặt bàn</label>
                         </div>
-                        {check&&`Số bàn: ${props.desk?props.desk:'...'} 
-                                Khung giờ:  ${props.time?props.time:'...'} ${props.time?'đến':''} ${props.time?addTimes(props.time,"00:30"):''}`}
+                        {check &&
+                            `Số bàn: ${props.desk ? props.desk : '...'} 
+                                Khung giờ:  ${props.time ? props.time : '...'} ${props.time ? 'đến' : ''} ${
+                                props.time ? addTimes(props.time, '00:30') : ''
+                            }`}
                     </div>
                     <div className={cx('order-price-total')}>
                         <span>Tổng tiền: </span>
@@ -220,45 +255,58 @@ const Order = (props) => {
                         <span>{totalPrice()}</span>
                     </div>
                 </div>
+                <CustomModal
+                    show={show}
+                    setShow={setShow}
+                    title={'Xảy ra lỗi'}
+                    body={'Bạn chưa đăng nhập, nhấn OK để đăng nhập!'}
+                    textPrimary={'Đăng nhập'}
+                    textSecondary={'Hủy'}
+                />
+                ;
                 <button
                     className={cx('order-btn')}
-                    onClick={()=>{
+                    onClick={() => {
                         const auth = getAuth();
                         const user = auth.currentUser;
 
-                        props.changeModal(true)
+                        if (user === null) {
+                            setShow(true);
+                        }
+
+                        else {
+                            props.changeModal(true);
                         props.changeBill({
                             userName: user ? user.displayName : '',
                             orderDate: getCurrentDate(),
                             total: totalPrice(),
-                            time:props.time,
-                            timeEnd:addTimes(props.time,"00:30"),
-                            table:props.desk,
-                            orders:orders
-                        })
+                            time: props.time,
+                            timeEnd: addTimes(props.time, '00:30'),
+                            table: props.desk,
+                            orders: orders,
+                        });
                         props.changeData({
-                            bills:{
+                            bills: {
                                 userID: user ? user.uid : '',
                                 orderDate: getCurrentDate(),
                                 total: totalPrice(),
                                 typePament: true,
-                                time:props.time,
-                                table:props.desk
+                                time: props.time,
+                                table: props.desk,
                             },
-                            details:orders.map((order)=>{
+                            details: orders.map((order) => {
                                 return {
-                                foodId:order?.foodId || 1, ////
-                                date: getCurrentDate(),
-                                nameFood: order.name,
-                                quantity: order.amount,
-                                totalMoney: order.price * order.amount,
-                                type:order.type
-                                }
-                            })
-   
-                        })
+                                    foodId: order?.foodId || 1, ////
+                                    date: getCurrentDate(),
+                                    nameFood: order.name,
+                                    quantity: order.amount,
+                                    totalMoney: order.price * order.amount,
+                                    type: order.type,
+                                };
+                            }),
+                        });
                     }}
-
+                }
                 >
                     Đặt món
                 </button>
