@@ -72,33 +72,22 @@ const Bill = (props) => {
         await deleteDoc(doc(db, "users", docID));
         person.money=person.money-props.data.bills.total
         person.vip=person.vip+props.data.bills.total
-        addDoc(collection(db,'users'),
-          person
-        )
+        
         if(person.vip>C && vip<C) {
-            await deleteDoc(doc(db, "users", docID));
             person.level='C'
-            addDoc(collection(db,'users'),
-            person
-            )
             props.changeCongrat({active:true,type:'C'})
         }
         else if(person.vip>B && vip<B) {
-            await deleteDoc(doc(db, "users", docID));
             person.level='B'
-            addDoc(collection(db,'users'),
-            person
-            )
             props.changeCongrat({active:true,type:'B'})
         }
         else if(person.vip>A && vip<A) {
-            await deleteDoc(doc(db, "users", docID));
             person.level='A'
-            addDoc(collection(db,'users'),
-            person
-            )
             props.changeCongrat({active:true,type:'A'})
         }
+        addDoc(collection(db,'users'),
+            person
+            )
     }
     return (
         <div className={cx('modal-page')}>

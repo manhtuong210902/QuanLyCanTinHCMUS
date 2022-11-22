@@ -13,7 +13,6 @@ const cx = classNames.bind(styles);
 const Order = (props) => {
     const [orders, setOrder] = useState([]);
     const [check, tick] = useState();
-    const [currentPrice, setCurrentPrice] = useState(0);
     const [counter, setCounter] = useState([{ id: 0, value: 1 }]);
     const [vip,setVip]=useState(0)
 
@@ -104,11 +103,6 @@ const Order = (props) => {
         })
     }
 
-
-    const changeConst = (value) => {
-        if (vip==='C')
-            setCurrentPrice(parseFloat(value)*0.1);
-    };
     const sendData = async (e) => {
         e.preventDefault();
         try {
