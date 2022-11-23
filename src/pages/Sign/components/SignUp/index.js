@@ -36,6 +36,8 @@ function SignUp({ handleChangeSign }) {
                         uid: user.uid,
                         image: 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png',
                         money: 0,
+                        level:'D',
+                        vip:0,
                         admin: false,
                     });
                     console.log('Document written with ID: ', docRef.id);
