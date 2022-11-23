@@ -6,6 +6,7 @@ import { db } from '../../firebase/config';
 import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
 import Bill from '../../components/Bill/Bill';
+import {Scroll} from 'react-scroll-component';
 import Congrat from '../../components/Congrat/Congrat';
 const cx = classNames.bind(styles);
 
@@ -103,6 +104,7 @@ const Home = () => {
         <div className={cx('wrap')}>
 
             <div className={cx('Home')}>
+                
                 <Content handleClick={handleClick} 
                         foods={foods}
                         key={bridge} 

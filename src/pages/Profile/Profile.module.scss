@@ -9,9 +9,47 @@
 .profile {
     width: 400px;
     padding: 20px 16px;
+    display: flex;
     border-radius: var(--border-radius);
     background-color: var(--bg-clr);
     text-align: center;
+    flex-direction: column;
+}
+.box{
+    padding: 5px;
+    margin: 7px 0;
+    border-radius: 5px;
+}
+.btn{
+    background: var(--primary-clr);
+    outline: none;
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 10px 0;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+    font-size: 18px;
+    color: white;
+    width: 100px;
+    margin: 10px auto 0;
+
+    &:hover {
+        cursor: pointer;
+        background: rgba(200, 74, 121, 0.6);
+    }
+}
+
+.bank{
+    width: 400px;
+    padding: 20px 16px;
+    border-radius: var(--border-radius);
+    background-color: var(--bg-clr);
+
+    display: flex;
+    flex-direction: column;
+}
+.btn-list{
+    display: flex;
+    flex-direction: row;
 }
 
 .avatar {

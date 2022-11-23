@@ -21,6 +21,7 @@ const Order = (props) => {
     const [currentUser, setCurrentUser] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
 
+    
     const navigate = useNavigate();
 
     async function checkIsAdmin(userEmail) {
@@ -68,7 +69,7 @@ const Order = (props) => {
         vipCount()
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [orders, props.bridge, props.listSelect, props.check, props.send]);
+    }, [orders, props.bridge, props.listSelect, props.check, props.send,vip]);
     //end test
     const total= ()=>{
         return orders.reduce((sum,order)=>sum+order.price*order.amount,0)
