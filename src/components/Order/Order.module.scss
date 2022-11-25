@@ -159,9 +159,11 @@
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
     font-size: 16px;
     color: white;
+    transition: all 0.5s ease;
     &:hover {
         cursor: pointer;
         background: rgba(200, 74, 121, 0.6);
+        transform: scale(1.05);
     }
 }
 

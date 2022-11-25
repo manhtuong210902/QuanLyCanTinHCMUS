@@ -2,6 +2,27 @@
     padding: 16px 8px;
     margin-right: var(--order-width);
     .content-menu {
+        // =======
+        //     flex: 7;
+        //     .content-menu {
+        //         margin-top: 20px;
+        //         overflow-y: auto;
+        //         height: 82vh;
+        //         &::-webkit-scrollbar {
+        //             width: 0;
+        //             height: 20px;
+        //         }
+
+        //         &::-webkit-scrollbar-track {
+        //             border-radius: 50px;
+        //             background-color: rgba(255, 255, 255, 0.2);
+        //             margin-left: 10px;
+        //         }
+
+        //         &::-webkit-scrollbar-thumb {
+        //             border-radius: 50px;
+        //             background-color: rgba(18, 18, 18, 0.2);
+        //         }
         h2 {
             font-size: 24px;
             color: var(--primary-clr);

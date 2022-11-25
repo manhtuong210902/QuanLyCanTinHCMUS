@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ref, getDownloadURL, uploadBytesResumable, snapshot } from 'firebase/storage';
-import { collection, addDoc, setDoc, doc, query, getDocs, where, updateDoc } from 'firebase/firestore';
+import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { collection, addDoc, query, getDocs, where, updateDoc } from 'firebase/firestore';
 import { storage, db } from '../../firebase/config';
+import { AiTwotoneEdit } from 'react-icons/ai';
 import classNames from 'classnames/bind';
 import styles from './Storage.module.scss';
 const cx = classNames.bind(styles);
@@ -115,7 +116,7 @@ const Storage = () => {
                 // await updateDoc(doc(db, 'foods', docRef.id), {  //test update
                 //     ...data,
                 //     foodId: docRef.id
-                    
+
                 // });
                 const storageInfo = {
                     amount: parseInt(foodAmount),
@@ -172,6 +173,9 @@ const Storage = () => {
                                 <div className={cx('storage-price')}>
                                     <div className={cx('storage-price-total')}> Giá bán: {item.price}đ</div>
                                     <div className={cx('storage-price-total')}> Giá nhập: {item.priceImport}đ</div>
+                                </div>
+                                <div className={cx('storage-edit')}>
+                                    <AiTwotoneEdit />
                                 </div>
                             </div>
                         ))}
