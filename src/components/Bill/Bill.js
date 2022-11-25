@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import { prodErrorMap } from 'firebase/auth';
-import { collection, addDoc,query, where, getDocs,deleteDoc} from "firebase/firestore";
-import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { collection, addDoc, query, where, getDocs, deleteDoc } from 'firebase/firestore';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
 
 import { auth, db } from '../../firebase/config';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -13,7 +13,6 @@ import { useRef, useState } from 'react';
 const cx = classNames.bind(styles);
 
 const Bill = (props) => {
-
     const [currentUser, setCurrentUser] = useState(auth.currentUser);
     const [isAdmin, setIsAdmin] = useState(checkIsAdmin(auth.currentUser?.email));
 
@@ -32,63 +31,58 @@ const Bill = (props) => {
     // console.log(currentUser, isAdmin);
 
     const componentRef = useRef();
-    const C=500000
-    const B=1000000
-    const A=2000000
-    const updateFoodInfo = async(id,num)=>{
-        const q = query(collection(db, "storage"), where("foodId", "==", id));
+    const C = 500000;
+    const B = 1000000;
+    const A = 2000000;
+    const updateFoodInfo = async (id, num) => {
+        const q = query(collection(db, 'storage'), where('foodId', '==', id));
         const querySnapshot = await getDocs(q);
-        console.log(querySnapshot)
+        console.log(querySnapshot);
         let docID = '';
-        let amount=''
+        let amount = '';
         querySnapshot.forEach((doc) => {
-          docID = doc.id;
-          amount=doc.data().amont
+            docID = doc.id;
+            amount = doc.data().amont;
         });
-        console.log(docID)
-        const food = doc(db, "storage", docID);
-        await deleteDoc(doc(db, "storage", docID));
-        addDoc(collection(db,'storage'),{
-          foodId:id,
-          status:true,
-          amont:amount-num,
-        })
-    }
-    const handleDes=async()=>{
-        props.data.details.forEach((food)=>{
-            if (food.type ==='fast food')
-                updateFoodInfo(food.foodId,food.quantity)
-        })
+        console.log(docID);
+        const food = doc(db, 'storage', docID);
+        await deleteDoc(doc(db, 'storage', docID));
+        addDoc(collection(db, 'storage'), {
+            foodId: id,
+            status: true,
+            amont: amount - num,
+        });
+    };
+    const handleDes = async () => {
+        props.data.details.forEach((food) => {
+            if (food.type === 'fast food') updateFoodInfo(food.foodId, food.quantity);
+        });
 
-        const q = query(collection(db, "users"), where("uid", "==", props.data.bills.userID));
+        const q = query(collection(db, 'users'), where('uid', '==', props.data.bills.userID));
         const querySnapshot = await getDocs(q);
         let docID = '';
-        let person={money:0}
+        let person = { money: 0 };
         querySnapshot.forEach((doc) => {
-          docID = doc.id;
-          person=doc.data()
+            docID = doc.id;
+            person = doc.data();
         });
-        let vip=person.vip
-        await deleteDoc(doc(db, "users", docID));
-        person.money=person.money-props.data.bills.total
-        person.vip=person.vip+props.data.bills.total
-        
-        if(person.vip>C && vip<C) {
-            person.level='C'
-            props.changeCongrat({active:true,type:'C'})
+        let vip = person.vip;
+        await deleteDoc(doc(db, 'users', docID));
+        person.money = person.money - props.data.bills.total;
+        person.vip = person.vip + props.data.bills.total;
+
+        if (person.vip > C && vip < C) {
+            person.level = 'C';
+            props.changeCongrat({ active: true, type: 'C' });
+        } else if (person.vip > B && vip < B) {
+            person.level = 'B';
+            props.changeCongrat({ active: true, type: 'B' });
+        } else if (person.vip > A && vip < A) {
+            person.level = 'A';
+            props.changeCongrat({ active: true, type: 'A' });
         }
-        else if(person.vip>B && vip<B) {
-            person.level='B'
-            props.changeCongrat({active:true,type:'B'})
-        }
-        else if(person.vip>A && vip<A) {
-            person.level='A'
-            props.changeCongrat({active:true,type:'A'})
-        }
-        addDoc(collection(db,'users'),
-            person
-            )
-    }
+        addDoc(collection(db, 'users'), person);
+    };
     return (
         <div className={cx('modal-page')}>
             <div ref={componentRef} className={cx('bill')}>
@@ -112,7 +106,9 @@ const Bill = (props) => {
                                 <tr>
                                     <th scope="row">Khung giờ:</th>
                                     <td>
-                                        {props.bill.time==='...'?'...':`${props.bill.time} đến ${props.bill.timeEnd}`} 
+                                        {props.bill.time === '...'
+                                            ? '...'
+                                            : `${props.bill.time} đến ${props.bill.timeEnd}`}
                                     </td>
                                 </tr>
                             </tbody>
@@ -128,9 +124,9 @@ const Bill = (props) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {props.bill.orders.map((order) => {
+                                {props.bill.orders.map((order, index) => {
                                     return (
-                                        <tr>
+                                        <tr key={index}>
                                             <th scope="row">{Number(order.index) + 1}</th>
                                             <td>{order.name}</td>
                                             <td>{order.amount}</td>
@@ -173,7 +169,7 @@ const Bill = (props) => {
                     <button
                         className={cx('btn')}
                         onClick={async () => {
-                            handleDes()
+                            handleDes();
                             props.change(false);
                             props.changeModal(false);
                             props.changeList([]);
@@ -185,7 +181,6 @@ const Bill = (props) => {
                                     ...order,
                                 });
                             });
-                            
                         }}
                     >
                         OK

@@ -37,7 +37,7 @@ function Employee() {
 
     return (
         <div className={cx('wrapper')}>
-            <h2>Danh sách nhân viên</h2>
+            <h5>Danh sách nhân viên</h5>
             <Table striped bordered hover>
                 <thead>
                     <tr>

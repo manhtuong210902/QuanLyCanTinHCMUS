@@ -2,9 +2,14 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 200px;
+    width: var(--sidebar-width);
     min-height: calc(100vh - 130px);
     background: var(--primary-clr);
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    bottom: var(--header-height);
+    z-index: 10;
 }
 
 .sidebar-option {
@@ -12,7 +17,7 @@
     display: flex;
     flex-direction: column;
     z-index: 9;
-    
+
     .active {
         border-right: 6px solid var(--primary-clr);
         background: rgb(255, 255, 255, 0.4);
@@ -22,7 +27,7 @@
 .sidebar-option-item {
     height: 60px;
     text-decoration: none;
-    
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -40,7 +45,6 @@
 }
 
 .sidebar-setting {
-
     display: flex;
     flex-direction: column;
     background: var(--primary-clr);

@@ -1,4 +1,4 @@
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, getDocs, query } from 'firebase/firestore';
 import { useEffect, useRef, useState } from 'react';
 import { Table } from 'react-bootstrap';
 import { db } from '../../firebase/config';
@@ -13,19 +13,41 @@ function InventoryReport() {
     const componentRef = useRef();
     const [inventorys, setInventorys] = useState([]);
 
-    function getInventorys() {
-        onSnapshot(collection(db, 'storage'), (snapshot) => {
-            let items = snapshot.docs.map((doc) => {
-                return {
-                    ...doc.data(),
-                };
-            });
-            setInventorys(items);
+    async function getInventorys() {
+        const q = query(collection(db, 'storage'));
+        const querySnapshot = await getDocs(q);
+        const data = [];
+        querySnapshot.forEach((doc) => {
+            data.push(doc.data());
         });
+        return data;
     }
 
     useEffect(() => {
-        getInventorys();
+        getInventorys()
+            .then((data) => {
+                let items = data.map(async (storageItem) => {
+                    const q = query(collection(db, 'foods'));
+                    const querySnapshot = await getDocs(q);
+                    for (let i = 0; i < querySnapshot.docs.length; i++) {
+                        if (querySnapshot.docs[i].id === storageItem.foodId) {
+                            console.log(true);
+                            return {
+                                amount: storageItem.amont,
+                                ...querySnapshot.docs[i].data(),
+                            };
+                        }
+                    }
+                });
+                return items;
+            })
+            .then((data) => {
+                let items = Promise.all(data);
+                return items;
+            })
+            .then((data) => {
+                setInventorys(data);
+            });
     }, []);
 
     return (

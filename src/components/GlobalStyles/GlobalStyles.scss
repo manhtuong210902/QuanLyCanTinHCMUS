@@ -8,6 +8,9 @@
     --bg-clr: #f1f1f1;
     --bg-gray-clr: #e4e4e4;
     --border-radius: 8px;
+    --header-height: 60px;
+    --sidebar-width: 200px;
+    --order-width: 300px;
 }
 
 * {
@@ -20,4 +23,5 @@ body {
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
     line-height: 1.5;
+    overflow-x: hidden;
 }

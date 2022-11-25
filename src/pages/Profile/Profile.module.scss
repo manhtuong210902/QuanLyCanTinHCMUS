@@ -7,20 +7,19 @@
 }
 
 .profile {
-    width: 400px;
     padding: 20px 16px;
     display: flex;
     border-radius: var(--border-radius);
     background-color: var(--bg-clr);
-    text-align: center;
+    align-items: center;
     flex-direction: column;
 }
-.box{
+.box {
     padding: 5px;
     margin: 7px 0;
     border-radius: 5px;
 }
-.btn{
+.btn {
     background: var(--primary-clr);
     outline: none;
     border: none;
@@ -38,7 +37,7 @@
     }
 }
 
-.bank{
+.bank {
     width: 400px;
     padding: 20px 16px;
     border-radius: var(--border-radius);
@@ -47,7 +46,7 @@
     display: flex;
     flex-direction: column;
 }
-.btn-list{
+.btn-list {
     display: flex;
     flex-direction: row;
 }
@@ -66,6 +65,8 @@
     border-radius: var(--border-radius);
     padding: 8px 16px;
     margin-bottom: 16px;
+    width: 100%;
+    text-align: center;
     p {
         margin: 0;
     }

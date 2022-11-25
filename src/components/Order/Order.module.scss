@@ -1,7 +1,13 @@
 .Order {
-    margin-left: 20px;
-    height: calc(100vh - 60px);
-
+    padding: 16px 8px;
+    position: fixed;
+    top: var(--header-height);
+    bottom: var(--header-height);
+    right: 0;
+    width: var(--order-width);
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
     h2 {
         color: var(--primary-clr);
         font-size: 24px;
@@ -13,14 +19,14 @@
     flex-direction: column;
     border: 2px solid #ccc;
     border-radius: var(--border-radius);
-    height: 84%;
+    flex: 1;
 }
 
 .order-list {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-    height: 70%;
+    flex: 1;
     &::-webkit-scrollbar {
         width: 2px;
         height: 20px;
@@ -41,9 +47,10 @@
 .order-item {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     border-radius: var(--border-radius);
-    padding: 10px;
-    margin-bottom: 20px;
+    padding: 8px;
+    margin-bottom: 16px;
     position: relative;
 
     &::before {
@@ -55,20 +62,19 @@
         background: var(--primary-clr);
     }
     img {
-        width: 70px;
-        height: 70px;
+        width: 50px;
+        height: 50px;
         object-fit: contain;
     }
 }
 
 .order-info {
+    margin-left: 8px;
     display: flex;
     flex-direction: column;
-    margin: 0 30px;
-
     span {
-        font-size: 18px;
-        font-weight: bold;
+        font-size: 16px;
+        margin-bottom: 2px;
     }
 }
 
@@ -76,16 +82,16 @@
     display: flex;
     border-radius: var(--border-radius);
     overflow: hidden;
-    height: 26px;
+    height: 20px;
+    width: 70px;
     align-items: center;
 
     .order-amount-change {
-        width: 26px;
-        height: 26px;
+        width: 20px;
+        height: 20px;
         background: var(--primary-clr);
-        font-weight: bold;
         color: white;
-        font-size: 18px;
+        font-size: 14px;
         text-align: center;
         cursor: pointer;
 
@@ -97,6 +103,7 @@
     .order-amount-num {
         padding: 0 10px;
         border: 1px solid var(--primary-clr);
+        line-height: 18px;
     }
 }
 
@@ -113,11 +120,10 @@
 
 .order-cal {
     border-top: 2px solid #ccc;
-    margin: 0 20px;
-    .order-or,
+    padding: 10px 16px;
     .order-cost,
     .order-price-total {
-        margin-top: 10px;
+        margin-bottom: 8px;
         display: flex;
         justify-content: space-between;
 
@@ -130,6 +136,17 @@
             outline: none;
         }
     }
+
+    .order-or {
+        margin-bottom: 16px;
+        input {
+            margin-right: 4px;
+        }
+        label {
+            font-size: 16px;
+            font-weight: bold;
+        }
+    }
 }
 
 .order-btn {
@@ -137,28 +154,21 @@
     outline: none;
     border: none;
     border-radius: var(--border-radius);
-    padding: 10px 0;
+    width: 100%;
+    padding: 8px 16px;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
-    font-size: 18px;
+    font-size: 16px;
     color: white;
-    width: 200px;
-    margin: 10px auto 0;
-
     &:hover {
         cursor: pointer;
         background: rgba(200, 74, 121, 0.6);
     }
 }
 
-
-
-.dialog{
+.dialog {
     width: 1200px;
-    top:0;
-    left:0;
-    background: rgba(0,0,0,0.3);
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.3);
     position: absolute;
 }
-
-
-

@@ -14,14 +14,12 @@ const Order = (props) => {
     const [orders, setOrder] = useState([]);
     const [check, tick] = useState();
     const [counter, setCounter] = useState([{ id: 0, value: 1 }]);
-    const [vip,setVip]=useState(0)
-
+    const [vip, setVip] = useState(0);
 
     const [show, setShow] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
 
-    
     const navigate = useNavigate();
 
     async function checkIsAdmin(userEmail) {
@@ -61,48 +59,49 @@ const Order = (props) => {
         setCounter([{ id: 0, value: 1 }]);
         setOrder(props.listSelect);
 
-        tick(props.check)
-        console.log('order-render')
-        props.changeDesk('...')
-        props.changeTime('...')
-        props.changeData('')
-        vipCount()
+        tick(props.check);
+        console.log('order-render');
+        props.changeDesk('...');
+        props.changeTime('...');
+        props.changeData('');
+        vipCount();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [orders, props.bridge, props.listSelect, props.check, props.send,vip]);
+    }, [orders, props.bridge, props.listSelect, props.check, props.send, vip]);
     //end test
-    const total= ()=>{
-        return orders.reduce((sum,order)=>sum+order.price*order.amount,0)
-    }
-    const totalPrice = () => {
-        let des=0;
-        if (vip==='3%') des=  Number(0.03)
-        else if(vip==='5%') des= Number(0.05)
-        else if(vip==='10%') des= Number(0.1)
-        console.log(des)
-        return (1-des)* orders.reduce((sum, order) => sum + order.price * order.amount, 0);
+    const total = () => {
+        return orders.reduce((sum, order) => sum + order.price * order.amount, 0);
     };
-    const vipPrice=async()=>{
+    const totalPrice = () => {
+        let des = 0;
+        if (vip === '3%') des = Number(0.03);
+        else if (vip === '5%') des = Number(0.05);
+        else if (vip === '10%') des = Number(0.1);
+        console.log(des);
+        return (1 - des) * orders.reduce((sum, order) => sum + order.price * order.amount, 0);
+    };
+    const vipPrice = async () => {
         const auth = getAuth();
         const user = auth.currentUser;
-        if(user) {const q = query(collection(db, "users"), where("uid", "==",user.uid));
-        const querySnapshot = await getDocs(q);
-        let level
-        querySnapshot.forEach((doc) => {
-          level=doc.data().level
-        });
-        if(level=='C') return '3%'
-        else if(level=='B') return '5%'
-        else if(level=='A') return '10%'
+        if (user) {
+            const q = query(collection(db, 'users'), where('uid', '==', user.uid));
+            const querySnapshot = await getDocs(q);
+            let level;
+            querySnapshot.forEach((doc) => {
+                level = doc.data().level;
+            });
+            if (level == 'C') return '3%';
+            else if (level == 'B') return '5%';
+            else if (level == 'A') return '10%';
         }
         return 0;
-    }
-    const vipCount=()=>{
-        vipPrice().then((data)=>{
-            console.log(data)
-            setVip(data)
-        })
-    }
+    };
+    const vipCount = () => {
+        vipPrice().then((data) => {
+            console.log(data);
+            setVip(data);
+        });
+    };
 
     const sendData = async (e) => {
         e.preventDefault();
@@ -181,30 +180,32 @@ const Order = (props) => {
                 <div className={cx('order-list')}>
                     {orders.map((item, index) => (
                         <div className={cx('order-item')} key={index}>
-                            <img src={item.image} alt="" />
-                            <div className={cx('order-info')}>
-                                <span>{item.name}</span>
-                                <div className={cx('order-amount')}>
-                                    <div
-                                        className={cx('order-amount-change')}
-                                        onClick={() => {
-                                            handleDescease(item.amount, item.index);
-                                            item.amount = counter[item.index].value;
-                                            changeFlag(flag + 1);
-                                        }}
-                                    >
-                                        -
-                                    </div>
-                                    <div className={cx('order-amount-num')}>{item.amount}</div>
-                                    <div
-                                        className={cx('order-amount-change')}
-                                        onClick={() => {
-                                            handleIncease(item.amount, item.index);
-                                            item.amount = counter[item.index].value;
-                                            changeFlag(flag + 1);
-                                        }}
-                                    >
-                                        +
+                            <div className="d-flex">
+                                <img src={item.image} alt="" />
+                                <div className={cx('order-info')}>
+                                    <span>{item.name}</span>
+                                    <div className={cx('order-amount')}>
+                                        <div
+                                            className={cx('order-amount-change')}
+                                            onClick={() => {
+                                                handleDescease(item.amount, item.index);
+                                                item.amount = counter[item.index].value;
+                                                changeFlag(flag + 1);
+                                            }}
+                                        >
+                                            -
+                                        </div>
+                                        <div className={cx('order-amount-num')}>{item.amount}</div>
+                                        <div
+                                            className={cx('order-amount-change')}
+                                            onClick={() => {
+                                                handleIncease(item.amount, item.index);
+                                                item.amount = counter[item.index].value;
+                                                changeFlag(flag + 1);
+                                            }}
+                                        >
+                                            +
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -249,6 +250,50 @@ const Order = (props) => {
                         <span>Thanh toán: </span>
                         <span>{totalPrice()}</span>
                     </div>
+                    <button
+                        className={cx('order-btn')}
+                        onClick={() => {
+                            const auth = getAuth();
+                            const user = auth.currentUser;
+
+                            if (user === null) {
+                                setShow(true);
+                            } else {
+                                props.changeModal(true);
+                                props.changeBill({
+                                    userName: user ? user.displayName : '',
+                                    orderDate: getCurrentDate(),
+                                    total: totalPrice(),
+                                    time: props.time,
+                                    timeEnd: addTimes(props.time, '00:30'),
+                                    table: props.desk,
+                                    orders: orders,
+                                });
+                                props.changeData({
+                                    bills: {
+                                        userID: user ? user.uid : '',
+                                        orderDate: getCurrentDate(),
+                                        total: totalPrice(),
+                                        typePament: true,
+                                        time: props.time,
+                                        table: props.desk,
+                                    },
+                                    details: orders.map((order) => {
+                                        return {
+                                            foodId: order?.foodId || 1, ////
+                                            date: getCurrentDate(),
+                                            nameFood: order.name,
+                                            quantity: order.amount,
+                                            totalMoney: order.price * order.amount,
+                                            type: order.type,
+                                        };
+                                    }),
+                                });
+                            }
+                        }}
+                    >
+                        Đặt món
+                    </button>
                 </div>
                 <CustomModal
                     show={show}
@@ -258,53 +303,6 @@ const Order = (props) => {
                     textPrimary={'Đăng nhập'}
                     textSecondary={'Hủy'}
                 />
-                ;
-                <button
-                    className={cx('order-btn')}
-                    onClick={() => {
-                        const auth = getAuth();
-                        const user = auth.currentUser;
-
-                        if (user === null) {
-                            setShow(true);
-                        }
-
-                        else {
-                            props.changeModal(true);
-                        props.changeBill({
-                            userName: user ? user.displayName : '',
-                            orderDate: getCurrentDate(),
-                            total: totalPrice(),
-                            time: props.time,
-                            timeEnd: addTimes(props.time, '00:30'),
-                            table: props.desk,
-                            orders: orders,
-                        });
-                        props.changeData({
-                            bills: {
-                                userID: user ? user.uid : '',
-                                orderDate: getCurrentDate(),
-                                total: totalPrice(),
-                                typePament: true,
-                                time: props.time,
-                                table: props.desk,
-                            },
-                            details: orders.map((order) => {
-                                return {
-                                    foodId: order?.foodId || 1, ////
-                                    date: getCurrentDate(),
-                                    nameFood: order.name,
-                                    quantity: order.amount,
-                                    totalMoney: order.price * order.amount,
-                                    type: order.type,
-                                };
-                            }),
-                        });
-                    }}
-                }
-                >
-                    Đặt món
-                </button>
             </div>
         </div>
     );

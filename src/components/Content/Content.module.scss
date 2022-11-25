@@ -1,14 +1,10 @@
 .Content {
+    padding: 16px 8px;
+    margin-right: var(--order-width);
     .content-menu {
-        margin-top: 20px;
         h2 {
             font-size: 24px;
             color: var(--primary-clr);
-        }
-
-        .content-menu-list-item {
-            display: flex;
-            flex-wrap: wrap;
         }
     }
 }
