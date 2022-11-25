@@ -1,6 +1,7 @@
 .Order {
+    flex: 3;
     margin-left: 20px;
-    height: calc(100vh - 60px);
+    height: 82vh;
 
     h2 {
         color: var(--primary-clr);
@@ -13,7 +14,7 @@
     flex-direction: column;
     border: 2px solid #ccc;
     border-radius: var(--border-radius);
-    height: 84%;
+    height: 94%;
 }
 
 .order-list {
@@ -142,23 +143,20 @@
     font-size: 18px;
     color: white;
     width: 200px;
-    margin: 10px auto 0;
+    margin: 10px auto;
+    transition: all 0.5s ease;
 
     &:hover {
         cursor: pointer;
         background: rgba(200, 74, 121, 0.6);
+        transform: scale(1.05);
     }
 }
 
-
-
-.dialog{
+.dialog {
     width: 1200px;
-    top:0;
-    left:0;
-    background: rgba(0,0,0,0.3);
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.3);
     position: absolute;
 }
-
-
-

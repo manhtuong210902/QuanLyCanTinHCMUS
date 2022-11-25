@@ -1,7 +1,26 @@
 .footer {
-    height: 60px;
+    height: 40px;
     background-color: var(--primary-clr);
     padding: 0 20px;
     display: flex;
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+    img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+    }
+}
+
+.footer-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
     justify-content: center;
+    font-style: italic;
+    color: white;
+    font-size: 14px;
 }
