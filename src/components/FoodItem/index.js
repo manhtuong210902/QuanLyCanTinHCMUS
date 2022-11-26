@@ -23,13 +23,15 @@ const FoodItem = (props) => {
             set(amount !== 0);
         });
     return (
-        <Col xs={6}>
+        <Col xs={12} lg={6}>
             <div className={cx('foodItem')}>
-                <img src={food.image} alt="" />
+                <div className={cx('foodImg')}>
+                    <img src={food.image} alt="" />
+                </div>
                 <div className={cx('food-info')}>
                     <label className={cx('food-label')}>{food.name}</label>
                     <div className={cx('food-price')}>
-                        Gía :<span>{food.price}đ</span>
+                        Giá :<span>{food.price}đ</span>
                     </div>
                     {able ? (
                         <div className={cx('btn-add')}>
@@ -51,7 +53,7 @@ const FoodItem = (props) => {
                             </button>
                         </div>
                     ) : (
-                        <div style={{ color: 'red' }}>Hết hàng</div>
+                        <div className={cx('no-food')}>Hết hàng</div>
                     )}
                 </div>
             </div>
