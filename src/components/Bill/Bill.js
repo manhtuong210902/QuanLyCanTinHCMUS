@@ -37,15 +37,12 @@ const Bill = (props) => {
     const updateFoodInfo = async (id, num) => {
         const q = query(collection(db, 'storage'), where('foodId', '==', id));
         const querySnapshot = await getDocs(q);
-        console.log(querySnapshot);
         let docID = '';
         let amount = '';
         querySnapshot.forEach((doc) => {
             docID = doc.id;
             amount = doc.data().amont;
         });
-        console.log(docID);
-        const food = doc(db, 'storage', docID);
         await deleteDoc(doc(db, 'storage', docID));
         addDoc(collection(db, 'storage'), {
             foodId: id,

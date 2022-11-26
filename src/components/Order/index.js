@@ -6,7 +6,6 @@ import styles from './Order.module.scss';
 import { collection, addDoc, where, getDocs, query } from 'firebase/firestore';
 import { db, auth } from '../../firebase/config';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import Table from '../../pages/Table/Table';
 import { useNavigate } from 'react-router-dom';
 import CustomModal from '../CustomModal';
 const cx = classNames.bind(styles);
@@ -74,10 +73,9 @@ const Order = (props) => {
     };
     const totalPrice = () => {
         let des = 0;
-        if (vip === '3%') des = Number(0.03);
-        else if (vip === '5%') des = Number(0.05);
-        else if (vip === '10%') des = Number(0.1);
-        console.log(des);
+        if (vip === '3%') des = 0.03;
+        else if (vip === '5%') des = 0.05;
+        else if (vip === '10%') des = 0.1;
         return (1 - des) * orders.reduce((sum, order) => sum + order.price * order.amount, 0);
     };
     const vipPrice = async () => {
@@ -98,38 +96,11 @@ const Order = (props) => {
     };
     const vipCount = () => {
         vipPrice().then((data) => {
-            console.log(data);
             setVip(data);
         });
     };
 
-    const sendData = async (e) => {
-        e.preventDefault();
-        try {
-            const auth = getAuth();
-            const user = auth.currentUser;
-            let docRef = await addDoc(collection(db, 'bills'), {
-                userID: user ? user.uid : '',
-                orderDate: getCurrentDate(),
-                total: totalPrice(),
-                typePament: true,
-                time: props.time,
-                table: props.desk,
-            });
-            const billID = docRef.id;
-            orders.forEach((order) => {
-                docRef = addDoc(collection(db, 'orderDetails'), {
-                    billID: billID,
-                    date: getCurrentDate(),
-                    nameFood: order.name,
-                    quantity: order.amount,
-                    totalMoney: order.price * order.amount,
-                });
-            });
-        } catch (e) {
-            console.log(e);
-        }
-    };
+   
     const getCurrentDate = (separator = '-') => {
         let newDate = new Date();
         let date = newDate.getDate();
