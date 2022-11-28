@@ -3,6 +3,8 @@ import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { collection, addDoc, query, getDocs, where, updateDoc } from 'firebase/firestore';
 import { storage, db } from '../../firebase/config';
 import { AiTwotoneEdit } from 'react-icons/ai';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 import classNames from 'classnames/bind';
 import styles from './Storage.module.scss';
 const cx = classNames.bind(styles);
@@ -15,8 +17,38 @@ const Storage = () => {
     const [foodAmount, setFoodAmount] = useState('');
     const [foodPriceImport, setFoodPriceImport] = useState('');
 
+    //modal
+    const [posUpdate, setPosUpdate] = useState(-1);
+    const [amountUpdate, setAmountUpdate] = useState(0);
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = (pos) => {
+        setShow(true);
+        setPosUpdate(pos);
+    };
+    const handleUpdate = async () => {
+        console.log('update');
+        try {
+            const a = parseInt(foodAmount) + parseInt(storages[posUpdate].amount);
+            const foodId = storages[posUpdate].foodId;
+            const q = query(collection(db, 'storage'), where('foodId', '==', foodId));
+            const querySnapshot = await getDocs(q);
+            let id = '';
+            querySnapshot.forEach((doc) => {
+                id = doc.id;
+            });
+
+            await updateDoc(query(collection(db, 'storage', id)), {
+                amount: a,
+            });
+        } catch (err) {
+            console.log(err);
+        }
+    };
+    //end modal
     //read data
     useEffect(() => {
+        console.log('get data');
         const getFoods = async () => {
             const q = query(collection(db, 'foods'), where('type', '==', 'fast food'));
             const querySnapshot = await getDocs(q);
@@ -41,26 +73,28 @@ const Storage = () => {
         getStorage().then((storage) => {
             getFoods().then((foods) => {
                 const arr = [];
-                storage.forEach((store) => {
-                    foods.forEach((food) => {
-                        if (food.id === store.foodId) {
-                            arr.push({
-                                ...store,
-                                name: food.name,
-                                price: food.price,
-                                priceImport: food.priceImport,
-                                image: food.image,
-                            });
-                        }
-                    });
-                });
+
+                // storage.forEach((store) => {
+                //     foods.forEach((food) => {
+                //         if (food.id === store.foodId) {
+                //             arr.push({
+                //                 ...store,
+                //                 name: food.name,
+                //                 price: food.price,
+                //                 priceImport: food.priceImport,
+                //                 image: food.image,
+                //             });
+                //         }
+                //     });
+                // });
                 setStorage(arr);
             });
         });
-    }, [storages]);
+    }, []);
 
     //get url image
     useEffect(() => {
+        console.log('up load');
         const uploadFile = () => {
             const storageRef = ref(storage, `images/${img.name}`);
             const uploadTask = uploadBytesResumable(storageRef, img);
@@ -94,12 +128,14 @@ const Storage = () => {
     };
 
     const handlePreviewImage = (e) => {
+        console.log('prev img');
         const imagePath = e.target.files[0];
         imagePath.preview = URL.createObjectURL(imagePath);
         setImg(imagePath);
     };
 
     const handleAdditem = async (e) => {
+        console.log('add');
         e.preventDefault();
         const data = {
             image: imgUrl,
@@ -113,11 +149,6 @@ const Storage = () => {
             const pos = checkInArr(storages, data);
             if (pos === -1) {
                 const docRef = await addDoc(collection(db, 'foods'), data);
-                // await updateDoc(doc(db, 'foods', docRef.id), {  //test update
-                //     ...data,
-                //     foodId: docRef.id
-
-                // });
                 const storageInfo = {
                     amount: parseInt(foodAmount),
                     status: true,
@@ -155,6 +186,7 @@ const Storage = () => {
         else if (type === 'import') setFoodPriceImport(value);
     };
 
+    console.log('storage');
     return (
         <div className={cx('storage')}>
             <div className={cx('storage-header')}>
@@ -175,7 +207,7 @@ const Storage = () => {
                                     <div className={cx('storage-price-total')}> Giá nhập: {item.priceImport}đ</div>
                                 </div>
                                 <div className={cx('storage-edit')}>
-                                    <AiTwotoneEdit />
+                                    <AiTwotoneEdit onClick={() => handleShow(index)} />
                                 </div>
                             </div>
                         ))}
@@ -223,6 +255,25 @@ const Storage = () => {
                     </button>
                 </div>
             </div>
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Cập nhật số lượng:</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className={cx('storage-update')}>
+                        <label>Nhập số lượng:</label>
+                        <input type="text" value={amountUpdate} onChange={(e) => setAmountUpdate(e.target.value)} />
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={handleUpdate}>
+                        Cập nhật
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };

@@ -71,7 +71,7 @@ function Chart({ typeStatistical, typeChart, date, listDate }) {
                 collection(db, 'bills'),
                 where('orderDate', '>=', date.valueFrom),
                 where('orderDate', '<=', date.valueTo),
-                where('typePament', '==', true)
+                where('typePament', '==', true),
             );
             const querySnapshot = await getDocs(q);
             const data = [];
@@ -79,15 +79,19 @@ function Chart({ typeStatistical, typeChart, date, listDate }) {
                 data.push(doc.data());
             });
             return data;
-        }
+        };
 
-        if(typeStatistical === 'foods') {
+        if (typeStatistical === 'foods') {
             getFoods().then((dataLabels) => {
                 setLabels(dataLabels);
                 getOrderDetails().then((data) => {
                     const dataForEachLabel = new Array(dataLabels.length).fill(0);
                     dataLabels.forEach((label, index) => {
+                        console.log('hi');
+
                         data.forEach((bill) => {
+                            console.log('ha');
+
                             if (label === bill.nameFood) {
                                 dataForEachLabel[index] += bill.totalMoney;
                             }
@@ -98,7 +102,7 @@ function Chart({ typeStatistical, typeChart, date, listDate }) {
             });
         } else {
             setLabels(listDate);
-            getBills().then(bills => {
+            getBills().then((bills) => {
                 const dataForEachLabel = new Array(listDate.length).fill(0);
                 listDate.forEach((date, index) => {
                     bills.forEach((bill) => {
@@ -108,9 +112,8 @@ function Chart({ typeStatistical, typeChart, date, listDate }) {
                     });
                 });
                 setDataChart(dataForEachLabel);
-            })
+            });
         }
-        
     }, [date, typeStatistical]);
 
     const data = {

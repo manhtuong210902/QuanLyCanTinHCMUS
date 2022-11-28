@@ -27,7 +27,7 @@ const Content = (props) => {
         //     setFoods(food);
         // });
     }, []);
-
+    console.log('content');
     return (
         <div className={cx('Content')}>
             {props.check ? (
