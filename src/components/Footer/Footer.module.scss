@@ -1,4 +1,9 @@
 .footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
     height: var(--header-height);
     background-color: var(--primary-clr);
     padding: 0 20px;

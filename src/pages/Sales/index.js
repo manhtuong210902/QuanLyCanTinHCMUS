@@ -77,13 +77,11 @@ const Sales=()=> {
         })
     },[])
 
-    return <div>a
+    return <div>
          <div className={cx('bill-list')}>
          <div className={cx('content')}>
 
-            {bills?.map((bill,index)=>{
-                console.log(bill)
-                console.log(details)
+            {bills?.reverse().map((bill,index)=>{
                 return (
                 <div className={cx('content')}>
                 <h2 style={{ marginTop: '3px', textAlign: 'center' }}>Hóa đơn</h2>
@@ -92,7 +90,7 @@ const Sales=()=> {
                         <tbody>
                             <tr>
                                 <th scope="row">Khách hàng</th>
-                                <td>{user.displayName}</td>
+                                <td>{user.userMame}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Ngày mua:</th>

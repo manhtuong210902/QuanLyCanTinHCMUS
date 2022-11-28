@@ -37,7 +37,7 @@ const Content = (props) => {
             ) : (
                 <div className={cx('content-menu')}>
                     <h2>Menu</h2>
-                    <Container>
+                    <Container className={cx('menu')}>
                         <Row>
                             {props.foods.map((food, index) => (
                                 // <div className={cx('content-menu-item')}>
