@@ -6,7 +6,7 @@
 .storage-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin-top: 10px;
     h2 {
         color: var(--primary-clr);
         font-size: 24px;
@@ -208,4 +208,26 @@
         cursor: pointer;
         background: rgba(184, 0, 101, 0.6);
     }
+}
+
+.modal-add-title {
+    color: var(--primary-clr);
+}
+
+.modal-add {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.modal-add-input {
+    padding: 10px;
+    border: 1px solid var(--primary-clr);
+    border-radius: var(--border-radius);
+}
+
+.modal-add-btn {
+    background: var(--primary-clr);
+    border-radius: var(--border-radius);
+    outline: none;
+    border: 1px solid var(--primary-clr);
 }
