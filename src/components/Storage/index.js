@@ -57,7 +57,7 @@ const Storage = () => {
                 setStorage(arr);
             });
         });
-    }, [storages]);
+    }, []);
 
     //get url image
     useEffect(() => {

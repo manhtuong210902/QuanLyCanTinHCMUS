@@ -49,6 +49,7 @@ function Chart({ typeStatistical, typeChart, date, listDate }) {
             const querySnapshot = await getDocs(q);
             const data = [];
             querySnapshot.forEach((doc) => {
+                console.log('get');
                 data.push(doc.data().name);
             });
             return data;
@@ -62,6 +63,7 @@ function Chart({ typeStatistical, typeChart, date, listDate }) {
             const querySnapshot = await getDocs(q);
             const data = [];
             querySnapshot.forEach((doc) => {
+                console.log('get');
                 data.push(doc.data());
             });
             return data;
@@ -71,23 +73,26 @@ function Chart({ typeStatistical, typeChart, date, listDate }) {
                 collection(db, 'bills'),
                 where('orderDate', '>=', date.valueFrom),
                 where('orderDate', '<=', date.valueTo),
-                where('typePament', '==', true)
+                where('typePament', '==', true),
             );
             const querySnapshot = await getDocs(q);
             const data = [];
             querySnapshot.forEach((doc) => {
+                console.log('get');
                 data.push(doc.data());
             });
             return data;
-        }
+        };
 
-        if(typeStatistical === 'foods') {
+        if (typeStatistical === 'foods') {
             getFoods().then((dataLabels) => {
                 setLabels(dataLabels);
                 getOrderDetails().then((data) => {
                     const dataForEachLabel = new Array(dataLabels.length).fill(0);
                     dataLabels.forEach((label, index) => {
+                        console.log('loop-1');
                         data.forEach((bill) => {
+                            console.log('loop-2');
                             if (label === bill.nameFood) {
                                 dataForEachLabel[index] += bill.totalMoney;
                             }
@@ -98,19 +103,23 @@ function Chart({ typeStatistical, typeChart, date, listDate }) {
             });
         } else {
             setLabels(listDate);
-            getBills().then(bills => {
+            getBills().then((bills) => {
                 const dataForEachLabel = new Array(listDate.length).fill(0);
                 listDate.forEach((date, index) => {
+                    console.log('loop-1');
                     bills.forEach((bill) => {
+                        console.log('loop-2');
                         if (date === bill.orderDate) {
                             dataForEachLabel[index] += bill.total;
                         }
                     });
                 });
                 setDataChart(dataForEachLabel);
-            })
+            });
         }
-        
+
+        console.log('render');
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [date, typeStatistical]);
 
     const data = {
