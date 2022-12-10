@@ -36,7 +36,7 @@ function Sign() {
             } else {
             }
         });
-    }, [navigate])
+    }, [navigate]);
 
     useEffect(() => {
         let timer1;
@@ -57,15 +57,17 @@ function Sign() {
 
     return (
         <div className={cx('wrapper')}>
-            <div className={cx('slide')}>
-                <img ref={imgRef} className={cx('img')} src={listSlideImg[slideImg]} alt="img" />
-            </div>
-            <div className={cx('sign')}>
-                {isSignIn ? (
-                    <SignIn handleChangeSign={handleChangeSign} />
-                ) : (
-                    <SignUp handleChangeSign={handleChangeSign} />
-                )}
+            <div className={cx('wrapper-main')}>
+                <div className={cx('slide')}>
+                    <img ref={imgRef} className={cx('img')} src={listSlideImg[slideImg]} alt="img" />
+                </div>
+                <div className={cx('sign')}>
+                    {isSignIn ? (
+                        <SignIn handleChangeSign={handleChangeSign} />
+                    ) : (
+                        <SignUp handleChangeSign={handleChangeSign} />
+                    )}
+                </div>
             </div>
         </div>
     );

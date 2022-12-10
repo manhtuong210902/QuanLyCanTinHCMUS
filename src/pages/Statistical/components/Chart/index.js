@@ -90,9 +90,7 @@ function Chart({ typeStatistical, typeChart, date, listDate }) {
                 getOrderDetails().then((data) => {
                     const dataForEachLabel = new Array(dataLabels.length).fill(0);
                     dataLabels.forEach((label, index) => {
-                        console.log('loop-1');
                         data.forEach((bill) => {
-                            console.log('loop-2');
                             if (label === bill.nameFood) {
                                 dataForEachLabel[index] += bill.totalMoney;
                             }
@@ -106,9 +104,7 @@ function Chart({ typeStatistical, typeChart, date, listDate }) {
             getBills().then((bills) => {
                 const dataForEachLabel = new Array(listDate.length).fill(0);
                 listDate.forEach((date, index) => {
-                    console.log('loop-1');
                     bills.forEach((bill) => {
-                        console.log('loop-2');
                         if (date === bill.orderDate) {
                             dataForEachLabel[index] += bill.total;
                         }
@@ -118,7 +114,6 @@ function Chart({ typeStatistical, typeChart, date, listDate }) {
             });
         }
 
-        console.log('render');
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [date, typeStatistical]);
 

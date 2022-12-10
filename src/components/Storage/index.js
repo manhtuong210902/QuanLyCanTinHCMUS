@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import { collection, addDoc, query, getDocs, where, updateDoc } from 'firebase/firestore';
+import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
+import { collection, addDoc, query, getDocs, where, setDoc, doc, updateDoc } from 'firebase/firestore';
 import { storage, db } from '../../firebase/config';
 import { AiTwotoneEdit } from 'react-icons/ai';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+
 import classNames from 'classnames/bind';
 import styles from './Storage.module.scss';
 const cx = classNames.bind(styles);
@@ -14,7 +17,13 @@ const Storage = () => {
     const [foodPrice, setFoodPrice] = useState('');
     const [foodAmount, setFoodAmount] = useState('');
     const [foodPriceImport, setFoodPriceImport] = useState('');
+    const [count, setCount] = useState(0);
+    const [newData, setNewData] = useState({ id: '', amount: 0 });
+    //modal
+    const [show, setShow] = useState(false);
 
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
     //read data
     useEffect(() => {
         const getFoods = async () => {
@@ -22,7 +31,7 @@ const Storage = () => {
             const querySnapshot = await getDocs(q);
             const data = [];
             querySnapshot.forEach((doc) => {
-                const tmp = { ...doc.data(), id: doc.id };
+                const tmp = { ...doc.data() };
                 data.push(tmp);
             });
             return data;
@@ -43,7 +52,7 @@ const Storage = () => {
                 const arr = [];
                 storage.forEach((store) => {
                     foods.forEach((food) => {
-                        if (food.id === store.foodId) {
+                        if (food.foodId === store.foodId) {
                             arr.push({
                                 ...store,
                                 name: food.name,
@@ -57,40 +66,16 @@ const Storage = () => {
                 setStorage(arr);
             });
         });
-    }, []);
+    }, [count]);
 
-    //get url image
-    useEffect(() => {
-        const uploadFile = () => {
-            const storageRef = ref(storage, `images/${img.name}`);
-            const uploadTask = uploadBytesResumable(storageRef, img);
-
-            uploadTask.on(
-                (snapshot) => {
-                    if (snapshot.state === 'running' || snapshot.state === 'paused') {
-                        return;
-                    }
-                },
-                (error) => {
-                    console.log(error);
-                },
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        setImgUrl(downloadURL);
-                    });
-                },
-            );
-        };
-        img && uploadFile();
-    }, [img]);
-
-    const checkInArr = (arr, tmp) => {
-        for (let i = 0; Array.isArray(arr) && i < arr.length; i++) {
-            if (arr[i].name === tmp.name) {
-                return i;
-            }
-        }
-        return -1;
+    const uploadImage = async () => {
+        if (img == null) return;
+        const imageRef = ref(storage, `images/${img.name}`);
+        uploadBytes(imageRef, img).then((snapshot) => {
+            getDownloadURL(snapshot.ref).then((url) => {
+                setImgUrl(url);
+            });
+        });
     };
 
     const handlePreviewImage = (e) => {
@@ -101,43 +86,34 @@ const Storage = () => {
 
     const handleAdditem = async (e) => {
         e.preventDefault();
-        const data = {
-            image: imgUrl,
+        let data = {
             name: foodName,
             price: parseInt(foodPrice),
             priceImport: parseInt(foodPriceImport),
             type: 'fast food',
         };
+        uploadImage()
+            .then(() => {
+                data = { ...data, image: imgUrl };
+            })
+            .catch((err) => {
+                alert(err.message);
+                return;
+            });
 
         try {
-            const pos = checkInArr(storages, data);
-            if (pos === -1) {
-                const docRef = await addDoc(collection(db, 'foods'), data);
-                // await updateDoc(doc(db, 'foods', docRef.id), {  //test update
-                //     ...data,
-                //     foodId: docRef.id
+            const docRef = await addDoc(collection(db, 'foods'), { ...data });
 
-                // });
-                const storageInfo = {
-                    amount: parseInt(foodAmount),
-                    status: true,
-                    foodId: docRef.id,
-                };
-                addDoc(collection(db, 'storage'), storageInfo);
-            } else {
-                const a = parseInt(foodAmount) + parseInt(storages[pos].amount);
-                const foodId = storages[pos].foodId;
-                const q = query(collection(db, 'storage'), where('foodId', '==', foodId));
-                const querySnapshot = await getDocs(q);
-                let id = '';
-                querySnapshot.forEach((doc) => {
-                    id = doc.id;
-                });
-
-                await updateDoc(query(collection(db, 'storage', id)), {
-                    amount: a,
-                });
-            }
+            await setDoc(doc(db, 'foods', docRef.id), {
+                ...data,
+                foodId: docRef.id,
+            });
+            const storageInfo = {
+                amount: parseInt(foodAmount),
+                status: true,
+                foodId: docRef.id,
+            };
+            await addDoc(collection(db, 'storage'), storageInfo).then(() => setCount(count + 1));
         } catch (err) {
             console.log(err);
         }
@@ -145,6 +121,23 @@ const Storage = () => {
         setFoodAmount('');
         setFoodPrice('');
         setFoodPriceImport('');
+    };
+
+    const addOldItem = async () => {
+        const a = parseInt(foodAmount) + parseInt(newData.amount);
+        const q = query(collection(db, 'storage'), where('foodId', '==', newData.id));
+        const querySnapshot = await getDocs(q);
+        let id = '';
+        querySnapshot.forEach((doc) => {
+            id = doc.id;
+        });
+        setShow(false);
+        await updateDoc(doc(db, 'storage', id), {
+            amont: a,
+        }).then(() => {
+            setCount(count + 1);
+        });
+        setFoodAmount('');
     };
 
     const getFood = (type, value) => {
@@ -164,17 +157,26 @@ const Storage = () => {
                 <div className={cx('storage-bill')}>
                     <div className={cx('storage-list')}>
                         {storages.map((item, index) => (
-                            <div className={cx('storage-item')} key={index}>
+                            <div className={cx('storage-item')} key={index} id={item.foodId}>
                                 <img src={item.image} alt="" />
                                 <div className={cx('storage-info')}>
                                     <span>{item.name}</span>
-                                    <span>Số lượng: {item.amount}</span>
+                                    <span>Số lượng: {item.amont}</span>
                                 </div>
                                 <div className={cx('storage-price')}>
                                     <div className={cx('storage-price-total')}> Giá bán: {item.price}đ</div>
                                     <div className={cx('storage-price-total')}> Giá nhập: {item.priceImport}đ</div>
                                 </div>
-                                <div className={cx('storage-edit')}>
+                                <div
+                                    className={cx('storage-edit')}
+                                    onClick={() => {
+                                        setNewData({
+                                            id: item.foodId,
+                                            amount: item.amont,
+                                        });
+                                        handleShow();
+                                    }}
+                                >
                                     <AiTwotoneEdit />
                                 </div>
                             </div>
@@ -223,6 +225,31 @@ const Storage = () => {
                     </button>
                 </div>
             </div>
+            <>
+                <Modal show={show} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title className={cx('modal-add-title')}>Thêm sản phẩm đã tồn tại</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <span className={cx('modal-add')}>Số lượng: </span>
+                        <input
+                            className={cx('modal-add-input')}
+                            type="text"
+                            placeholder="Nhập số lượng cần thêm"
+                            value={foodAmount}
+                            onChange={(e) => setFoodAmount(e.target.value)}
+                        />
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
+                        <Button className={cx('modal-add-btn')} variant="primary" onClick={addOldItem}>
+                            Save Changes
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            </>
         </div>
     );
 };
