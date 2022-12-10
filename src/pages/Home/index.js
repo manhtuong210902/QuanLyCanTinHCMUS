@@ -7,6 +7,7 @@ import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
 import Bill from '../../components/Bill/Bill';
 import Congrat from '../../components/Congrat/Congrat';
+import Enought from '../../components/Enought';
 const cx = classNames.bind(styles);
 
 const Home = () => {
@@ -22,6 +23,10 @@ const Home = () => {
     const [foods, setFoods] = useState([]);
     const [congrat, setCongrat] = useState(false);
     const [vipType, setViptype] = useState();
+    const [enought,setEnought]=useState(false);
+    const changeEnought=(a)=>{
+        setEnought(a)
+    }
     const changeCongrat = (a) => {
         setCongrat(a.active);
         setViptype(a.type);
@@ -137,9 +142,11 @@ const Home = () => {
                     change={change}
                     changeList={changeList}
                     changeCongrat={changeCongrat}
+                    changeEnought={changeEnought}
                 />
             )}
             {congrat && <Congrat changeCongrat={changeCongrat} vipType={vipType} />}
+            {enought && <Enought changeEnought={changeEnought}/>}
         </div>
     );
 };

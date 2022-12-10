@@ -13,8 +13,16 @@ const Sales=()=> {
     const [a,setA]=useState(0)
     const user = auth.currentUser;
     let docID=''
+    const getCurrentDate = (separator = '-') => {
+        let newDate = new Date();
+        let date = newDate.getDate();
+        let month = newDate.getMonth() + 1;
+        let year = newDate.getFullYear();
+
+        return `${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${date}`;
+    };
     const getBills = async () => {
-        const q = query(collection(db, 'bills'),where("userID", "==", user.uid));
+        const q = query(collection(db, 'bills'),where("userID", "==", user.uid),where("orderDate","==",getCurrentDate()));
         const querySnapshot = await getDocs(q);
         const data = [];
         let de=[]

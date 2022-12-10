@@ -161,6 +161,7 @@ const Order = (props) => {
                                             onClick={() => {
                                                 handleDescease(item.amount, item.index);
                                                 item.amount = counter[item.index].value;
+                                                if (item.amount===0) props.deleteClick(item.name)
                                                 changeFlag(flag + 1);
                                             }}
                                         >
