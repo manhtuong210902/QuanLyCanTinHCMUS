@@ -10,6 +10,7 @@ import styles from './bill.module.scss';
 import ReactToPrint from 'react-to-print';
 import { BsPrinter } from 'react-icons/bs';
 import { useRef, useState } from 'react';
+import { async } from '@firebase/util';
 const cx = classNames.bind(styles);
 
 const Bill = (props) => {
@@ -50,6 +51,15 @@ const Bill = (props) => {
             amont: amount - num,
         });
     };
+    const getUserMoney=async()=>{
+        const q = query(collection(db, 'users'), where('uid', '==', props.data.bills.userID));
+        const querySnapshot = await getDocs(q);
+        let person = { money: 0 };
+        querySnapshot.forEach((doc) => {
+            person = doc.data();
+        });
+        return person.money
+    }
     const handleDes = async () => {
         props.data.details.forEach((food) => {
             if (food.type === 'fast food') updateFoodInfo(food.foodId, food.quantity);
@@ -80,6 +90,24 @@ const Bill = (props) => {
         }
         addDoc(collection(db, 'users'), person);
     };
+    const handleEnougtMoney=async()=>{
+        handleDes();
+        props.change(false);
+        props.changeModal(false);
+        props.changeList([]);
+        let docRef = await addDoc(collection(db, 'bills'), props.data.bills);
+        const billID = docRef.id;
+        props.data.details.map((order) => {
+            docRef = addDoc(collection(db, 'orderDetails'), {
+                billID: billID,
+                ...order,
+            });
+        });
+    }
+    const handleNotEnoughtMoney=async()=>{
+        props.changeModal(false);
+        props.changeEnought(true);
+    }
     return (
         <div className={cx('modal-page')}>
             <div ref={componentRef} className={cx('bill')}>
@@ -166,18 +194,10 @@ const Bill = (props) => {
                     <button
                         className={cx('btn')}
                         onClick={async () => {
-                            handleDes();
-                            props.change(false);
-                            props.changeModal(false);
-                            props.changeList([]);
-                            let docRef = await addDoc(collection(db, 'bills'), props.data.bills);
-                            const billID = docRef.id;
-                            props.data.details.map((order) => {
-                                docRef = addDoc(collection(db, 'orderDetails'), {
-                                    billID: billID,
-                                    ...order,
-                                });
-                            });
+                            const userMoney=await getUserMoney()
+                            if(props.bill.total<=userMoney)
+                                handleEnougtMoney()
+                            else handleNotEnoughtMoney()
                         }}
                     >
                         OK
