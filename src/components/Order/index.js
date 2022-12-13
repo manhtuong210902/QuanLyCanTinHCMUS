@@ -88,9 +88,9 @@ const Order = (props) => {
             querySnapshot.forEach((doc) => {
                 level = doc.data().level;
             });
-            if (level == 'C') return '3%';
-            else if (level == 'B') return '5%';
-            else if (level == 'A') return '10%';
+            if (level === 'C') return '3%';
+            else if (level === 'B') return '5%';
+            else if (level === 'A') return '10%';
         }
         return 0;
     };
@@ -100,7 +100,6 @@ const Order = (props) => {
         });
     };
 
-   
     const getCurrentDate = (separator = '-') => {
         let newDate = new Date();
         let date = newDate.getDate();
@@ -203,11 +202,15 @@ const Order = (props) => {
                             />
                             <label>Đặt bàn</label>
                         </div>
-                        {check &&
-                            `Số bàn: ${props.desk ? props.desk : '...'} 
-                                Khung giờ:  ${props.time ? props.time : '...'} ${props.time ? 'đến' : ''} ${
-                                props.time ? addTimes(props.time, '00:30') : ''
-                            }`}
+                        {check && (
+                            <>
+                                <p className="mb-0">Bàn số: {props.desk ? props.desk : '...'}</p>
+                                <p className="mb-0">
+                                    Khung giờ: {props.time ? props.time : '...'} {props.time ? 'đến' : ''}{' '}
+                                    {props.time ? addTimes(props.time, '00:30') : ''}
+                                </p>
+                            </>
+                        )}
                     </div>
                     <div className={cx('order-price-total')}>
                         <span>Tổng tiền: </span>

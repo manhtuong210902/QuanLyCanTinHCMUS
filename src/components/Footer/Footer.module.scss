@@ -29,3 +29,10 @@
     color: white;
     font-size: 14px;
 }
+
+@media (max-width: 991.98px) {
+    .footer {
+        display: none;
+        z-index: unset;
+    }
+}

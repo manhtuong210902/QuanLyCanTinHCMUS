@@ -48,7 +48,7 @@ function Sidebar() {
             admin: false,
         },
         {
-            name: 'Logout',
+            name: 'Đăng xuất',
             path: '/sign',
             icon: BiLogOutCircle,
             admin: false,

@@ -30,7 +30,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: 2px solid rgb(58, 57, 57);
+    border-top: 1px solid rgb(255 255 255 / 30%);
 
     &:hover {
         cursor: pointer;
@@ -40,6 +40,9 @@
         font-size: 16px;
         color: white;
         font-weight: bold;
+    }
+    &:last-child {
+        border-bottom: 1px solid rgb(255 255 255 / 30%);
     }
 }
 
@@ -55,7 +58,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: 2px solid rgb(58, 57, 57);
+    border-top: 1px solid rgb(255 255 255 / 30%);
     color: white;
     font-weight: bold;
 
@@ -73,6 +76,17 @@
     }
 
     &:first-child {
-        border-top: 2px solid rgb(58, 57, 57);
+        border-top: 1px solid rgb(255 255 255 / 30%);
+    }
+
+    &:last-child {
+        border-bottom: 1px solid rgb(255 255 255 / 30%);
+    }
+}
+
+@media (max-width: 991.98px) {
+    .sidebar {
+        display: none;
+        z-index: unset;
     }
 }

@@ -23,35 +23,37 @@ const FoodItem = (props) => {
             set(amount !== 0);
         });
     return (
-        <Col xs={12} lg={6}>
+        <Col xs={6}>
             <div className={cx('foodItem')}>
                 <div className={cx('foodImg')}>
                     <img src={food.image} alt="" />
                 </div>
                 <div className={cx('food-info')}>
                     <label className={cx('food-label')}>{food.name}</label>
-                    <div className={cx('food-price')}>
-                        Giá :<span>{food.price}đ</span>
-                    </div>
                     {able ? (
-                        <div className={cx('btn-add')}>
-                            <button
-                                className={cx('food-add')}
-                                onClick={
-                                    () =>
-                                        props.handleClick({
-                                            name: food.name,
-                                            price: food.price,
-                                            image: food.image,
-                                            amount: 1,
-                                            foodId: food.foodId,
-                                            type: food.type,
-                                        }) //foodId:
-                                }
-                            >
-                                +
-                            </button>
-                        </div>
+                        <>
+                            <div className={cx('food-price')}>
+                                Giá: <span>{food.price}đ</span>
+                            </div>
+                            <div className={cx('btn-add')}>
+                                <button
+                                    className={cx('food-add')}
+                                    onClick={
+                                        () =>
+                                            props.handleClick({
+                                                name: food.name,
+                                                price: food.price,
+                                                image: food.image,
+                                                amount: 1,
+                                                foodId: food.foodId,
+                                                type: food.type,
+                                            }) //foodId:
+                                    }
+                                >
+                                    +
+                                </button>
+                            </div>
+                        </>
                     ) : (
                         <div className={cx('no-food')}>Hết hàng</div>
                     )}
