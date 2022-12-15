@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { publicRoutes, privateRoutes } from './routes';
 import { DefaultLayout } from './layouts';
 import PrivateRoute from './components/PrivateRoute';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
     return (
@@ -42,6 +43,19 @@ function App() {
                     </Route>
                 </Routes>
             </div>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
+            <ToastContainer />
         </Router>
     );
 }

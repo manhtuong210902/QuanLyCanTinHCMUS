@@ -116,7 +116,7 @@ function Sidebar() {
             <div className={cx('sidebar-setting')}>
                 {settingList.map((item, index) =>
                     auth.currentUser ? (
-                        item.name === 'Logout' ? (
+                        item.name === 'Đăng xuất' ? (
                             <NavLink key={index} onClick={handleClickLogout} className={cx('sidebar-setting-item')}>
                                 <div className={cx('sidebar-setting-icon')}>{<item.icon />}</div>
                                 <span>{item.name}</span>
