@@ -6,9 +6,11 @@ import { RiLoginCircleLine } from 'react-icons/ri';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { BiStore } from 'react-icons/bi';
 import { BsList } from 'react-icons/bs';
-import { auth } from '../../firebase/config';
+import { auth, db } from '../../firebase/config';
 import { useEffect, useState } from 'react';
 import { BiLogOutCircle, BiUserCircle } from 'react-icons/bi';
+import { onAuthStateChanged } from 'firebase/auth';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 const cx = classNames.bind(styles);
 
 function Header() {
@@ -56,9 +58,11 @@ function Header() {
     ];
 
     const navigate = useNavigate();
-    const user = auth.currentUser;
+    // const user = auth.currentUser;
     const [showMenu, setShowMenu] = useState(false);
     const [isClickLogout, setIsClickLogout] = useState(false);
+    const [user, setUser] = useState(null);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     function handleToggleMenu() {
         setShowMenu(!showMenu);
@@ -70,10 +74,29 @@ function Header() {
         auth.signOut();
     }
 
-    useEffect(() => {
-        if (isClickLogout) {
-            navigate('/sign');
+    async function checkIsAdmin(userEmail) {
+        if (userEmail) {
+            const q = await query(collection(db, 'users'), where('email', '==', userEmail), where('admin', '==', true));
+            const querySnapshot = await getDocs(q);
+            if (!querySnapshot.empty) {
+                setIsAdmin(true);
+            } else {
+                setIsAdmin(false);
+            }
         }
+    }
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            setUser(auth.currentUser);
+            if (auth.currentUser) {
+                checkIsAdmin(auth.currentUser.email);
+            }
+            if (isClickLogout) {
+                setUser(null);
+                navigate('/sign');
+            }
+        });
     }, [isClickLogout, navigate]);
 
     return (
@@ -104,7 +127,7 @@ function Header() {
                                 ></img>
                             </div>
                         </Link>
-                    ) : (
+                    ) : user && isAdmin && item.name === 'History' ? '' : (
                         <NavLink to={item.path} key={item.path} className={cx('header-sidebar-item')}>
                             <div className={cx('header-sidebar-icon')}>{<item.icon />}</div>
                             <span>{item.name}</span>

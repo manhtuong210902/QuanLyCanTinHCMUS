@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { collection, addDoc } from 'firebase/firestore';
 import { auth, db } from '../../../../firebase/config';
+import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 
@@ -29,6 +30,7 @@ function SignUp({ handleChangeSign }) {
         createUserWithEmailAndPassword(auth, user.email, user.password)
             .then(async (userCredential) => {
                 const user = userCredential.user;
+                toast.success('Tạo tài khoản thành công!');
                 try {
                     const docRef = await addDoc(collection(db, 'users'), {
                         name: uName,
@@ -46,6 +48,7 @@ function SignUp({ handleChangeSign }) {
                 }
             })
             .catch((error) => {
+                toast.error('Email đã tồn tại!');
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.log(errorCode, errorMessage);
