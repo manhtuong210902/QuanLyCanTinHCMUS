@@ -15,9 +15,8 @@
     flex-direction: column;
 }
 .box {
-    padding: 5px;
-    margin: 7px 0;
-    border-radius: 5px;
+    font-size: 16px;
+    margin: 10px 0;
 }
 .btn {
     background: var(--primary-clr);
@@ -26,10 +25,13 @@
     border-radius: var(--border-radius);
     padding: 10px 0;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
-    font-size: 18px;
+    font-size: 16px;
     color: white;
     width: 100px;
     margin: 10px auto 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     &:hover {
         cursor: pointer;
@@ -76,4 +78,21 @@
     background-color: var(--primary-clr);
     color: #fff;
     cursor: pointer;
+}
+
+.title {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 991.98px) {
+    .btn {
+        width: unset;
+        flex: 1;
+        padding: 8px 0;
+    }
+
+    .btn-list {
+        gap: 10px;
+    }
 }

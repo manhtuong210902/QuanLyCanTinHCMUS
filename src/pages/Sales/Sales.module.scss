@@ -1,5 +1,35 @@
-.content{
-    min-height: 450px;
-    max-width: 500px;
-    margin-left: 20px;
+.content {
+    margin: 20px 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cus-table {
+    font-size: 16px;
+}
+
+.bill-item {
+    width: 400px;
+    padding: 8px 16px;
+    border: 1px solid #333;
+}
+
+@media (max-width: 991.98px) {
+    .bill-item {
+        width: 350px;
+        padding: 4px 8px;
+        border: 1px solid #333;
+    }
+
+    .cus-table {
+        font-size: 14px;
+    }
+
+    // .btn {
+    //     padding: 8px 0;
+    // }
 }

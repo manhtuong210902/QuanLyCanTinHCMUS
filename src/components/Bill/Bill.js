@@ -1,20 +1,15 @@
 import classNames from 'classnames/bind';
-import { prodErrorMap } from 'firebase/auth';
 import { collection, addDoc, query, where, getDocs, deleteDoc } from 'firebase/firestore';
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
-
+import { doc } from 'firebase/firestore';
 import { auth, db } from '../../firebase/config';
-import { onAuthStateChanged } from 'firebase/auth';
-
 import styles from './bill.module.scss';
 import ReactToPrint from 'react-to-print';
 import { BsPrinter } from 'react-icons/bs';
 import { useRef, useState } from 'react';
-import { async } from '@firebase/util';
+
 const cx = classNames.bind(styles);
 
 const Bill = (props) => {
-    const [currentUser, setCurrentUser] = useState(auth.currentUser);
     const [isAdmin, setIsAdmin] = useState(checkIsAdmin(auth.currentUser?.email));
 
     async function checkIsAdmin(userEmail) {
@@ -51,15 +46,15 @@ const Bill = (props) => {
             amont: amount - num,
         });
     };
-    const getUserMoney=async()=>{
+    const getUserMoney = async () => {
         const q = query(collection(db, 'users'), where('uid', '==', props.data.bills.userID));
         const querySnapshot = await getDocs(q);
         let person = { money: 0 };
         querySnapshot.forEach((doc) => {
             person = doc.data();
         });
-        return person.money
-    }
+        return person.money;
+    };
     const handleDes = async () => {
         props.data.details.forEach((food) => {
             if (food.type === 'fast food') updateFoodInfo(food.foodId, food.quantity);
@@ -90,7 +85,7 @@ const Bill = (props) => {
         }
         addDoc(collection(db, 'users'), person);
     };
-    const handleEnougtMoney=async()=>{
+    const handleEnougtMoney = async () => {
         handleDes();
         props.change(false);
         props.changeModal(false);
@@ -103,18 +98,18 @@ const Bill = (props) => {
                 ...order,
             });
         });
-    }
-    const handleNotEnoughtMoney=async()=>{
+    };
+    const handleNotEnoughtMoney = async () => {
         props.changeModal(false);
         props.changeEnought(true);
-    }
+    };
     return (
         <div className={cx('modal-page')}>
             <div ref={componentRef} className={cx('bill')}>
                 <div className={cx('content')}>
                     <h2 style={{ marginTop: '3px', textAlign: 'center' }}>Hóa đơn</h2>
                     <div className={cx('info-table')}>
-                        <table class="table">
+                        <table className={cx('cus-table', 'table')}>
                             <tbody>
                                 <tr>
                                     <th scope="row">Khách hàng</th>
@@ -139,7 +134,7 @@ const Bill = (props) => {
                             </tbody>
                         </table>
                         Danh sách sản phẩm
-                        <table class="table">
+                        <table className={cx('cus-table', 'table')}>
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
@@ -177,13 +172,13 @@ const Bill = (props) => {
                             props.changeModal(false);
                         }}
                     >
-                        back
+                        Trở lại
                     </button>
                     <ReactToPrint
                         trigger={() => {
                             return (
                                 <div className={cx('btn')}>
-                                    In <BsPrinter />
+                                    <BsPrinter /> <p>In</p>
                                 </div>
                             );
                         }}
@@ -194,13 +189,12 @@ const Bill = (props) => {
                     <button
                         className={cx('btn')}
                         onClick={async () => {
-                            const userMoney=await getUserMoney()
-                            if(props.bill.total<=userMoney)
-                                handleEnougtMoney()
-                            else handleNotEnoughtMoney()
+                            const userMoney = await getUserMoney();
+                            if (props.bill.total <= userMoney) handleEnougtMoney();
+                            else handleNotEnoughtMoney();
                         }}
                     >
-                        OK
+                        Xác nhận
                     </button>
                 </div>
             </div>

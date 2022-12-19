@@ -5,6 +5,7 @@ import { auth, db } from '../../firebase/config';
 import styles from './Profile.module.scss';
 import classNames from 'classnames/bind';
 import PreLoader from '../../components/PreLoader';
+import { Form } from 'react-bootstrap';
 
 const cx = classNames.bind(styles);
 
@@ -64,15 +65,19 @@ function Profile() {
             {isN ? (
                 <div className={cx('wrapper')}>
                     <div className={cx('bank')}>
-                        <label for="banks">Chọn ngân hàng :</label>
-                        <select name="banks" id="banks">
+                        <label for="banks" className={cx('title')}>
+                            Chọn ngân hàng:
+                        </label>
+                        <Form.Select name="banks" id="banks">
                             <option value="Vietcombank">Vietcombank</option>
                             <option value="BIDV">BIDV</option>
                             <option value="Sacombank">Sacombank</option>
                             <option value="Agribank">Agribank</option>
-                        </select>
-                        <input className={cx('box')} placeholder="Nhập số tài khoản" />
-                        <input
+                        </Form.Select>
+
+                        <Form.Control className={cx('box')} placeholder="Nhập số tài khoản" />
+
+                        <Form.Control
                             className={cx('box')}
                             placeholder="Nhập số tiền cần nạp"
                             value={money}
@@ -97,7 +102,7 @@ function Profile() {
                                     setMoney('');
                                 }}
                             >
-                                Oke
+                                Nạp
                             </div>
                         </div>
                     </div>

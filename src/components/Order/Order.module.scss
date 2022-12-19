@@ -20,6 +20,16 @@
         top: unset;
         right: unset;
         bottom: unset;
+        width: 500px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .Order {
+        position: relative;
+        top: unset;
+        right: unset;
+        bottom: unset;
         width: 100%;
     }
 }

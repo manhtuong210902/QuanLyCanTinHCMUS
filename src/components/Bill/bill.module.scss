@@ -1,54 +1,76 @@
-.modal-page{
+.modal-page {
     position: fixed;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    width: 100%;
-    height: 150%;
-    background-color: rgba(0,0,0,0.3);
+    background-color: rgba(0, 0, 0, 0.3);
     z-index: 10;
     display: flex;
-    align-items:baseline;
+    align-items: center;
     justify-content: center;
+}
 
+.cus-table {
+    font-size: 16px;
 }
-.content{
-    min-height: 450px;
-}
-.bill{
-    margin-top: 50px;
-    min-width: 450px;
-    min-height: 600px;
+
+.bill {
     background-color: white;
     position: relative;
     border-radius: 10px;
     border: var(--primary-clr) 3px solid;
-    max-width: 400px;
     padding: 16px;
 }
-.info-table{
+.info-table {
     display: flex;
     flex-direction: column;
 }
-.btn{
+
+.list-btn {
+    margin-top: 20px;
+}
+
+.btn {
     background: var(--primary-clr);
     outline: none;
     border: none;
     border-radius: var(--border-radius);
     padding: 10px 0;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
-    font-size: 18px;
+    font-size: 16px;
     color: white;
     width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin: 10px auto 0;
+    gap: 5px;
+
+    p {
+        margin: 0;
+    }
 
     &:hover {
         cursor: pointer;
         background: rgba(200, 74, 121, 0.6);
     }
 }
-.list-btn{
+.list-btn {
     display: flex;
     flex-direction: row;
+}
+
+@media (max-width: 991.98px) {
+    .bill {
+        padding: 16px 4px;
+    }
+
+    .cus-table {
+        font-size: 14px;
+    }
+
+    .btn {
+        padding: 8px 0;
+    }
 }
