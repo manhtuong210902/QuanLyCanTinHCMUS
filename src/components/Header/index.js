@@ -127,7 +127,7 @@ function Header() {
                                 ></img>
                             </div>
                         </Link>
-                    ) : user && isAdmin && item.name === 'History' ? '' : (
+                    ) : ((user && isAdmin) || (!user)) && item.name === 'History' ? '' : (
                         <NavLink to={item.path} key={item.path} className={cx('header-sidebar-item')}>
                             <div className={cx('header-sidebar-icon')}>{<item.icon />}</div>
                             <span>{item.name}</span>

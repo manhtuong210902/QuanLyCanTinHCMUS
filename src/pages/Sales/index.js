@@ -12,6 +12,7 @@ const Sales = () => {
     const [details, setDetails] = useState([]);
     const [a, setA] = useState(0);
     const user = auth.currentUser;
+    console.log(user);
     let docID = '';
     const getCurrentDate = (separator = '-') => {
         let newDate = new Date();
@@ -102,7 +103,7 @@ const Sales = () => {
                                         <tbody>
                                             <tr>
                                                 <th scope="row">Khách hàng</th>
-                                                <td>{user.userMame}</td>
+                                                <td>{user.email}</td>
                                             </tr>
                                             <tr>
                                                 <th scope="row">Ngày mua:</th>

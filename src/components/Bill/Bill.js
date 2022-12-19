@@ -70,9 +70,10 @@ const Bill = (props) => {
         });
         let vip = person.vip;
         await deleteDoc(doc(db, 'users', docID));
-        person.money = person.money - props.data.bills.total;
-        person.vip = person.vip + props.data.bills.total;
-
+        if (!isAdmin) {
+            person.money = person.money - props.data.bills.total;
+            person.vip = person.vip + props.data.bills.total;
+        }
         if (person.vip > C && vip < C) {
             person.level = 'C';
             props.changeCongrat({ active: true, type: 'C' });
@@ -112,8 +113,8 @@ const Bill = (props) => {
                         <table className={cx('cus-table', 'table')}>
                             <tbody>
                                 <tr>
-                                    <th scope="row">Khách hàng</th>
-                                    <td>{props.bill.userName}</td>
+                                    <th scope="row">{isAdmin ? 'Nhân viên' : 'Khách hàng'}</th>
+                                    <td>{auth.currentUser.email}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Ngày mua:</th>
@@ -190,7 +191,7 @@ const Bill = (props) => {
                         className={cx('btn')}
                         onClick={async () => {
                             const userMoney = await getUserMoney();
-                            if (props.bill.total <= userMoney) handleEnougtMoney();
+                            if (isAdmin || props.bill.total <= userMoney) handleEnougtMoney();
                             else handleNotEnoughtMoney();
                         }}
                     >
