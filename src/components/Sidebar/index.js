@@ -14,26 +14,31 @@ const cx = classNames.bind(styles);
 function Sidebar() {
     const optionList = [
         {
+            id: 1,
             name: 'Thực đơn',
             path: '/',
             admin: false,
         },
         {
+            id: 2,
             name: 'Thống kê',
             path: '/statistical',
             admin: true,
         },
         {
+            id: 3,
             name: 'Báo cáo',
             path: '/report',
             admin: true,
         },
         {
+            id: 4,
             name: 'Kho',
             path: '/storage',
             admin: true,
         },
         {
+            id: 5,
             name: 'Nhân viên',
             path: '/employee',
             admin: true,
@@ -57,9 +62,11 @@ function Sidebar() {
 
     const [isClickLogout, setIsClickLogout] = useState(false);
 
-    const [currentUser, setCurrentUser] = useState(null);
+    const [currentUser, setCurrentUser] = useState(auth.currentUser);
 
     const [isAdmin, setIsAdmin] = useState(false);
+
+    const [active, setActive] = useState(1);
 
     const navigate = useNavigate();
 
@@ -94,23 +101,32 @@ function Sidebar() {
         });
     }, [isClickLogout, navigate]);
 
+    useEffect(() => {
+        console.log('render sidebar');
+    }, []);
+
     return (
         <div className={cx('sidebar')}>
             <div className={cx('sidebar-option')}>
-                {optionList.map((item, index) =>
-                    item.admin ? (
-                        isAdmin ? (
-                            <NavLink key={index} className={cx('sidebar-option-item')} to={item.path}>
-                                <span>{item.name}</span>
-                            </NavLink>
-                        ) : (
-                            ''
-                        )
-                    ) : (
-                        <NavLink key={index} className={cx('sidebar-option-item')} to={item.path}>
+                {isAdmin ? (
+                    optionList.map((item) => (
+                        <NavLink
+                            key={item.id}
+                            className={
+                                active === item.id ? cx('sidebar-option-item', 'active') : cx('sidebar-option-item')
+                            }
+                            to={item.path}
+                            onClick={() => {
+                                setActive(item.id);
+                            }}
+                        >
                             <span>{item.name}</span>
                         </NavLink>
-                    ),
+                    ))
+                ) : (
+                    <NavLink className={cx('sidebar-option-item', 'active')} to={'/'}>
+                        <span>Thực Đơn</span>
+                    </NavLink>
                 )}
             </div>
             <div className={cx('sidebar-setting')}>

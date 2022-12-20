@@ -49,7 +49,6 @@ function Chart({ typeStatistical, typeChart, date, listDate }) {
             const querySnapshot = await getDocs(q);
             const data = [];
             querySnapshot.forEach((doc) => {
-                console.log('get');
                 data.push(doc.data().name);
             });
             return data;
@@ -63,7 +62,6 @@ function Chart({ typeStatistical, typeChart, date, listDate }) {
             const querySnapshot = await getDocs(q);
             const data = [];
             querySnapshot.forEach((doc) => {
-                console.log('get');
                 data.push(doc.data());
             });
             return data;
@@ -78,7 +76,6 @@ function Chart({ typeStatistical, typeChart, date, listDate }) {
             const querySnapshot = await getDocs(q);
             const data = [];
             querySnapshot.forEach((doc) => {
-                console.log('get');
                 data.push(doc.data());
             });
             return data;
