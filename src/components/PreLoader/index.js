@@ -1,12 +1,13 @@
 import styles from './PreLoader.module.scss';
 import classNames from 'classnames/bind';
+import { Spinner } from 'react-bootstrap';
 
 const cx = classNames.bind(styles);
 
 function PreLoader() {
     return (
         <div className={cx('wrapper')}>
-            <img src="/images/logo.png" alt="" className={cx('image')} />
+            <Spinner className={cx('spinner')} animation="border" variant="light" />
         </div>
     );
 }

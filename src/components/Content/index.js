@@ -7,7 +7,6 @@ import { Container, Row } from 'react-bootstrap';
 
 const cx = classNames.bind(styles);
 const Content = (props) => {
-    console.log('content');
     return (
         <div className={cx('Content')}>
             {props.check ? (

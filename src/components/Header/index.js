@@ -101,11 +101,11 @@ function Header() {
 
     return (
         <div className={cx('header')}>
-            <NavLink to="/" className={cx('header-logo', 'd-none d-lg-flex')}>
+            <NavLink to="/" className={!isAdmin ? cx('header-logo', 'd-none d-lg-flex') : cx('header-logo')}>
                 <img src="/images/logo.png" alt="logo" />
             </NavLink>
 
-            <button className={cx('toggle-menu-btn', 'd-lg-none')} onClick={handleToggleMenu}>
+            <button className={!isAdmin ? cx('toggle-menu-btn', 'd-lg-none') : cx('d-none')} onClick={handleToggleMenu}>
                 <BsList />
             </button>
 
@@ -127,7 +127,9 @@ function Header() {
                                 ></img>
                             </div>
                         </Link>
-                    ) : ((user && isAdmin) || (!user)) && item.name === 'History' ? '' : (
+                    ) : ((user && isAdmin) || !user) && item.name === 'History' ? (
+                        ''
+                    ) : (
                         <NavLink to={item.path} key={item.path} className={cx('header-sidebar-item')}>
                             <div className={cx('header-sidebar-icon')}>{<item.icon />}</div>
                             <span>{item.name}</span>
@@ -164,7 +166,7 @@ function Header() {
             </div>
 
             {/* show menu mobile */}
-            {showMenu && (
+            {showMenu && !isAdmin && (
                 <>
                     <div className={cx('nav-modal')} onClick={handleToggleMenu}></div>
                     <div className={cx('nav-mobile')}>
