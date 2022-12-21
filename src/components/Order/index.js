@@ -12,7 +12,7 @@ const cx = classNames.bind(styles);
 const Order = (props) => {
     const [orders, setOrder] = useState([]);
     const [check, tick] = useState();
-    const [counter, setCounter] = useState([{ id: 0, value: 1 }]);
+    const [counter, setCounter] = useState([{ id: 0, value: 1,amount:3,able:true }]);
     const [vip, setVip] = useState(0);
 
     const [show, setShow] = useState(false);
@@ -42,22 +42,78 @@ const Order = (props) => {
         });
     }, [navigate]);
 
-    const handleDescease = (val, id) => {
-        counter[id] === undefined
-            ? counter.push({ id: id, value: val - 1 >= 0 ? val - 1 : 0 })
-            : (counter[id].value = val - 1 >= 0 ? val - 1 : 0);
+    const handleDescease = (val, idx,id) => {
+        const food = props.food;
+        const q = query(collection(db, 'storage'), where('foodId', '==',id));
+        const getData = async () => {
+                const querySnapshot = await getDocs(q);
+                let amount = '';
+                querySnapshot.forEach((doc) => {
+                    amount = doc.data().amont;
+                });
+            return amount;
+        };
+        getData().then(data=>{
+            counter[idx].amount=data
+            setCounter(counter)  
+        })
+        if(counter[idx].amount!==''){
+            if(counter[idx].amount-val>=0){
+                counter[idx].able=true
+            }
+        }
+        counter[idx].value = val - 1 >= 0 ? val - 1 : 0
         setCounter(counter);
     };
-    const handleIncease = (val, id) => {
-        counter[id] === undefined ? counter.push({ id: id, value: val + 1 }) : (counter[id].value = val + 1);
-        setCounter(counter);
+    const handleIncease = (val, idx,id) => {
+        
+        const food = props.food;
+        const q = query(collection(db, 'storage'), where('foodId', '==',id));
+        const getData = async () => {
+                const querySnapshot = await getDocs(q);
+                let amount = '';
+                querySnapshot.forEach((doc) => {
+                    amount = doc.data().amont;
+                });
+            return amount;
+        };
+        getData().then(data=>{
+            counter[idx].amount=data
+            setCounter(counter)  
+        })
+        if(counter[idx].amount!==''){
+            if(counter[idx].amount-val<=0){
+                counter[idx].able=false
+                counter[idx].value = val
+                setCounter(counter)
+            }
+            else {
+                counter[idx].able=true
+                counter[idx].value = val + 1;
+                setCounter(counter);
+            }
+        }
+        else {
+            counter[idx].value = val + 1;
+            setCounter(counter);
+        }        
+        
     };
     const [flag, changeFlag] = useState(0);
     //test
     useEffect(() => {
-        setCounter([{ id: 0, value: 1 }]);
         setOrder(props.listSelect);
-
+        setCounter([])
+        orders.forEach((sl,index)=>{
+            if (counter[index]===undefined)
+            {
+                counter.push({id:index,value:sl.amount,amount:3,able:sl.able}) 
+            }
+            else {
+                counter[index].value+=sl.amount
+            }
+            setCounter(counter)
+        })
         tick(props.check);
         console.log('order-render');
         props.changeDesk('...');
@@ -158,7 +214,7 @@ const Order = (props) => {
                                         <div
                                             className={cx('order-amount-change')}
                                             onClick={() => {
-                                                handleDescease(item.amount, item.index);
+                                                handleDescease(item.amount, item.index,item.foodId);
                                                 item.amount = counter[item.index].value;
                                                 if (item.amount===0) props.deleteClick(item.name)
                                                 changeFlag(flag + 1);
@@ -167,16 +223,30 @@ const Order = (props) => {
                                             -
                                         </div>
                                         <div className={cx('order-amount-num')}>{item.amount}</div>
+                                        
+                                        {
+                                        
+                                        !counter[item.index]||(counter[item.index].able)
+                                        ?
                                         <div
-                                            className={cx('order-amount-change')}
-                                            onClick={() => {
-                                                handleIncease(item.amount, item.index);
-                                                item.amount = counter[item.index].value;
-                                                changeFlag(flag + 1);
-                                            }}
+                                        className={cx('order-amount-change')}
+                                        onClick={() => {
+                                            console.log(counter)
+                                            handleIncease(item.amount, item.index,item.foodId);
+                                            item.amount = counter[item.index].value;
+                                            changeFlag(flag + 1);
+                                        }}
                                         >
                                             +
                                         </div>
+                                        :
+                                        <div
+                                        className={cx('order-amount-change')}
+                                        style={{opacity:0.3}}
+                                        >
+                                            +
+                                        </div>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -230,7 +300,10 @@ const Order = (props) => {
                         onClick={() => {
                             const auth = getAuth();
                             const user = auth.currentUser;
+                            if(totalPrice()===0){
 
+                            }
+                            else
                             if (user === null) {
                                 setShow(true);
                             } else {

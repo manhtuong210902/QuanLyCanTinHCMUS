@@ -24,6 +24,10 @@ const Home = () => {
     const [congrat, setCongrat] = useState(false);
     const [vipType, setViptype] = useState();
     const [enought,setEnought]=useState(false);
+    const [disable,setDisable]=useState(false);
+    const changeDisable=(a)=>{
+        setDisable(a)
+    }
     const changeEnought=(a)=>{
         setEnought(a)
     }
@@ -33,14 +37,16 @@ const Home = () => {
     };
     const handleClick = (obj) => {
         let p = true;
+        let amount
         for (let i = 0; i < listSelect.length; i++) {
             if (obj.name === listSelect[i].name) {
                 p = false;
                 listSelect[i].amount = listSelect[i].amount + 1;
+                amount =listSelect[i].amount
                 break;
             }
         }
-        p && listSelect.push({ index: listSelect.length, ...obj });
+        p && listSelect.push({ index: listSelect.length,amount, ...obj });
         updateList(listSelect);
         setBridge(bridge + 1);
     };
@@ -56,11 +62,9 @@ const Home = () => {
     };
     const deleteClick = (n) => {
         // listSelect=listSelect.filter((item)=>item.name!==n)
-        let s = false;
         let i = 0;
         for (i; i < listSelect.length; i++) {
             if (listSelect[i].name === n) {
-                s = true;
                 listSelect.splice(i, 1);
             }
             // listSelect[i].index= s?i-1:i
@@ -112,13 +116,18 @@ const Home = () => {
                     foods={foods}
                     key={bridge}
                     check={check}
+                    listSelect={listSelect}
                     changeDesk={changeDesk}
                     changeTime={changeTime}
+                    disable={disable}
+                    changeDisable={changeDisable}
                 />
 
                 <Order
                     listSelect={listSelect}
                     bridge={bridge}
+                    disable={disable}
+                    changeDisable={changeDisable}
                     deleteClick={deleteClick}
                     change={change}
                     desk={desk}

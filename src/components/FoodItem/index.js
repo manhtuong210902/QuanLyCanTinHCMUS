@@ -20,7 +20,13 @@ const FoodItem = (props) => {
     };
     if (food.type === 'fast food')
         getData().then((amount) => {
-            set(amount !== 0);
+            let a=0
+            props.select.forEach((f)=>{
+                if(f.foodId===food.foodId)
+                a=f.amount
+            })
+                
+            set(amount- a> 0);
         });
     return (
         <Col xs={6}>
@@ -47,6 +53,7 @@ const FoodItem = (props) => {
                                                 amount: 1,
                                                 foodId: food.foodId,
                                                 type: food.type,
+                                                able:true
                                             }) //foodId:
                                     }
                                 >

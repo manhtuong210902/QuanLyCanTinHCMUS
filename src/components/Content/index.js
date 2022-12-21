@@ -21,7 +21,11 @@ const Content = (props) => {
                         <Row>
                             {props.foods.map((food, index) => (
                                 // <div className={cx('content-menu-item')}>
-                                <FoodItem food={food} key={index} handleClick={props.handleClick} />
+                                <FoodItem food={food} 
+                                        key={index} 
+                                        handleClick={props.handleClick} 
+                                        select={props.listSelect}
+                                        />
                                 // </div>
                             ))}
                         </Row>
