@@ -6,6 +6,7 @@ import styles from '../SaleReport/SalesReport.module.scss';
 import classNames from 'classnames/bind';
 import ReactToPrint from 'react-to-print';
 import { BsPrinter } from 'react-icons/bs';
+import { getCurrDay } from '../../utils';
 
 const cx = classNames.bind(styles);
 
@@ -53,7 +54,7 @@ function InventoryReport() {
     return (
         <div>
             <div className={cx('header')}>
-                <h4>Báo cáo hàng tồn kho</h4>
+                <h4>Báo cáo hàng tồn kho ngày {getCurrDay()}</h4>
                 <ReactToPrint
                     trigger={() => {
                         return (
@@ -63,7 +64,7 @@ function InventoryReport() {
                         );
                     }}
                     content={() => componentRef.current}
-                    documentTitle={`báo cáo hàng tồn kho`}
+                    documentTitle={`báo cáo hàng tồn kho ngày ${getCurrDay()}`}
                     pageStyle="print"
                 />
             </div>
@@ -72,8 +73,6 @@ function InventoryReport() {
                     <tr>
                         <th>#</th>
                         <th>Tên thực phẩm</th>
-                        <th>Giá nhập</th>
-                        <th>Giá bán</th>
                         <th>Số lượng tồn</th>
                     </tr>
                 </thead>
@@ -83,8 +82,6 @@ function InventoryReport() {
                             <tr key={index}>
                                 <td>{index + 1}</td>
                                 <td>{item.name}</td>
-                                <td>{item.priceImport}</td>
-                                <td>{item.price}</td>
                                 <td>{item.amount}</td>
                             </tr>
                         );

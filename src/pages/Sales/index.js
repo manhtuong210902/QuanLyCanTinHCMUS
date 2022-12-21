@@ -4,6 +4,7 @@ import { db } from '../../firebase/config';
 import classNames from 'classnames/bind';
 import styles from './Sales.module.scss';
 import { auth } from '../../firebase/config';
+import { formatDay } from '../../utils';
 
 const cx = classNames.bind(styles);
 
@@ -107,7 +108,7 @@ const Sales = () => {
                                             </tr>
                                             <tr>
                                                 <th scope="row">Ngày mua:</th>
-                                                <td>{bill.orderDate}</td>
+                                                <td>{formatDay(bill.orderDate)}</td>
                                             </tr>
                                             <tr>
                                                 <th scope="row">Bàn đã đặt:</th>

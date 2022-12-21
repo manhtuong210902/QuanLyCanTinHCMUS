@@ -19,3 +19,18 @@
 .result {
     font-size: 16px;
 }
+
+@media print {
+    th,
+    td {
+        font-size: 12px;
+    }
+
+    .result {
+        font-size: 12px;
+    }
+
+    @page {
+        margin: 40px 10px;
+    }
+}

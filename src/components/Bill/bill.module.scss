@@ -74,3 +74,23 @@
         padding: 8px 0;
     }
 }
+
+@media print {
+    th,
+    td {
+        font-size: 12px;
+    }
+
+    h2 {
+        font-size: 14px;
+    }
+
+    .content {
+        width: 300px;
+    }
+
+    @page {
+        margin-top: 1in;
+        margin-left: 1.44in;
+    }
+}

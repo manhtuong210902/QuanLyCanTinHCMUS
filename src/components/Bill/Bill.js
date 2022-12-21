@@ -6,6 +6,7 @@ import styles from './bill.module.scss';
 import ReactToPrint from 'react-to-print';
 import { BsPrinter } from 'react-icons/bs';
 import { useRef, useState } from 'react';
+import { formatDay } from '../../utils';
 
 const cx = classNames.bind(styles);
 
@@ -106,8 +107,8 @@ const Bill = (props) => {
     };
     return (
         <div className={cx('modal-page')}>
-            <div ref={componentRef} className={cx('bill')}>
-                <div className={cx('content')}>
+            <div className={cx('bill')}>
+                <div ref={componentRef} className={cx('content')}>
                     <h2 style={{ marginTop: '3px', textAlign: 'center' }}>Hóa đơn</h2>
                     <div className={cx('info-table')}>
                         <table className={cx('cus-table', 'table')}>
@@ -118,7 +119,7 @@ const Bill = (props) => {
                                 </tr>
                                 <tr>
                                     <th scope="row">Ngày mua:</th>
-                                    <td>{props.bill.orderDate}</td>
+                                    <td>{formatDay(props.bill.orderDate)}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Bàn đã đặt:</th>
@@ -184,7 +185,7 @@ const Bill = (props) => {
                             );
                         }}
                         content={() => componentRef.current}
-                        documentTitle={`Hoa don`}
+                        documentTitle={`Hóa đơn`}
                         pageStyle="print"
                     />
                     <button
