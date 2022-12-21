@@ -8,6 +8,7 @@ import styles from './Home.module.scss';
 import Bill from '../../components/Bill/Bill';
 import Congrat from '../../components/Congrat/Congrat';
 import Enought from '../../components/Enought';
+import PreLoader from '../../components/PreLoader';
 const cx = classNames.bind(styles);
 
 const Home = () => {
@@ -31,6 +32,8 @@ const Home = () => {
     const changeEnought=(a)=>{
         setEnought(a)
     }
+    const [loading, setLoading] = useState(true);
+
     const changeCongrat = (a) => {
         setCongrat(a.active);
         setViptype(a.type);
@@ -100,6 +103,7 @@ const Home = () => {
             querySnapshot.forEach((doc) => {
                 data.push(doc.data());
             });
+            setLoading(false);
             return data;
         };
 
@@ -107,6 +111,10 @@ const Home = () => {
             setFoods(food);
         });
     }, []); // [listSelect, bridge,check,desk,time]);
+
+    if (loading) {
+        return <PreLoader />;
+    }
 
     return (
         <div className={cx('wrap')}>
@@ -155,7 +163,7 @@ const Home = () => {
                 />
             )}
             {congrat && <Congrat changeCongrat={changeCongrat} vipType={vipType} />}
-            {enought && <Enought changeEnought={changeEnought}/>}
+            {enought && <Enought changeEnought={changeEnought} />}
         </div>
     );
 };
