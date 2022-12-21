@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './Sidebar.module.scss';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { BiLogOutCircle, BiUserCircle } from 'react-icons/bi';
 
 import { auth, db } from '../../firebase/config';
@@ -66,9 +66,9 @@ function Sidebar() {
 
     const [isAdmin, setIsAdmin] = useState(false);
 
-    const [active, setActive] = useState(1);
-
     const navigate = useNavigate();
+
+    const location = useLocation();
 
     const handleClickLogout = (e) => {
         e.preventDefault();
@@ -99,6 +99,7 @@ function Sidebar() {
                 navigate('/sign');
             }
         });
+        console.log('navigate');
     }, [isClickLogout, navigate]);
 
     useEffect(() => {
@@ -113,12 +114,9 @@ function Sidebar() {
                         <NavLink
                             key={item.id}
                             className={
-                                active === item.id ? cx('sidebar-option-item', 'active') : cx('sidebar-option-item')
+                                location.pathname === item.path ? cx('sidebar-option-item', 'active') : cx('sidebar-option-item')
                             }
                             to={item.path}
-                            onClick={() => {
-                                setActive(item.id);
-                            }}
                         >
                             <span>{item.name}</span>
                         </NavLink>
