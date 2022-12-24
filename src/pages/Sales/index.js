@@ -4,6 +4,10 @@ import { db } from '../../firebase/config';
 import classNames from 'classnames/bind';
 import styles from './Sales.module.scss';
 import { auth } from '../../firebase/config';
+import { addDoc,deleteDoc,doc,updateDoc } from 'firebase/firestore';
+
+import {BsFillCheckCircleFill} from 'react-icons/bs';
+import { async } from '@firebase/util';
 
 const cx = classNames.bind(styles);
 
@@ -12,7 +16,6 @@ const Sales = () => {
     const [details, setDetails] = useState([]);
     const [a, setA] = useState(0);
     const user = auth.currentUser;
-    console.log(user);
     let docID = '';
     const getCurrentDate = (separator = '-') => {
         let newDate = new Date();
@@ -27,6 +30,7 @@ const Sales = () => {
             collection(db, 'bills'),
             where('userID', '==', user.uid),
             where('orderDate', '==', getCurrentDate()),
+            where('typePament','==',false)
         );
         const querySnapshot = await getDocs(q);
         const data = [];
@@ -89,15 +93,30 @@ const Sales = () => {
             setDetails(data.de);
         });
     }, []);
-
+    const clickCheck=async(id)=>{
+        const q = query(collection(db, 'bills'), where('billId', '==', id));
+        const querySnapshot = await getDocs(q);
+        let docID = '';
+        let bill
+        querySnapshot.forEach((doc) => {
+            docID = doc.id;
+            bill=doc.data()
+        });
+        console.log(bill)
+        await updateDoc(doc(db, 'bills', id),{
+            typePament:true
+        });
+    }
     return (
         <div>
             <div className={cx('bill-list')}>
                 <div className={cx('content')}>
                     {bills?.reverse().map((bill, index) => {
+                        if(!bill.typePament)
                         return (
                             <div className={cx('bill-item')}>
                                 <h2 style={{ marginTop: '3px', textAlign: 'center' }}>Hóa đơn</h2>
+                                <div className={cx('icon')} onClick={()=>clickCheck(bill.billId)}>{<BsFillCheckCircleFill/>}</div>
                                 <div className={cx('info-table')}>
                                     <table className={cx('cus-table', 'table')}>
                                         <tbody>

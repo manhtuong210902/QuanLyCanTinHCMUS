@@ -1,17 +1,15 @@
 import classNames from 'classnames/bind';
-import { collection, addDoc, query, where, getDocs, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, deleteDoc ,updateDoc } from 'firebase/firestore';
 import { doc } from 'firebase/firestore';
 import { auth, db } from '../../firebase/config';
 import styles from './bill.module.scss';
 import ReactToPrint from 'react-to-print';
 import { BsPrinter } from 'react-icons/bs';
 import { useRef, useState } from 'react';
-
 const cx = classNames.bind(styles);
 
 const Bill = (props) => {
     const [isAdmin, setIsAdmin] = useState(checkIsAdmin(auth.currentUser?.email));
-
     async function checkIsAdmin(userEmail) {
         if (userEmail) {
             const q = await query(collection(db, 'users'), where('email', '==', userEmail), where('admin', '==', true));
@@ -93,6 +91,9 @@ const Bill = (props) => {
         props.changeList([]);
         let docRef = await addDoc(collection(db, 'bills'), props.data.bills);
         const billID = docRef.id;
+        await updateDoc(doc(db, 'bills', billID), {
+            ...props.data.bilss,billId:billID
+        })
         props.data.details.map((order) => {
             docRef = addDoc(collection(db, 'orderDetails'), {
                 billID: billID,

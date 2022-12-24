@@ -322,7 +322,7 @@ const Order = (props) => {
                                         userID: user ? user.uid : '',
                                         orderDate: getCurrentDate(),
                                         total: totalPrice(),
-                                        typePament: true,
+                                        typePament: false,
                                         time: props.time,
                                         table: props.desk,
                                     },
