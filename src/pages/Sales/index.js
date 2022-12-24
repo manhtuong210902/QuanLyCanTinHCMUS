@@ -15,6 +15,7 @@ const cx = classNames.bind(styles);
 const Sales = () => {
     const [bills, setBills] = useState();
     const [details, setDetails] = useState([]);
+    const [type,setType]=useState([0]);
     const [a, setA] = useState(0);
     const user = auth.currentUser;
     let docID = '';
@@ -26,6 +27,8 @@ const Sales = () => {
 
         return `${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${date}`;
     };
+
+    
     const getBills = async () => {
         const q = query(
             collection(db, 'bills'),
@@ -93,7 +96,7 @@ const Sales = () => {
             setBills(data.data);
             setDetails(data.de);
         });
-    }, []);
+    }, [type]);
     const clickCheck=async(id)=>{
         const q = query(collection(db, 'bills'), where('billId', '==', id));
         const querySnapshot = await getDocs(q);
@@ -107,6 +110,8 @@ const Sales = () => {
         await updateDoc(doc(db, 'bills', id),{
             typePament:true
         });
+        if(type%2==0) setType(1)
+        else setType(0)
     }
     return (
         <div>
