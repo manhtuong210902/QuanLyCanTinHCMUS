@@ -25,9 +25,11 @@ const FoodItem = (props) => {
                 if(f.foodId===food.foodId)
                 a=f.amount
             })
-                
             set(amount- a> 0);
+            return(amount-a>0)
         });
+
+    
     return (
         <Col xs={6}>
             <div className={cx('foodItem')}>
@@ -45,7 +47,7 @@ const FoodItem = (props) => {
                                 <button
                                     className={cx('food-add')}
                                     onClick={
-                                        () =>
+                                        () =>{
                                             props.handleClick({
                                                 name: food.name,
                                                 price: food.price,
@@ -54,7 +56,8 @@ const FoodItem = (props) => {
                                                 foodId: food.foodId,
                                                 type: food.type,
                                                 able:true
-                                            }) //foodId:
+                                            })
+                                        }
                                     }
                                 >
                                     +
