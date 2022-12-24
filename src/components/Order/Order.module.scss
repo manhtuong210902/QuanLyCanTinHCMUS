@@ -14,26 +14,6 @@
     }
 }
 
-@media (max-width: 991.98px) {
-    .Order {
-        position: relative;
-        top: unset;
-        right: unset;
-        bottom: unset;
-        width: 500px;
-    }
-}
-
-@media (max-width: 767.98px) {
-    .Order {
-        position: relative;
-        top: unset;
-        right: unset;
-        bottom: unset;
-        width: 100%;
-    }
-}
-
 .order-bill {
     display: flex;
     flex-direction: column;
@@ -194,4 +174,28 @@
     left: 0;
     background: rgba(0, 0, 0, 0.3);
     position: absolute;
+}
+
+@media (max-width: 991.98px) {
+    .Order {
+        position: relative;
+        top: unset;
+        right: unset;
+        bottom: unset;
+        width: 500px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .Order {
+        position: relative;
+        top: unset;
+        right: unset;
+        bottom: unset;
+        width: 100%;
+    }
+
+    .order-list {
+        max-height: 240px;
+    }
 }
