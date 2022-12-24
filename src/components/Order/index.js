@@ -63,7 +63,7 @@ const Order = (props) => {
             }
         }
         counter[idx].value = val - 1 >= 0 ? val - 1 : 0
-        if(type==='fast food') counter[idx].able=true
+        if(type==='main food') counter[idx].able=true
         setCounter(counter);
 
     };
@@ -86,7 +86,7 @@ const Order = (props) => {
         if(counter[idx].amount!==''){
             if(counter[idx].amount-val<=0){
                 counter[idx].able=false
-                if(type==='fast food') counter[idx].able=true
+                if(type==='main food') counter[idx].able=true
                 counter[idx].value = val
                 setCounter(counter)
             }
@@ -98,7 +98,7 @@ const Order = (props) => {
         }
         else {
             counter[idx].value = val + 1;
-            if(type==='fast food') counter[idx].able=true
+            if(type==='main food') counter[idx].able=true
             setCounter(counter);
         }        
         

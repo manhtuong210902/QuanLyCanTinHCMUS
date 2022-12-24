@@ -5,6 +5,7 @@ import { db } from '../../firebase/config';
 import classNames from 'classnames/bind';
 import styles from './FoodItem.module.scss';
 import { Col } from 'react-bootstrap';
+import { useEffect } from 'react';
 const cx = classNames.bind(styles);
 const FoodItem = (props) => {
     const food = props.food;
@@ -28,7 +29,6 @@ const FoodItem = (props) => {
             set(amount- a> 0);
             return(amount-a>0)
         });
-
     
     return (
         <Col xs={6}>
@@ -48,15 +48,37 @@ const FoodItem = (props) => {
                                     className={cx('food-add')}
                                     onClick={
                                         () =>{
-                                            props.handleClick({
-                                                name: food.name,
-                                                price: food.price,
-                                                image: food.image,
-                                                amount: 1,
-                                                foodId: food.foodId,
-                                                type: food.type,
-                                                able:true
-                                            })
+                                            if (food.type === 'fast food')
+                                                getData().then((amount) => {
+                                                    let a=0
+                                                    props.select.forEach((f)=>{
+                                                        if(f.foodId===food.foodId)
+                                                        a=f.amount
+                                                        console.log(a,amount)
+                                                    })
+                                                    if(amount-a>0) {
+                                                        props.handleClick({
+                                                            name: food.name,
+                                                            price: food.price,
+                                                            image: food.image,
+                                                            amount: 1,
+                                                            foodId: food.foodId,
+                                                            type: food.type,
+                                                            able:true
+                                                        })
+                                                    }
+                                                });
+                                            else{
+                                                props.handleClick({
+                                                    name: food.name,
+                                                    price: food.price,
+                                                    image: food.image,
+                                                    amount: 1,
+                                                    foodId: food.foodId,
+                                                    type: food.type,
+                                                    able:true
+                                                })
+                                            }
                                         }
                                     }
                                 >
