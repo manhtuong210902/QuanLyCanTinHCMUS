@@ -24,14 +24,14 @@ const Home = () => {
     const [foods, setFoods] = useState([]);
     const [congrat, setCongrat] = useState(false);
     const [vipType, setViptype] = useState();
-    const [enought,setEnought]=useState(false);
-    const [disable,setDisable]=useState(false);
-    const changeDisable=(a)=>{
-        setDisable(a)
-    }
-    const changeEnought=(a)=>{
-        setEnought(a)
-    }
+    const [enought, setEnought] = useState(false);
+    const [disable, setDisable] = useState(false);
+    const changeDisable = (a) => {
+        setDisable(a);
+    };
+    const changeEnought = (a) => {
+        setEnought(a);
+    };
     const [loading, setLoading] = useState(true);
 
     const changeCongrat = (a) => {
@@ -40,16 +40,16 @@ const Home = () => {
     };
     const handleClick = (obj) => {
         let p = true;
-        let amount
+        let amount;
         for (let i = 0; i < listSelect.length; i++) {
             if (obj.name === listSelect[i].name) {
                 p = false;
                 listSelect[i].amount = listSelect[i].amount + 1;
-                amount =listSelect[i].amount
+                amount = listSelect[i].amount;
                 break;
             }
         }
-        p && listSelect.push({ index: listSelect.length,amount, ...obj });
+        p && listSelect.push({ index: listSelect.length, amount, ...obj });
         updateList(listSelect);
         setBridge(bridge + 1);
     };

@@ -11,14 +11,41 @@
 .cus-table {
     font-size: 16px;
 }
-.icon{
-    color: var(--primary-clr);
-    flex:1
+.btn-confirm {
+    padding: 8px 16px;
+    background-color: var(--primary-clr);
+    color: #fff;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    &:hover {
+        opacity: 0.8;
+    }
 }
 .bill-item {
     width: 400px;
     padding: 8px 16px;
     border: 1px solid #333;
+}
+
+.select-item {
+    font-size: 16px;
+    padding: 10px 20px;
+    color: #fff;
+    border: none;
+    background-color: var(--primary-clr);
+    option {
+        background-color: #fff;
+        color: var(--text-clr);
+        border-radius: var(--primayr-clr);
+    }
+}
+
+.notify {
+    margin-top: 5px;
+    color: red;
+    font-style: italic;
+    font-size: 13px;
 }
 
 @media (max-width: 991.98px) {

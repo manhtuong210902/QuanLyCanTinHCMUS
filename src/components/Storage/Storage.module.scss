@@ -221,18 +221,18 @@
 }
 
 .modal-add-input {
-    padding: 10px;
+    padding: 4px;
     border: 1px solid var(--primary-clr);
     border-radius: var(--border-radius);
 }
 
 .modal-add-btn {
-    background: var(--primary-clr);
+    background-color: var(--primary-clr) !important;
     border-radius: var(--border-radius);
     outline: none;
-    border: 1px solid var(--primary-clr);
+    border: 1px solid var(--primary-clr) !important;
     &:hover {
         border-color: var(--primary-clr);
-        background: rgba(184, 0, 101, 0.6);
+        background: rgba(184, 0, 101, 0.6) !important;
     }
 }
