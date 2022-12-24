@@ -5,7 +5,7 @@ import classNames from 'classnames/bind';
 import styles from './Sales.module.scss';
 import { auth } from '../../firebase/config';
 import { doc, updateDoc } from 'firebase/firestore';
-import { formatDay } from '../../utils';
+import { formatDay,getCurrentDate,addTimes } from '../../utils';
 
 const cx = classNames.bind(styles);
 
@@ -16,14 +16,6 @@ const Sales = () => {
     const [a, setA] = useState(0);
     const user = auth.currentUser;
     let docID = '';
-    const getCurrentDate = (separator = '-') => {
-        let newDate = new Date();
-        let date = newDate.getDate();
-        let month = newDate.getMonth() + 1;
-        let year = newDate.getFullYear();
-
-        return `${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${date}`;
-    };
 
     const getBills = async () => {
         const q = query(
@@ -56,35 +48,7 @@ const Sales = () => {
         });
         return data;
     };
-    function addTimes(startTime, endTime) {
-        let times = [0, 0];
-        let max = times.length;
 
-        let a = (startTime || '').split(':');
-        let b = (endTime || '').split(':');
-
-        // normalize time values
-        for (var i = 0; i < max; i++) {
-            a[i] = isNaN(parseInt(a[i])) ? 0 : parseInt(a[i]);
-            b[i] = isNaN(parseInt(b[i])) ? 0 : parseInt(b[i]);
-        }
-
-        // store time values
-        for (let i = 0; i < max; i++) {
-            times[i] = a[i] + b[i];
-        }
-
-        let hours = times[0];
-        let minutes = times[1];
-
-        if (minutes >= 60) {
-            let h = (minutes / 60) << 0;
-            hours += h;
-            minutes -= 60 * h;
-        }
-
-        return ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2);
-    }
     useEffect(() => {
         getBills().then((data) => {
             setBills(data.data);

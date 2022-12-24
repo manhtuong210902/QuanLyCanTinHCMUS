@@ -1,11 +1,10 @@
 import React, { useState, memo } from 'react';
-import { collection, addDoc, query, where, getDocs, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection,query, where, getDocs} from 'firebase/firestore';
 
 import { db } from '../../firebase/config';
 import classNames from 'classnames/bind';
 import styles from './FoodItem.module.scss';
 import { Col } from 'react-bootstrap';
-import { useEffect } from 'react';
 const cx = classNames.bind(styles);
 const FoodItem = (props) => {
     const food = props.food;

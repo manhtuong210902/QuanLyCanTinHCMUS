@@ -8,6 +8,7 @@ import { db, auth } from '../../firebase/config';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import CustomModal from '../CustomModal';
+import { getCurrentDate,addTimes } from '../../utils';
 const cx = classNames.bind(styles);
 const Order = (props) => {
     const [orders, setOrder] = useState([]);
@@ -160,49 +161,14 @@ const Order = (props) => {
         });
     };
 
-    const getCurrentDate = (separator = '-') => {
-        let newDate = new Date();
-        let date = newDate.getDate();
-        let month = newDate.getMonth() + 1;
-        let year = newDate.getFullYear();
-
-        return `${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${date}`;
-    };
+    
     // console.log(checkValue);
     const checkValue = (e) => {
         tick(e.target.checked);
         props.change(e.target.checked);
     };
 
-    function addTimes(startTime, endTime) {
-        let times = [0, 0];
-        let max = times.length;
-
-        let a = (startTime || '').split(':');
-        let b = (endTime || '').split(':');
-
-        // normalize time values
-        for (var i = 0; i < max; i++) {
-            a[i] = isNaN(parseInt(a[i])) ? 0 : parseInt(a[i]);
-            b[i] = isNaN(parseInt(b[i])) ? 0 : parseInt(b[i]);
-        }
-
-        // store time values
-        for (let i = 0; i < max; i++) {
-            times[i] = a[i] + b[i];
-        }
-
-        let hours = times[0];
-        let minutes = times[1];
-
-        if (minutes >= 60) {
-            let h = (minutes / 60) << 0;
-            hours += h;
-            minutes -= 60 * h;
-        }
-
-        return ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2);
-    }
+    
     return (
         <div className={cx('Order')} key={props.bridge}>
             <h2>My order</h2>
