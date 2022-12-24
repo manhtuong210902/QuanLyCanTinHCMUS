@@ -42,7 +42,7 @@ const Order = (props) => {
         });
     }, [navigate]);
 
-    const handleDescease = (val, idx,id) => {
+    const handleDescease = (val, idx,id,type) => {
         const food = props.food;
         const q = query(collection(db, 'storage'), where('foodId', '==',id));
         const getData = async () => {
@@ -63,9 +63,11 @@ const Order = (props) => {
             }
         }
         counter[idx].value = val - 1 >= 0 ? val - 1 : 0
+        if(type==='fast food') counter[idx].able=true
         setCounter(counter);
+
     };
-    const handleIncease = (val, idx,id) => {
+    const handleIncease = (val, idx,id,type) => {
         
         const food = props.food;
         const q = query(collection(db, 'storage'), where('foodId', '==',id));
@@ -84,6 +86,7 @@ const Order = (props) => {
         if(counter[idx].amount!==''){
             if(counter[idx].amount-val<=0){
                 counter[idx].able=false
+                if(type==='fast food') counter[idx].able=true
                 counter[idx].value = val
                 setCounter(counter)
             }
@@ -95,6 +98,7 @@ const Order = (props) => {
         }
         else {
             counter[idx].value = val + 1;
+            if(type==='fast food') counter[idx].able=true
             setCounter(counter);
         }        
         
@@ -214,7 +218,7 @@ const Order = (props) => {
                                         <div
                                             className={cx('order-amount-change')}
                                             onClick={() => {
-                                                handleDescease(item.amount, item.index,item.foodId);
+                                                handleDescease(item.amount, item.index,item.foodId,item.type);
                                                 item.amount = counter[item.index].value;
                                                 if (item.amount===0) props.deleteClick(item.name)
                                                 changeFlag(flag + 1);
@@ -232,7 +236,7 @@ const Order = (props) => {
                                         className={cx('order-amount-change')}
                                         onClick={() => {
                                             console.log(counter)
-                                            handleIncease(item.amount, item.index,item.foodId);
+                                            handleIncease(item.amount, item.index,item.foodId,item.type);
                                             item.amount = counter[item.index].value;
                                             changeFlag(flag + 1);
                                         }}
