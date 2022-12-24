@@ -8,6 +8,7 @@ import { addDoc,deleteDoc,doc,updateDoc } from 'firebase/firestore';
 
 import {BsFillCheckCircleFill} from 'react-icons/bs';
 import { async } from '@firebase/util';
+import { formatDay } from '../../utils';
 
 const cx = classNames.bind(styles);
 
@@ -126,7 +127,7 @@ const Sales = () => {
                                             </tr>
                                             <tr>
                                                 <th scope="row">Ngày mua:</th>
-                                                <td>{bill.orderDate}</td>
+                                                <td>{formatDay(bill.orderDate)}</td>
                                             </tr>
                                             <tr>
                                                 <th scope="row">Bàn đã đặt:</th>

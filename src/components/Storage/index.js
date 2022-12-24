@@ -151,7 +151,7 @@ const Storage = () => {
     return (
         <div className={cx('storage')}>
             <div className={cx('storage-header')}>
-                <h2>KHO</h2>
+                <h5 className={cx('title')}>Quản lý kho</h5>
             </div>
             <div className={cx('storage-body')}>
                 <div className={cx('storage-bill')}>
