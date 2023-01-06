@@ -139,7 +139,7 @@ const Storage = () => {
                     foodId: docRef.id,
                 });
                 const storageInfo = {
-                    amount: parseInt(foodAmount),
+                    amont: parseInt(foodAmount),
                     status: true,
                     foodId: docRef.id,
                 };
