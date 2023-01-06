@@ -1,37 +1,68 @@
-.container{
-    width: 100%;
-}
-.table-select{
-    display:flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    .table-item{
-        margin:20px;
-        color: black;
-        padding: 20px 40px ;
-        border: green 3px solid;
-        border-radius:10px;
-        &:hover{
-            cursor: pointer;
-        }
-    }
-   
+.table-col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.select-btn{
+.table-select {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.table-item {
+    margin-bottom: 20px;
+    color: black;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: green 3px solid;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 10px;
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.label {
+    display: flex;
+    align-items: center;
+}
+
+.title {
+    margin-bottom: 0;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.select-btn {
     background: var(--primary-clr);
     outline: none;
     border: none;
     border-radius: var(--border-radius);
-    padding: 10px 0;
+    padding: 8px 16px;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
-    font-size: 18px;
+    font-size: 16px;
     color: white;
-    width: 200px;
-    margin: 10px 20px;
+    margin-left: 30px;
 
     &:hover {
         cursor: pointer;
         background: rgba(200, 74, 121, 0.6);
+    }
+}
+
+@media (max-width: 991.98px) {
+    .table-select {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .select-btn {
+        width: 260px;
+        margin: 0;
     }
 }

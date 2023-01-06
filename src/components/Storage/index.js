@@ -183,7 +183,7 @@ const Storage = () => {
     return (
         <div className={cx('storage')}>
             <div className={cx('storage-header')}>
-                <h2>STORAGE</h2>
+                <h5 className={cx('title')}>Quản lý kho</h5>
             </div>
             <div className={cx('storage-body')}>
                 <div className={cx('storage-bill')}>
@@ -260,7 +260,7 @@ const Storage = () => {
             <>
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>
-                        <Modal.Title className={cx('modal-add-title')}>Thêm sản phẩm đã tồn tại</Modal.Title>
+                        <Modal.Title className={cx('modal-add-title')}>Thêm số lượng sản phẩm</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <span className={cx('modal-add')}>Số lượng: </span>
@@ -274,10 +274,10 @@ const Storage = () => {
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleClose}>
-                            Close
+                            Đóng
                         </Button>
-                        <Button className={cx('modal-add-btn')} variant="primary" onClick={addOldItem}>
-                            Save Changes
+                        <Button className={cx('modal-add-btn')} onClick={addOldItem}>
+                            Thêm
                         </Button>
                     </Modal.Footer>
                 </Modal>

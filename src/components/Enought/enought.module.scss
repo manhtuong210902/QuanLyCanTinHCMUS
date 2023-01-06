@@ -10,27 +10,18 @@
     align-items: center;
     justify-content: center;
 }
-
-.cus-table {
-    font-size: 16px;
-}
-
-.bill {
+.content {
     background-color: white;
     position: relative;
     border-radius: 10px;
     border: var(--primary-clr) 3px solid;
     padding: 16px;
+    font-size: 18px;
+    p {
+        padding: 20px 0;
+        margin: 0;
+    }
 }
-.info-table {
-    display: flex;
-    flex-direction: column;
-}
-
-.list-btn {
-    margin-top: 20px;
-}
-
 .btn {
     background: var(--primary-clr);
     outline: none;
@@ -41,16 +32,9 @@
     font-size: 16px;
     color: white;
     width: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 10px auto 0;
-    gap: 5px;
-
-    p {
-        margin: 0;
-    }
-
+    margin: 10px auto;
+    text-decoration: none;
+    text-align: center;
     &:hover {
         cursor: pointer;
         background: rgba(200, 74, 121, 0.6);
@@ -60,37 +44,14 @@
     display: flex;
     flex-direction: row;
 }
-
-@media (max-width: 991.98px) {
-    .bill {
-        padding: 16px 4px;
-    }
-
-    .cus-table {
-        font-size: 14px;
-    }
-
-    .btn {
-        padding: 8px 0;
-    }
+.text {
+    text-decoration: none;
 }
 
-@media print {
-    th,
-    td {
-        font-size: 12px;
-    }
-
-    h2 {
-        font-size: 14px;
-    }
-
-    .content {
-        width: 300px;
-    }
-
-    @page {
-        margin-top: 1in;
-        margin-left: 1.44in;
+.header {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    h5 {
+        margin: 0;
     }
 }

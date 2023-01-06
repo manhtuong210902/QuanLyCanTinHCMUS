@@ -6,6 +6,7 @@ import styles from './SalesReport.module.scss';
 import classNames from 'classnames/bind';
 import { BsPrinter } from 'react-icons/bs';
 import ReactToPrint from 'react-to-print';
+import { formatDay, formatMonth } from '../../utils';
 
 const cx = classNames.bind(styles);
 
@@ -87,7 +88,8 @@ function SaleReport({ typeDate, value }) {
         <div>
             <div className={cx('header')}>
                 <h4>
-                    Doanh thu bán hàng theo {typeDate === 'day' ? 'ngày' : 'tháng'} {value}
+                    Doanh thu bán hàng theo{' '}
+                    {typeDate === 'day' ? `ngày ${formatDay(value)}` : `tháng ${formatMonth(value)}`}
                 </h4>
                 <ReactToPrint
                     trigger={() => {
@@ -98,7 +100,9 @@ function SaleReport({ typeDate, value }) {
                         );
                     }}
                     content={() => componentRef.current}
-                    documentTitle={`báo cáo doanh thu ${typeDate === 'day' ? 'ngày' : 'tháng'} ${value}`}
+                    documentTitle={`Báo cáo doanh thu ${
+                        typeDate === 'day' ? `ngày ${formatDay(value)}` : `tháng ${formatMonth(value)}`
+                    }`}
                     pageStyle="print"
                 />
             </div>
@@ -120,7 +124,7 @@ function SaleReport({ typeDate, value }) {
                                     <td>{index + 1}</td>
                                     <td>{orderDetail.nameFood}</td>
                                     <td>{orderDetail.quantity}</td>
-                                    <td>{orderDetail.date}</td>
+                                    <td>{formatDay(orderDetail.date)}</td>
                                     <td>{orderDetail.totalMoney}</td>
                                 </tr>
                             );
@@ -128,7 +132,8 @@ function SaleReport({ typeDate, value }) {
                     </tbody>
                 </Table>
                 <h4 className={cx('result')}>
-                    Tổng doanh thu bán hàng {typeDate === 'day' ? 'ngày' : 'tháng'} {value} là: {total}đ
+                    Tổng doanh thu bán hàng{' '}
+                    {typeDate === 'day' ? `ngày ${formatDay(value)}` : `tháng ${formatMonth(value)}`} là: {total}đ
                 </h4>
             </div>
         </div>

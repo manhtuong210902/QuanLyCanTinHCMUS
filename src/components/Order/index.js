@@ -8,11 +8,12 @@ import { db, auth } from '../../firebase/config';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import CustomModal from '../CustomModal';
+import { getCurrentDate,addTimes } from '../../utils';
 const cx = classNames.bind(styles);
 const Order = (props) => {
     const [orders, setOrder] = useState([]);
     const [check, tick] = useState();
-    const [counter, setCounter] = useState([{ id: 0, value: 1 }]);
+    const [counter, setCounter] = useState([{ id: 0, value: 1,amount:3,able:true }]);
     const [vip, setVip] = useState(0);
 
     const [show, setShow] = useState(false);
@@ -42,22 +43,82 @@ const Order = (props) => {
         });
     }, [navigate]);
 
-    const handleDescease = (val, id) => {
-        counter[id] === undefined
-            ? counter.push({ id: id, value: val - 1 >= 0 ? val - 1 : 0 })
-            : (counter[id].value = val - 1 >= 0 ? val - 1 : 0);
+    const handleDescease = (val, idx,id,type) => {
+        const food = props.food;
+        const q = query(collection(db, 'storage'), where('foodId', '==',id));
+        const getData = async () => {
+                const querySnapshot = await getDocs(q);
+                let amount = '';
+                querySnapshot.forEach((doc) => {
+                    amount = doc.data().amont;
+                });
+            return amount;
+        };
+        getData().then(data=>{
+            counter[idx].amount=data
+            setCounter(counter)  
+        })
+        if(counter[idx].amount!==''){
+            if(counter[idx].amount-val>=0){
+                counter[idx].able=true
+            }
+        }
+        counter[idx].value = val - 1 >= 0 ? val - 1 : 0
+        if(type==='main food') counter[idx].able=true
         setCounter(counter);
+
     };
-    const handleIncease = (val, id) => {
-        counter[id] === undefined ? counter.push({ id: id, value: val + 1 }) : (counter[id].value = val + 1);
-        setCounter(counter);
+    const handleIncease = (val, idx,id,type) => {
+        
+        const food = props.food;
+        const q = query(collection(db, 'storage'), where('foodId', '==',id));
+        const getData = async () => {
+                const querySnapshot = await getDocs(q);
+                let amount = '';
+                querySnapshot.forEach((doc) => {
+                    amount = doc.data().amont;
+                });
+            return amount;
+        };
+        getData().then(data=>{
+            counter[idx].amount=data
+            setCounter(counter)  
+        })
+        if(counter[idx].amount!==''){
+            if(counter[idx].amount-val<=0){
+                counter[idx].able=false
+                if(type==='main food') counter[idx].able=true
+                counter[idx].value = val
+                setCounter(counter)
+            }
+            else {
+                counter[idx].able=true
+                counter[idx].value = val + 1;
+                setCounter(counter);
+            }
+        }
+        else {
+            counter[idx].value = val + 1;
+            if(type==='main food') counter[idx].able=true
+            setCounter(counter);
+        }        
+        
     };
     const [flag, changeFlag] = useState(0);
     //test
     useEffect(() => {
-        setCounter([{ id: 0, value: 1 }]);
         setOrder(props.listSelect);
-
+        setCounter([])
+        orders.forEach((sl,index)=>{
+            if (counter[index]===undefined)
+            {
+                counter.push({id:index,value:sl.amount,amount:3,able:sl.able}) 
+            }
+            else {
+                counter[index].value+=sl.amount
+            }
+            setCounter(counter)
+        })
         tick(props.check);
         console.log('order-render');
         props.changeDesk('...');
@@ -88,9 +149,9 @@ const Order = (props) => {
             querySnapshot.forEach((doc) => {
                 level = doc.data().level;
             });
-            if (level == 'C') return '3%';
-            else if (level == 'B') return '5%';
-            else if (level == 'A') return '10%';
+            if (level === 'C') return '3%';
+            else if (level === 'B') return '5%';
+            else if (level === 'A') return '10%';
         }
         return 0;
     };
@@ -100,50 +161,14 @@ const Order = (props) => {
         });
     };
 
-   
-    const getCurrentDate = (separator = '-') => {
-        let newDate = new Date();
-        let date = newDate.getDate();
-        let month = newDate.getMonth() + 1;
-        let year = newDate.getFullYear();
-
-        return `${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${date}`;
-    };
+    
     // console.log(checkValue);
     const checkValue = (e) => {
         tick(e.target.checked);
         props.change(e.target.checked);
     };
 
-    function addTimes(startTime, endTime) {
-        let times = [0, 0];
-        let max = times.length;
-
-        let a = (startTime || '').split(':');
-        let b = (endTime || '').split(':');
-
-        // normalize time values
-        for (var i = 0; i < max; i++) {
-            a[i] = isNaN(parseInt(a[i])) ? 0 : parseInt(a[i]);
-            b[i] = isNaN(parseInt(b[i])) ? 0 : parseInt(b[i]);
-        }
-
-        // store time values
-        for (let i = 0; i < max; i++) {
-            times[i] = a[i] + b[i];
-        }
-
-        let hours = times[0];
-        let minutes = times[1];
-
-        if (minutes >= 60) {
-            let h = (minutes / 60) << 0;
-            hours += h;
-            minutes -= 60 * h;
-        }
-
-        return ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2);
-    }
+    
     return (
         <div className={cx('Order')} key={props.bridge}>
             <h2>My order</h2>
@@ -159,24 +184,39 @@ const Order = (props) => {
                                         <div
                                             className={cx('order-amount-change')}
                                             onClick={() => {
-                                                handleDescease(item.amount, item.index);
+                                                handleDescease(item.amount, item.index,item.foodId,item.type);
                                                 item.amount = counter[item.index].value;
+                                                if (item.amount===0) props.deleteClick(item.name)
                                                 changeFlag(flag + 1);
                                             }}
                                         >
                                             -
                                         </div>
                                         <div className={cx('order-amount-num')}>{item.amount}</div>
+                                        
+                                        {
+                                        
+                                        !counter[item.index]||(counter[item.index].able)
+                                        ?
                                         <div
-                                            className={cx('order-amount-change')}
-                                            onClick={() => {
-                                                handleIncease(item.amount, item.index);
-                                                item.amount = counter[item.index].value;
-                                                changeFlag(flag + 1);
-                                            }}
+                                        className={cx('order-amount-change')}
+                                        onClick={() => {
+                                            console.log(counter)
+                                            handleIncease(item.amount, item.index,item.foodId,item.type);
+                                            item.amount = counter[item.index].value;
+                                            changeFlag(flag + 1);
+                                        }}
                                         >
                                             +
                                         </div>
+                                        :
+                                        <div
+                                        className={cx('order-amount-change')}
+                                        style={{opacity:0.3}}
+                                        >
+                                            +
+                                        </div>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -203,11 +243,15 @@ const Order = (props) => {
                             />
                             <label>Đặt bàn</label>
                         </div>
-                        {check &&
-                            `Số bàn: ${props.desk ? props.desk : '...'} 
-                                Khung giờ:  ${props.time ? props.time : '...'} ${props.time ? 'đến' : ''} ${
-                                props.time ? addTimes(props.time, '00:30') : ''
-                            }`}
+                        {check && (
+                            <>
+                                <p className="mb-0">Bàn số: {props.desk ? props.desk : '...'}</p>
+                                <p className="mb-0">
+                                    Khung giờ: {props.time ? props.time : '...'} {props.time ? 'đến' : ''}{' '}
+                                    {props.time ? addTimes(props.time, '00:30') : ''}
+                                </p>
+                            </>
+                        )}
                     </div>
                     <div className={cx('order-price-total')}>
                         <span>Tổng tiền: </span>
@@ -226,7 +270,10 @@ const Order = (props) => {
                         onClick={() => {
                             const auth = getAuth();
                             const user = auth.currentUser;
+                            if(totalPrice()===0){
 
+                            }
+                            else
                             if (user === null) {
                                 setShow(true);
                             } else {
@@ -245,7 +292,7 @@ const Order = (props) => {
                                         userID: user ? user.uid : '',
                                         orderDate: getCurrentDate(),
                                         total: totalPrice(),
-                                        typePament: true,
+                                        typePament: false,
                                         time: props.time,
                                         table: props.desk,
                                     },

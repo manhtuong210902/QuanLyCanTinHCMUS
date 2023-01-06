@@ -1,22 +1,21 @@
 import { onAuthStateChanged } from 'firebase/auth';
-import { collection, addDoc,query, where, getDocs,deleteDoc,doc} from "firebase/firestore";
+import { collection, addDoc, query, where, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { auth, db } from '../../firebase/config';
 import styles from './Profile.module.scss';
 import classNames from 'classnames/bind';
 import PreLoader from '../../components/PreLoader';
-import { async } from '@firebase/util';
-
+import { Form } from 'react-bootstrap';
 
 const cx = classNames.bind(styles);
 
 function Profile() {
-    const user=auth.currentUser
+    const user = auth.currentUser;
     const [isAdmin, setIsAdmin] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [money,setMoney]=useState()
-    const [isN,setN]=useState(false)
+    const [money, setMoney] = useState();
+    const [isN, setN] = useState(false);
     async function checkIsAdmin(userEmail) {
         if (userEmail) {
             const q = await query(collection(db, 'users'), where('email', '==', userEmail));
@@ -44,55 +43,71 @@ function Profile() {
     if (loading) {
         return <PreLoader />;
     }
-    const changeMoney=async(id)=>{
-        const q = query(collection(db, "users"), where("uid", "==", id));
-            const querySnapshot = await getDocs(q);
-            let docID = '';
-            let updateUser=''
-            querySnapshot.forEach((doc) => {
+    const changeMoney = async (id) => {
+        const q = query(collection(db, 'users'), where('uid', '==', id));
+        const querySnapshot = await getDocs(q);
+        let docID = '';
+        let updateUser = '';
+        querySnapshot.forEach((doc) => {
             docID = doc.id;
-            updateUser=doc.data()
-            });
-            await deleteDoc(doc(db, "users", docID));
-            updateUser.money=parseInt( updateUser.money)+parseInt( money)
-            console.log(updateUser)
-            addDoc(collection(db,'users'),updateUser)
-            setCurrentUser(updateUser)
-            return updateUser
-    }
+            updateUser = doc.data();
+        });
+        await deleteDoc(doc(db, 'users', docID));
+        updateUser.money = parseInt(updateUser.money) + parseInt(money);
+        console.log(updateUser);
+        addDoc(collection(db, 'users'), updateUser);
+        setCurrentUser(updateUser);
+        return updateUser;
+    };
 
     return (
         <div>
-            {isN? <div className={cx('wrapper')}>
-                <div className={cx('bank')}>
-                <label for="banks">Chọn ngân hàng   :</label>
-                <select name="banks" id="banks">
-                    <option value="Vietcombank">Vietcombank</option>
-                    <option value="BIDV">BIDV</option>
-                    <option value="Sacombank">Sacombank</option>
-                    <option value="Agribank">Agribank</option>
-                </select>
-                <input className={cx('box')} placeholder='Nhập số tài khoản'/>
-                <input className={cx('box')} placeholder='Nhập số tiền cần nạp' value={money} onChange={(e)=>setMoney(e.target.value)}/>
-                <div className={cx('btn-list')}>
-                    <div className={cx('btn')} onClick={()=>{
-                        setN(false)
-                        setMoney('')
-                        }}>
-                        Quay lại
+            {isN ? (
+                <div className={cx('wrapper')}>
+                    <div className={cx('bank')}>
+                        <label for="banks" className={cx('title')}>
+                            Chọn ngân hàng:
+                        </label>
+                        <Form.Select name="banks" id="banks">
+                            <option value="Vietcombank">Vietcombank</option>
+                            <option value="BIDV">BIDV</option>
+                            <option value="Sacombank">Sacombank</option>
+                            <option value="Agribank">Agribank</option>
+                        </Form.Select>
+
+                        <Form.Control className={cx('box')} placeholder="Nhập số tài khoản" />
+
+                        <Form.Control
+                            className={cx('box')}
+                            placeholder="Nhập số tiền cần nạp"
+                            value={money}
+                            onChange={(e) => setMoney(e.target.value)}
+                        />
+                        <div className={cx('btn-list')}>
+                            <div
+                                className={cx('btn')}
+                                onClick={() => {
+                                    setN(false);
+                                    setMoney('');
+                                }}
+                            >
+                                Quay lại
+                            </div>
+                            <div
+                                className={cx('btn')}
+                                onClick={() => {
+                                    setN(false);
+                                    changeMoney(user.uid).then((data) => {});
+
+                                    setMoney('');
+                                }}
+                            >
+                                Nạp
+                            </div>
+                        </div>
                     </div>
-                    <div className={cx('btn')} onClick={()=>{
-                        setN(false)
-                        let updateUser=''
-                        changeMoney(user.uid).then((data)=>{
-                        })
-                        
-                        setMoney('')
-                        }}>Oke</div>
                 </div>
-                </div>
-            </div> 
-            : isAdmin ? (
+            ) : isAdmin ? (
                 <div className={cx('wrapper')}>
                     <div className={cx('profile')}>
                         <img src={currentUser.image} alt="" className={cx('avatar')} />
@@ -133,9 +148,13 @@ function Profile() {
                             </p>
                         </div>
                         <div className={cx('item', 'btnRecharge')}>
-                            <p onClick={()=>{
-                                setN(true)
-                            }}>Nạp tiền</p>
+                            <p
+                                onClick={() => {
+                                    setN(true);
+                                }}
+                            >
+                                Nạp tiền
+                            </p>
                         </div>
                     </div>
                 </div>

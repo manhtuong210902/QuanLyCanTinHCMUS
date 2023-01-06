@@ -34,24 +34,24 @@
     margin-left: 16px;
     flex: 1;
     overflow: hidden;
+}
 
-    .food-label {
-        width: 100%;
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 4px;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-    }
+.food-label {
+    width: 100%;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 4px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
 
-    .food-price {
-        font-size: 16x;
-        span {
-            margin-left: 10px;
-            font-style: italic;
-            font-size: 16px;
-            color: var(--primary-clr);
-        }
+.food-price {
+    font-size: 16x;
+    span {
+        font-style: italic;
+        font-size: 16px;
+        color: var(--primary-clr);
     }
 }
 
@@ -59,23 +59,23 @@
     position: absolute;
     bottom: 8px;
     right: 8px;
+}
 
-    .food-add {
-        border: none;
-        outline: none;
-        color: #fff;
-        width: 36px;
-        height: 36px;
-        font-size: 26px;
-        border-radius: 50%;
-        background-color: var(--primary-clr);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        &:hover {
-            cursor: pointer;
-            background-color: rgba(200, 74, 121, 0.6);
-        }
+.food-add {
+    border: none;
+    outline: none;
+    color: #fff;
+    width: 36px;
+    height: 36px;
+    font-size: 26px;
+    border-radius: 50%;
+    background-color: var(--primary-clr);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:hover {
+        cursor: pointer;
+        background-color: rgba(200, 74, 121, 0.6);
     }
 }
 
@@ -83,4 +83,21 @@
     color: red;
     margin-top: 4px;
     font-size: 14px;
+}
+
+@media (max-width: 991.98px) {
+    .foodItem {
+        flex-direction: column;
+        padding: 16px 4px;
+        align-items: flex-start;
+    }
+
+    .food-add {
+        width: 30px;
+        height: 30px;
+    }
+
+    .food-label {
+        width: 120px;
+    }
 }

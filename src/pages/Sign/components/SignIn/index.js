@@ -8,6 +8,8 @@ import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import { auth, db } from '../../../../firebase/config';
 
 import { FcGoogle } from 'react-icons/fc';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const provider = new GoogleAuthProvider();
 
@@ -21,7 +23,16 @@ function SignIn({ handleChangeSign }) {
     } = useForm();
 
     const onSubmit = (user) => {
-        signInWithEmailAndPassword(auth, user.email, user.password);
+        signInWithEmailAndPassword(auth, user.email, user.password).catch((err) => {
+            if(err.code === 'auth/invalid-email') {
+                toast.error('Email không hợp lệ!');
+            } else if(err.code === 'auth/wrong-password') {
+                toast.error('Sai mật khẩu!');
+            } else {
+                toast.error('Đã xảy ra lỗi!');
+            }
+            console.log(err.code);
+        });
     };
 
     const handleSignInWithGoogle = () => {
@@ -44,8 +55,8 @@ function SignIn({ handleChangeSign }) {
                             email: user.email,
                             uid: user.uid,
                             image: user.photoURL,
-                            vip:0,
-                            level:'D',
+                            vip: 0,
+                            level: 'D',
                             money: 0,
                             admin: false,
                         });

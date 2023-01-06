@@ -23,6 +23,7 @@
     "react-scripts": "5.0.1",
     "react-scroll-component": "^0.6.7",
     "react-to-print": "^2.14.10",
+    "react-toastify": "^9.1.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

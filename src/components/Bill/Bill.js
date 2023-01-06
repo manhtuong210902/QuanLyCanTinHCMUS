@@ -1,22 +1,17 @@
 import classNames from 'classnames/bind';
-import { prodErrorMap } from 'firebase/auth';
-import { collection, addDoc, query, where, getDocs, deleteDoc } from 'firebase/firestore';
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
-
+import { collection, addDoc, query, where, getDocs, deleteDoc, updateDoc } from 'firebase/firestore';
+import { doc } from 'firebase/firestore';
 import { auth, db } from '../../firebase/config';
-import { onAuthStateChanged } from 'firebase/auth';
-
 import styles from './bill.module.scss';
 import ReactToPrint from 'react-to-print';
 import { BsPrinter } from 'react-icons/bs';
 import { useRef, useState } from 'react';
+import { formatDay } from '../../utils';
+
 const cx = classNames.bind(styles);
 
 const Bill = (props) => {
-    console.log(props);
-    const [currentUser, setCurrentUser] = useState(auth.currentUser);
     const [isAdmin, setIsAdmin] = useState(checkIsAdmin(auth.currentUser?.email));
-
     async function checkIsAdmin(userEmail) {
         if (userEmail) {
             const q = await query(collection(db, 'users'), where('email', '==', userEmail), where('admin', '==', true));
@@ -51,6 +46,15 @@ const Bill = (props) => {
             amont: amount - num,
         });
     };
+    const getUserMoney = async () => {
+        const q = query(collection(db, 'users'), where('uid', '==', props.data.bills.userID));
+        const querySnapshot = await getDocs(q);
+        let person = { money: 0 };
+        querySnapshot.forEach((doc) => {
+            person = doc.data();
+        });
+        return person.money;
+    };
     const handleDes = async () => {
         props.data.details.forEach((food) => {
             if (food.type === 'fast food') updateFoodInfo(food.foodId, food.quantity);
@@ -66,9 +70,10 @@ const Bill = (props) => {
         });
         let vip = person.vip;
         await deleteDoc(doc(db, 'users', docID));
-        person.money = person.money - props.data.bills.total;
-        person.vip = person.vip + props.data.bills.total;
-
+        if (!isAdmin) {
+            person.money = person.money - props.data.bills.total;
+            person.vip = person.vip + props.data.bills.total;
+        }
         if (person.vip > C && vip < C) {
             person.level = 'C';
             props.changeCongrat({ active: true, type: 'C' });
@@ -81,21 +86,43 @@ const Bill = (props) => {
         }
         addDoc(collection(db, 'users'), person);
     };
+    const handleEnougtMoney = async () => {
+        handleDes();
+        props.change(false);
+        props.changeModal(false);
+        props.changeList([]);
+        let docRef = await addDoc(collection(db, 'bills'), props.data.bills);
+        const billID = docRef.id;
+        await updateDoc(doc(db, 'bills', billID), {
+            ...props.data.bilss,
+            billId: billID,
+        });
+        props.data.details.map((order) => {
+            docRef = addDoc(collection(db, 'orderDetails'), {
+                billID: billID,
+                ...order,
+            });
+        });
+    };
+    const handleNotEnoughtMoney = async () => {
+        props.changeModal(false);
+        props.changeEnought(true);
+    };
     return (
         <div className={cx('modal-page')}>
-            <div ref={componentRef} className={cx('bill')}>
-                <div className={cx('content')}>
+            <div className={cx('bill')}>
+                <div ref={componentRef} className={cx('content')}>
                     <h2 style={{ marginTop: '3px', textAlign: 'center' }}>Hóa đơn</h2>
                     <div className={cx('info-table')}>
-                        <table class="table">
+                        <table className={cx('cus-table', 'table')}>
                             <tbody>
                                 <tr>
-                                    <th scope="row">Khách hàng</th>
-                                    <td>{props.bill.userName}</td>
+                                    <th scope="row">{isAdmin ? 'Nhân viên' : 'Khách hàng'}</th>
+                                    <td>{auth.currentUser.email}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Ngày mua:</th>
-                                    <td>{props.bill.orderDate}</td>
+                                    <td>{formatDay(props.bill.orderDate)}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Bàn đã đặt:</th>
@@ -112,7 +139,7 @@ const Bill = (props) => {
                             </tbody>
                         </table>
                         Danh sách sản phẩm
-                        <table class="table">
+                        <table className={cx('cus-table', 'table')}>
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
@@ -150,38 +177,29 @@ const Bill = (props) => {
                             props.changeModal(false);
                         }}
                     >
-                        back
+                        Trở lại
                     </button>
                     <ReactToPrint
                         trigger={() => {
                             return (
                                 <div className={cx('btn')}>
-                                    In <BsPrinter />
+                                    <BsPrinter /> <p>In</p>
                                 </div>
                             );
                         }}
                         content={() => componentRef.current}
-                        documentTitle={`Hoa don`}
+                        documentTitle={`Hóa đơn`}
                         pageStyle="print"
                     />
                     <button
                         className={cx('btn')}
                         onClick={async () => {
-                            handleDes();
-                            props.change(false);
-                            props.changeModal(false);
-                            props.changeList([]);
-                            let docRef = await addDoc(collection(db, 'bills'), props.data.bills);
-                            const billID = docRef.id;
-                            props.data.details.map((order) => {
-                                docRef = addDoc(collection(db, 'orderDetails'), {
-                                    billID: billID,
-                                    ...order,
-                                });
-                            });
+                            const userMoney = await getUserMoney();
+                            if (isAdmin || props.bill.total <= userMoney) handleEnougtMoney();
+                            else handleNotEnoughtMoney();
                         }}
                     >
-                        OK
+                        Xác nhận
                     </button>
                 </div>
             </div>

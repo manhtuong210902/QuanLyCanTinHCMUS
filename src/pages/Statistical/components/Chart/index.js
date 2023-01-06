@@ -64,6 +64,7 @@ function Chart({ typeStatistical, typeChart, date, listDate }) {
             querySnapshot.forEach((doc) => {
                 data.push(doc.data());
             });
+            console.log(data);
             return data;
         };
         const getBills = async () => {
@@ -71,7 +72,6 @@ function Chart({ typeStatistical, typeChart, date, listDate }) {
                 collection(db, 'bills'),
                 where('orderDate', '>=', date.valueFrom),
                 where('orderDate', '<=', date.valueTo),
-                where('typePament', '==', true),
             );
             const querySnapshot = await getDocs(q);
             const data = [];
@@ -87,11 +87,7 @@ function Chart({ typeStatistical, typeChart, date, listDate }) {
                 getOrderDetails().then((data) => {
                     const dataForEachLabel = new Array(dataLabels.length).fill(0);
                     dataLabels.forEach((label, index) => {
-                        console.log('hi');
-
                         data.forEach((bill) => {
-                            console.log('ha');
-
                             if (label === bill.nameFood) {
                                 dataForEachLabel[index] += bill.totalMoney;
                             }
@@ -114,6 +110,8 @@ function Chart({ typeStatistical, typeChart, date, listDate }) {
                 setDataChart(dataForEachLabel);
             });
         }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [date, typeStatistical]);
 
     const data = {
