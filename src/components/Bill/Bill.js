@@ -13,6 +13,7 @@ import { useRef, useState } from 'react';
 const cx = classNames.bind(styles);
 
 const Bill = (props) => {
+    console.log(props);
     const [currentUser, setCurrentUser] = useState(auth.currentUser);
     const [isAdmin, setIsAdmin] = useState(checkIsAdmin(auth.currentUser?.email));
 

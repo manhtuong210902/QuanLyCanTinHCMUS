@@ -19,6 +19,7 @@ const Storage = () => {
     const [foodPriceImport, setFoodPriceImport] = useState('');
     const [count, setCount] = useState(0);
     const [newData, setNewData] = useState({ id: '', amount: 0 });
+    const [validForm, setValidForm] = useState({ name: 1, amount: 1, price: 1, priceImport: 1 });
     //modal
     const [show, setShow] = useState(false);
 
@@ -68,15 +69,15 @@ const Storage = () => {
         });
     }, [count]);
 
-    const uploadImage = async () => {
-        if (img == null) return;
-        const imageRef = ref(storage, `images/${img.name}`);
-        uploadBytes(imageRef, img).then((snapshot) => {
-            getDownloadURL(snapshot.ref).then((url) => {
-                setImgUrl(url);
-            });
-        });
-    };
+    // const uploadImage = async () => {
+    //     if (img == null) return;
+    //     const imageRef = ref(storage, `images/${img.name}`);
+    //     uploadBytes(imageRef, img).then((snapshot) => {
+    //         getDownloadURL(snapshot.ref).then((url) => {
+    //             setImgUrl(url);
+    //         });
+    //     });
+    // };
 
     const handlePreviewImage = (e) => {
         const imagePath = e.target.files[0];
@@ -86,41 +87,72 @@ const Storage = () => {
 
     const handleAdditem = async (e) => {
         e.preventDefault();
-        let data = {
-            name: foodName,
-            price: parseInt(foodPrice),
-            priceImport: parseInt(foodPriceImport),
-            type: 'fast food',
-        };
-        uploadImage()
-            .then(() => {
-                data = { ...data, image: imgUrl };
-            })
-            .catch((err) => {
-                alert(err.message);
-                return;
-            });
-
-        try {
-            const docRef = await addDoc(collection(db, 'foods'), { ...data });
-
-            await setDoc(doc(db, 'foods', docRef.id), {
-                ...data,
-                foodId: docRef.id,
-            });
-            const storageInfo = {
-                amount: parseInt(foodAmount),
-                status: true,
-                foodId: docRef.id,
-            };
-            await addDoc(collection(db, 'storage'), storageInfo).then(() => setCount(count + 1));
-        } catch (err) {
-            console.log(err);
+        let c = 0;
+        let check = { name: 1, amount: 1, price: 1, priceImport: 1 };
+        if (foodName === '') {
+            check = { ...check, name: 0 };
+            c = c + 1;
         }
-        setFoodName('');
-        setFoodAmount('');
-        setFoodPrice('');
-        setFoodPriceImport('');
+
+        if (foodPrice === '' || !parseInt(foodPrice)) {
+            check = { ...check, price: 0 };
+            c = c + 1;
+        }
+
+        if (foodPriceImport === '' || !parseInt(foodPriceImport)) {
+            c = c + 1;
+            check = { ...check, priceImport: 0 };
+        }
+
+        if (foodAmount === '' || !parseInt(foodAmount)) {
+            c = c + 1;
+            check = { ...check, amount: 0 };
+        }
+        setValidForm(check);
+
+        if (c === 0) {
+            let data = {
+                name: foodName,
+                price: parseInt(foodPrice),
+                priceImport: parseInt(foodPriceImport),
+                type: 'fast food',
+            };
+
+            if (img == null) return;
+            const imageRef = ref(storage, `images/${img.name}`);
+            uploadBytes(imageRef, img).then((snapshot) => {
+                getDownloadURL(snapshot.ref).then((url) => {
+                    setImgUrl(url);
+                    data = { ...data, image: url };
+                });
+            });
+            data = { ...data, image: imgUrl };
+
+            try {
+                console.log(data);
+
+                const docRef = await addDoc(collection(db, 'foods'), { ...data });
+                console.log(docRef.id);
+
+                await setDoc(doc(db, 'foods', docRef.id), {
+                    ...data,
+                    foodId: docRef.id,
+                });
+                const storageInfo = {
+                    amount: parseInt(foodAmount),
+                    status: true,
+                    foodId: docRef.id,
+                };
+                await addDoc(collection(db, 'storage'), storageInfo).then(() => setCount(count + 1));
+            } catch (err) {
+                console.log(err);
+            }
+            setFoodName('');
+            setFoodAmount('');
+            setFoodPrice('');
+            setFoodPriceImport('');
+            setImg('');
+        }
     };
 
     const addOldItem = async () => {
@@ -196,25 +228,25 @@ const Storage = () => {
                     </div>
                     <div className={cx('storage-info-food')}>
                         <input
-                            className={cx('storage-food-name')}
+                            className={cx(`${validForm.name === 0 ? 'err' : ''}`)}
                             placeholder="Tên món ăn"
                             value={foodName}
                             onChange={(e) => getFood('name', e.target.value)}
                         />
                         <input
-                            className={cx('storage-food-amount')}
+                            className={cx(`${validForm.amount === 0 ? 'err' : ''}`)}
                             placeholder="Số lượng"
                             value={foodAmount}
                             onChange={(e) => getFood('amount', e.target.value)}
                         />
                         <input
-                            className={cx('storage-food-cost')}
+                            className={cx(`${validForm.price === 0 ? 'err' : ''}`)}
                             placeholder="Giá bán"
                             value={foodPrice}
                             onChange={(e) => getFood('price', e.target.value)}
                         />
                         <input
-                            className={cx('storage-food-price')}
+                            className={cx(`${validForm.priceImport === 0 ? 'err' : ''}`)}
                             placeholder="Giá nhập"
                             value={foodPriceImport}
                             onChange={(e) => getFood('import', e.target.value)}

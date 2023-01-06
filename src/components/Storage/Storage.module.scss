@@ -186,8 +186,21 @@
             font-style: italic;
         }
 
-        &:focus {
-            border: 2px solid var(--primary-clr);
+        // &:focus {
+        //     border: 2px solid var(--primary-clr);
+        // }
+    }
+
+    .err {
+        height: 36px;
+        margin-top: 10px;
+        border: 2px solid var(--primary-clr);
+        border-radius: var(--border-radius);
+        padding: 0 10px;
+
+        &::placeholder {
+            color: var(--text-color);
+            font-style: italic;
         }
     }
 }
