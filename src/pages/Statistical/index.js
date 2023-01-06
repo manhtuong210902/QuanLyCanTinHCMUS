@@ -16,7 +16,7 @@ function Statistical() {
     const [valueFrom, setValueFrom] = useState(currentDay);
     const [valueTo, setValueTo] = useState(currentDay);
     const [listDate, setListDate] = useState([]);
-    
+
     useEffect(() => {
         const getListDate = () => {
             const from = dayjs(valueFrom);
@@ -24,13 +24,13 @@ function Statistical() {
 
             const diff = to.diff(from, 'day');
             const data = [];
-            for(let i = 0; i <= diff; i++) {
+            for (let i = 0; i <= diff; i++) {
                 data.push(from.add(i, 'day').format().split('T')[0]);
             }
             setListDate(data);
-        }
+        };
         getListDate();
-    }, [valueFrom, valueTo])
+    }, [valueFrom, valueTo]);
 
     return (
         <div className={cx('wrapper')}>
@@ -83,7 +83,12 @@ function Statistical() {
             </div>
             <div className={cx('content')}>
                 <div className={cx('chart', { bar: typeChart === 'bar' || typeChart === 'line' })}>
-                    <Chart typeStatistical={typeStatistical} typeChart={typeChart} date={{ valueFrom, valueTo }} listDate={listDate} />
+                    <Chart
+                        typeStatistical={typeStatistical}
+                        typeChart={typeChart}
+                        date={{ valueFrom, valueTo }}
+                        listDate={listDate}
+                    />
                 </div>
             </div>
         </div>

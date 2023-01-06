@@ -64,6 +64,7 @@ function Chart({ typeStatistical, typeChart, date, listDate }) {
             querySnapshot.forEach((doc) => {
                 data.push(doc.data());
             });
+            console.log(data);
             return data;
         };
         const getBills = async () => {
@@ -71,7 +72,6 @@ function Chart({ typeStatistical, typeChart, date, listDate }) {
                 collection(db, 'bills'),
                 where('orderDate', '>=', date.valueFrom),
                 where('orderDate', '<=', date.valueTo),
-                where('typePament', '==', true),
             );
             const querySnapshot = await getDocs(q);
             const data = [];

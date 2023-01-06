@@ -1,5 +1,5 @@
 import React, { useState, memo } from 'react';
-import { collection,query, where, getDocs} from 'firebase/firestore';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 import { db } from '../../firebase/config';
 import classNames from 'classnames/bind';
@@ -20,20 +20,19 @@ const FoodItem = (props) => {
     };
     if (food.type === 'fast food')
         getData().then((amount) => {
-            let a=0
-            props.select.forEach((f)=>{
-                if(f.foodId===food.foodId)
-                a=f.amount
-            })
-            set(amount- a> 0);
-            return(amount-a>0)
+            let a = 0;
+            props.select.forEach((f) => {
+                if (f.foodId === food.foodId) a = f.amount;
+            });
+            set(amount - a > 0);
+            return amount - a > 0;
         });
-    
+
     return (
         <Col xs={6}>
             <div className={cx('foodItem')}>
                 <div className={cx('foodImg')}>
-                    <img src={food.image} alt="" />
+                    <img src={food?.image} alt="" />
                 </div>
                 <div className={cx('food-info')}>
                     <label className={cx('food-label')}>{food.name}</label>
@@ -45,41 +44,38 @@ const FoodItem = (props) => {
                             <div className={cx('btn-add')}>
                                 <button
                                     className={cx('food-add')}
-                                    onClick={
-                                        () =>{
-                                            if (food.type === 'fast food')
-                                                getData().then((amount) => {
-                                                    let a=0
-                                                    props.select.forEach((f)=>{
-                                                        if(f.foodId===food.foodId)
-                                                        a=f.amount
-                                                        console.log(a,amount)
-                                                    })
-                                                    if(amount-a>0) {
-                                                        props.handleClick({
-                                                            name: food.name,
-                                                            price: food.price,
-                                                            image: food.image,
-                                                            amount: 1,
-                                                            foodId: food.foodId,
-                                                            type: food.type,
-                                                            able:true
-                                                        })
-                                                    }
+                                    onClick={() => {
+                                        if (food.type === 'fast food')
+                                            getData().then((amount) => {
+                                                let a = 0;
+                                                props.select.forEach((f) => {
+                                                    if (f.foodId === food.foodId) a = f.amount;
+                                                    console.log(a, amount);
                                                 });
-                                            else{
-                                                props.handleClick({
-                                                    name: food.name,
-                                                    price: food.price,
-                                                    image: food.image,
-                                                    amount: 1,
-                                                    foodId: food.foodId,
-                                                    type: food.type,
-                                                    able:true
-                                                })
-                                            }
+                                                if (amount - a > 0) {
+                                                    props.handleClick({
+                                                        name: food.name,
+                                                        price: food.price,
+                                                        image: food?.image,
+                                                        amount: 1,
+                                                        foodId: food.foodId,
+                                                        type: food.type,
+                                                        able: true,
+                                                    });
+                                                }
+                                            });
+                                        else {
+                                            props.handleClick({
+                                                name: food.name,
+                                                price: food.price,
+                                                image: food?.image,
+                                                amount: 1,
+                                                foodId: food.foodId,
+                                                type: food.type,
+                                                able: true,
+                                            });
                                         }
-                                    }
+                                    }}
                                 >
                                     +
                                 </button>

@@ -99,7 +99,6 @@ function Sidebar() {
                 navigate('/sign');
             }
         });
-        console.log('navigate');
     }, [isClickLogout, navigate]);
 
     useEffect(() => {
@@ -114,7 +113,9 @@ function Sidebar() {
                         <NavLink
                             key={item.id}
                             className={
-                                location.pathname === item.path ? cx('sidebar-option-item', 'active') : cx('sidebar-option-item')
+                                location.pathname === item.path
+                                    ? cx('sidebar-option-item', 'active')
+                                    : cx('sidebar-option-item')
                             }
                             to={item.path}
                         >
