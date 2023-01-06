@@ -85,8 +85,19 @@ const Storage = () => {
         setImg(imagePath);
     };
 
-    const handleAdditem = async (e) => {
+    const handleAdditem = async (e, url) => {
         e.preventDefault();
+        console.log(url);
+
+        let data = {
+            name: foodName,
+            price: parseInt(foodPrice),
+            priceImport: parseInt(foodPriceImport),
+            type: 'fast food',
+        };
+
+        if (img === null) return;
+
         let c = 0;
         let check = { name: 1, amount: 1, price: 1, priceImport: 1 };
         if (foodName === '') {
@@ -111,26 +122,10 @@ const Storage = () => {
         setValidForm(check);
 
         if (c === 0) {
-            let data = {
-                name: foodName,
-                price: parseInt(foodPrice),
-                priceImport: parseInt(foodPriceImport),
-                type: 'fast food',
-            };
-
-            if (img == null) return;
-            const imageRef = ref(storage, `images/${img.name}`);
-            uploadBytes(imageRef, img).then((snapshot) => {
-                getDownloadURL(snapshot.ref).then((url) => {
-                    setImgUrl(url);
-                    data = { ...data, image: url };
-                });
-            });
-            data = { ...data, image: imgUrl };
+            data = { ...data, image: url };
+            console.log(data);
 
             try {
-                console.log(data);
-
                 const docRef = await addDoc(collection(db, 'foods'), { ...data });
                 console.log(docRef.id);
 
@@ -252,7 +247,19 @@ const Storage = () => {
                             onChange={(e) => getFood('import', e.target.value)}
                         />
                     </div>
-                    <button onClick={(e) => handleAdditem(e)} className={cx('storage-btn-add')}>
+                    <button
+                        onClick={(e) => {
+                            if (img == null) return;
+                            const imageRef = ref(storage, `images/${img.name}`);
+                            uploadBytes(imageRef, img).then((snapshot) => {
+                                getDownloadURL(snapshot.ref).then((url) => {
+                                    setImgUrl(url);
+                                    handleAdditem(e, url);
+                                });
+                            });
+                        }}
+                        className={cx('storage-btn-add')}
+                    >
                         Thêm sản phẩm
                     </button>
                 </div>
